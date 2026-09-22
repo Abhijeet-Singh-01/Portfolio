@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <!-- Dark Charcoal Base -->
+  <rect width="1200" height="630" fill="#08090b" />
+
+  <!-- Warm Olive/Gold Glow (Left) -->
+  <circle cx="200" cy="180" r="380" fill="url(#goldGradient)" opacity="0.3" filter="blur(80px)" />
+
+  <!-- Cool Teal Glow (Right) -->
+  <circle cx="1050" cy="450" r="420" fill="url(#tealGradient)" opacity="0.25" filter="blur(90px)" />
+
+  <!-- Border Frame -->
+  <rect x="30" y="30" width="1140" height="570" rx="16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+  <rect x="34" y="34" width="1132" height="562" rx="12" stroke="rgba(212, 175, 55, 0.12)" stroke-width="1" />
+
+  <!-- Monogram Box -->
+  <rect x="90" y="90" width="70" height="70" rx="12" fill="#12151d" stroke="rgba(212, 175, 55, 0.4)" stroke-width="1.5" />
+  <text x="125" y="136" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="bold" fill="#f4f1ea" text-anchor="middle">AS</text>
+
+  <!-- Status Badge -->
+  <rect x="180" y="105" width="260" height="38" rx="19" fill="#141720" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1" />
+  <circle cx="204" cy="124" r="5" fill="#2dd4bf" />
+  <text x="222" y="129" font-family="monospace" font-size="12" font-weight="600" fill="#edd894" letter-spacing="2">AVAILABLE FOR OPPORTUNITIES</text>
+
+  <!-- Editorial Main Heading -->
+  <text x="90" y="270" font-family="Georgia, serif" font-size="76" font-weight="normal" fill="#f4f1ea">
+    Hey, I'm <tspan fill="#edd894" font-style="italic">Abhijeet.</tspan>
+  </text>
+
+  <!-- Positioning Subtitle -->
+  <text x="90" y="340" font-family="monospace" font-size="22" font-weight="500" fill="#cfcac0" letter-spacing="1">
+    Computer Science Engineer • Software Developer • AI/ML Enthusiast
+  </text>
+
+  <!-- Summary Description -->
+  <text x="90" y="405" font-family="sans-serif" font-size="20" fill="#8e95a2">
+    Building practical software systems, AI-powered applications, and backend APIs.
+  </text>
+  <text x="90" y="440" font-family="sans-serif" font-size="20" fill="#8e95a2">
+    B.Tech in Computer Science &amp; Engineering • PSIT, AKTU (2024 – 2028)
+  </text>
+
+  <!-- Bottom Badges / Tech Highlights -->
+  <g transform="translate(90, 495)">
+    <rect x="0" y="0" width="180" height="38" rx="8" fill="#12151e" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+    <text x="90" y="24" font-family="monospace" font-size="13" fill="#edd894" text-anchor="middle">AI INCIDENT INTEL</text>
+
+    <rect x="200" y="0" width="130" height="38" rx="8" fill="#12151e" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+    <text x="265" y="24" font-family="monospace" font-size="13" fill="#2dd4bf" text-anchor="middle">SOLISIQ</text>
+
+    <rect x="350" y="0" width="140" height="38" rx="8" fill="#12151e" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+    <text x="420" y="24" font-family="monospace" font-size="13" fill="#edd894" text-anchor="middle">INSTANEWS</text>
+
+    <rect x="510" y="0" width="180" height="38" rx="8" fill="#12151e" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+    <text x="600" y="24" font-family="monospace" font-size="13" fill="#2dd4bf" text-anchor="middle">GHARPATHSHALA</text>
+  </g>
+
+  <!-- Location Indicator (Right Bottom) -->
+  <text x="1100" y="530" font-family="monospace" font-size="14" fill="#8e95a2" text-anchor="end">
+    Lucknow, India • 2026 Portfolio
+  </text>
+
+  <defs>
+    <radialGradient id="goldGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#08090b" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="tealGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#08090b" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+</svg>
