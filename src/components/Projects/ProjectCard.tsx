@@ -3,6 +3,7 @@ import type { Project } from '../../types';
 import { ProjectPreviewGraphic } from './ProjectPreviewGraphic';
 import { ExternalLink, ChevronDown, ChevronUp, Cpu, CheckCircle } from 'lucide-react';
 import { GithubIcon } from '../common/BrandIcons';
+import { experienceConfig } from '../../config/experienceConfig';
 
 interface ProjectCardProps {
   project: Project;
@@ -27,8 +28,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / bounds.width;
     const y = (event.clientY - bounds.top) / bounds.height;
-    event.currentTarget.style.setProperty('--tilt-x', `${(0.5 - y) * 2.2}deg`);
-    event.currentTarget.style.setProperty('--tilt-y', `${(x - 0.5) * 2.2}deg`);
+    event.currentTarget.style.setProperty('--tilt-x', `${(0.5 - y) * experienceConfig.projects.tiltDegrees}deg`);
+    event.currentTarget.style.setProperty('--tilt-y', `${(x - 0.5) * experienceConfig.projects.tiltDegrees}deg`);
     event.currentTarget.style.setProperty('--light-x', `${x * 100}%`);
     event.currentTarget.style.setProperty('--light-y', `${y * 100}%`);
   };

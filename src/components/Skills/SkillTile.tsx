@@ -5,9 +5,12 @@ import { SkillIcon } from './SkillIcon';
 interface SkillTileProps {
   skill: SkillItem;
   accent?: 'gold' | 'teal';
+  selected?: boolean;
+  related?: boolean;
+  onActivate?: () => void;
 }
 
-export const SkillTile: React.FC<SkillTileProps> = ({ skill, accent = 'gold' }) => {
+export const SkillTile: React.FC<SkillTileProps> = ({ skill, accent = 'gold', selected = false, related = false, onActivate }) => {
   const isGold = accent === 'gold';
 
   const hoverBorder = isGold
@@ -19,8 +22,13 @@ export const SkillTile: React.FC<SkillTileProps> = ({ skill, accent = 'gold' }) 
     : 'text-[#2dd4bf] group-hover:text-[#5eead4]';
 
   return (
-    <div
-      className={`group relative flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-[#0e1117]/60 hover:bg-[#131722]/80 border border-white/[0.06] backdrop-blur-sm transition-all duration-200 cursor-default ${hoverBorder}`}
+    <button
+      type="button"
+      aria-pressed={selected}
+      onMouseEnter={onActivate}
+      onFocus={onActivate}
+      onClick={onActivate}
+      className={`group relative w-full text-left flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-[#0e1117]/60 hover:bg-[#131722]/80 border border-white/[0.06] backdrop-blur-sm transition-all duration-200 cursor-pointer ${hoverBorder} ${selected?'skill-selected':''} ${related?'skill-related':''}`}
     >
       <div className={`shrink-0 transition-colors ${iconColor}`}>
         <SkillIcon name={skill.iconName} className="w-4 h-4" />
@@ -38,6 +46,6 @@ export const SkillTile: React.FC<SkillTileProps> = ({ skill, accent = 'gold' }) 
           title="Core Competency"
         />
       )}
-    </div>
+    </button>
   );
 };

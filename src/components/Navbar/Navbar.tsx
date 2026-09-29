@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 
 interface NavItem {
@@ -18,6 +18,26 @@ export const Navbar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('home');
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const toggleRef=useRef<HTMLButtonElement>(null);
+  const drawerRef=useRef<HTMLDivElement>(null);
+
+  useEffect(()=>{
+    if(!mobileMenuOpen) return;
+    const drawer=drawerRef.current;
+    const focusable=()=>Array.from(drawer?.querySelectorAll<HTMLElement>('a,button,[tabindex]:not([tabindex="-1"])')||[]).filter(el=>!el.hasAttribute('disabled'));
+    focusable()[0]?.focus();
+    const keydown=(event:KeyboardEvent)=>{
+      if(event.key==='Escape') {setMobileMenuOpen(false);requestAnimationFrame(()=>toggleRef.current?.focus());}
+      if(event.key==='Tab'){
+        const items=focusable(); if(!items.length)return;
+        const first=items[0],last=items[items.length-1];
+        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+      }
+    };
+    document.addEventListener('keydown',keydown);
+    return ()=>document.removeEventListener('keydown',keydown);
+  },[mobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -132,10 +152,12 @@ export const Navbar: React.FC = () => {
           {/* Mobile Hamburger Toggle */}
           <button
             type="button"
+            ref={toggleRef}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden w-10 h-10 rounded-md border border-white/[0.08] bg-[#12141a]/80 flex items-center justify-center text-[#f4f1ea] hover:border-[#d4af37]/40 focus:outline-none transition-colors"
             aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
             aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -145,6 +167,11 @@ export const Navbar: React.FC = () => {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div
+          ref={drawerRef}
+          id="mobile-navigation"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Portfolio navigation"
           className="fixed inset-0 z-40 md:hidden bg-[#08090b]/90 backdrop-blur-xl flex flex-col justify-between pt-24 pb-10 px-8 transition-opacity duration-300"
           style={{ animation: 'fadeIn 0.2s ease-out' }}
         >

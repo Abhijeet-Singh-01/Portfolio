@@ -1,14 +1,28 @@
 import React, { useRef } from 'react';
 import { ArrowDown, ArrowRight, FileText, Sparkles, MapPin, Terminal, Orbit, Braces, Cpu, Database, Workflow } from 'lucide-react';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { pointerStore } from '../../lib/pointerStore';
+import { experienceConfig as config } from '../../config/experienceConfig';
+import { personalBio } from '../../data/education';
 
 export const Hero: React.FC = () => {
   const sceneRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const heroIntroduction=personalBio.introParagraph.replace("I'm Abhijeet Singh, ", "I'm ");
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   const moveScene = (event: React.PointerEvent<HTMLElement>) => {
-    if (event.pointerType !== 'mouse' || !sceneRef.current || prefersReducedMotion) return;
+    if (!sceneRef.current || prefersReducedMotion) return;
+    if (pointerStore.dragging) {
+      const dx=event.clientX-pointerStore.x;
+      const dy=event.clientY-pointerStore.y;
+      pointerStore.rotationY += dx * config.scene.dragSensitivity;
+      pointerStore.rotationX = Math.max(-config.scene.verticalRotationLimit,Math.min(config.scene.verticalRotationLimit,pointerStore.rotationX + dy * config.scene.dragSensitivity));
+      pointerStore.velocityX = dx * config.scene.dragSensitivity;
+      pointerStore.velocityY = dy * config.scene.dragSensitivity;
+    }
+    pointerStore.x=event.clientX; pointerStore.y=event.clientY;
+    if (event.pointerType !== 'mouse') return;
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / bounds.width - 0.5;
     const y = (event.clientY - bounds.top) / bounds.height - 0.5;
@@ -26,6 +40,22 @@ export const Hero: React.FC = () => {
     scene.style.setProperty('--float-three-x', `${x * 15}px`); scene.style.setProperty('--float-three-y', `${y * -12}px`);
   };
 
+  const beginDrag=(event:React.PointerEvent<HTMLDivElement>)=>{
+    if(prefersReducedMotion) return;
+    pointerStore.dragging=true; pointerStore.x=event.clientX; pointerStore.y=event.clientY;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const endDrag=()=>{pointerStore.dragging=false;};
+  const rotateWithKeyboard=(event:React.KeyboardEvent<HTMLDivElement>)=>{
+    const step=config.scene.keyboardRotationStep;
+    if(event.key==='ArrowLeft') pointerStore.rotationY-=step;
+    else if(event.key==='ArrowRight') pointerStore.rotationY+=step;
+    else if(event.key==='ArrowUp') pointerStore.rotationX=Math.max(-config.scene.verticalRotationLimit,pointerStore.rotationX-step);
+    else if(event.key==='ArrowDown') pointerStore.rotationX=Math.min(config.scene.verticalRotationLimit,pointerStore.rotationX+step);
+    else return;
+    event.preventDefault();
+  };
+
   const resetScene = () => {
     if (!sceneRef.current) return;
     ['--grid-x','--grid-y','--glow-x','--glow-y','--orbit-back-x','--orbit-back-y','--orbit-mid-x','--orbit-mid-y','--orbit-front-x','--orbit-front-y','--card-x','--card-y','--float-one-x','--float-one-y','--float-two-x','--float-two-y','--float-three-x','--float-three-y'].forEach((property) => sceneRef.current?.style.setProperty(property, '0px'));
@@ -34,7 +64,7 @@ export const Hero: React.FC = () => {
   };
 
   return (
-    <section id="home" onPointerMove={moveScene} onPointerLeave={resetScene} className="hero-scene relative min-h-[95vh] flex flex-col justify-between pt-32 pb-12 px-6 md:px-10 max-w-7xl mx-auto">
+    <section id="home" onPointerMove={moveScene} onPointerLeave={resetScene} onPointerUp={endDrag} onPointerCancel={endDrag} className="hero-scene relative min-h-[95vh] flex flex-col justify-between pt-32 pb-12 px-6 md:px-10 max-w-7xl mx-auto">
       <div className="hero-grid flex-1 grid lg:grid-cols-[1.15fr_.85fr] gap-10 lg:gap-6 items-center">
         <div className="relative z-10 flex flex-col justify-center max-w-3xl hero-copy">
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-[#2dd4bf]/20 bg-[#111820]/70 backdrop-blur-md w-fit mb-7">
@@ -43,11 +73,13 @@ export const Hero: React.FC = () => {
           </div>
 
           <p className="hero-kicker mb-4 text-[11px] font-mono uppercase tracking-[.24em] text-[#2dd4bf]">Software · Systems · Applied AI</p>
-          <h1 className="text-[clamp(2.3rem,10vw,3rem)] sm:text-6xl md:text-7xl lg:text-[5.7rem] font-serif font-normal tracking-tight text-[#f4f1ea] leading-[.98] mb-6">
-            Building useful things <span className="hero-title-accent">for a complex world.</span>
+          <h1 className="text-[clamp(2.3rem,10vw,3rem)] sm:text-6xl md:text-7xl lg:text-[5.7rem] font-serif font-normal tracking-tight text-[#f4f1ea] leading-[.98] mb-4">
+            Hey, I&apos;m <span className="hero-title-accent">Abhijeet Singh.</span>
           </h1>
+          <p className="hero-manifesto mb-3 text-xl sm:text-2xl font-serif text-[#d6e8eb]">Building useful things for a complex world.</p>
+          <p className="mb-4 text-[11px] sm:text-xs font-mono uppercase tracking-[.13em] text-[#70e5f2]">{personalBio.subRole}</p>
           <p className="text-base sm:text-lg text-[#a0a8b4] max-w-xl leading-relaxed mb-8">
-            I&apos;m Abhijeet Singh, a Computer Science student exploring the space between dependable software systems and intelligent applications.
+            {heroIntroduction}
           </p>
 
           <div className="flex flex-wrap gap-2.5 mb-8 text-[11px] font-mono text-[#9da6b2]">
@@ -58,7 +90,7 @@ export const Hero: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <button type="button" onClick={() => scrollTo('projects')} data-magnetic="true" className="hero-primary group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-md font-medium text-xs font-mono uppercase tracking-widest">
-              <span>Explore projects</span><ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <span>View projects</span><ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
             <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-md bg-white/[0.035] hover:bg-white/[0.07] text-[#d7d9dc] border border-white/[0.1] hover:border-[#2dd4bf]/30 text-xs font-mono uppercase tracking-widest transition-all">
               <FileText className="w-4 h-4 text-[#2dd4bf]" />Resume
@@ -67,7 +99,7 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
-        <div ref={sceneRef} data-cursor="EXPLORE" className="hero-art relative mx-auto w-full max-w-[490px] aspect-square" aria-hidden="true">
+        <div ref={sceneRef} onPointerDown={beginDrag} onPointerMove={moveScene} onPointerUp={endDrag} onLostPointerCapture={endDrag} onKeyDown={rotateWithKeyboard} data-cursor="DRAG" className="hero-art relative mx-auto w-full max-w-[490px] aspect-square" aria-label="Interactive neural sphere. Drag with a pointer or use arrow keys to rotate." role="group" tabIndex={0}>
           <div className="hero-orbit hero-orbit-outer" />
           <div className="hero-orbit hero-orbit-inner" />
           <div className="hero-orbit hero-orbit-core"><span /></div>

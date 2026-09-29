@@ -114,8 +114,9 @@ export const AtmosphericBackground: React.FC = () => {
       <div
         className="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] max-w-[850px] max-h-[850px] rounded-full blur-[140px] opacity-40 animate-ambient-left"
         style={{
+          '--ambient-opacity': experienceConfig.atmosphere.glowOpacity,
           background: 'radial-gradient(circle, rgba(87, 222, 242, 0.14) 0%, rgba(103, 139, 255, 0.05) 50%, transparent 70%)',
-        }}
+        } as React.CSSProperties}
         aria-hidden="true"
       />
 
@@ -123,6 +124,7 @@ export const AtmosphericBackground: React.FC = () => {
       <div
         className="absolute top-[45%] -left-[15%] w-[45vw] h-[45vw] max-w-[650px] max-h-[650px] rounded-full blur-[160px] opacity-25"
         style={{
+          opacity: experienceConfig.atmosphere.glowOpacity,
           background: 'radial-gradient(circle, rgba(165, 140, 255, 0.08) 0%, transparent 65%)',
         }}
         aria-hidden="true"
@@ -132,8 +134,9 @@ export const AtmosphericBackground: React.FC = () => {
       <div
         className="absolute top-[8%] -right-[10%] w-[55vw] h-[55vw] max-w-[850px] max-h-[850px] rounded-full blur-[150px] opacity-35 animate-ambient-right"
         style={{
+          '--ambient-opacity': experienceConfig.atmosphere.glowOpacity,
           background: 'radial-gradient(circle, rgba(103, 139, 255, 0.12) 0%, rgba(165, 140, 255, 0.04) 50%, transparent 70%)',
-        }}
+        } as React.CSSProperties}
         aria-hidden="true"
       />
 
@@ -141,6 +144,7 @@ export const AtmosphericBackground: React.FC = () => {
       <div
         className="absolute top-[68%] -right-[12%] w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] rounded-full blur-[160px] opacity-25"
         style={{
+          opacity: experienceConfig.atmosphere.glowOpacity,
           background: 'radial-gradient(circle, rgba(87, 222, 242, 0.07) 0%, transparent 65%)',
         }}
         aria-hidden="true"

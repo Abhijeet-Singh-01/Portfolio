@@ -1,6 +1,7 @@
 import React from 'react';
 import { educationData, personalBio } from '../../data/education';
 import { GraduationCap, CheckCircle2, MapPin } from 'lucide-react';
+import { DeveloperTerminal } from './DeveloperTerminal';
 
 export const About: React.FC = () => {
   return (
@@ -117,6 +118,8 @@ export const About: React.FC = () => {
               </div>
             </div>
           </div>
+
+          <DeveloperTerminal />
 
           {/* Vertical Education Timeline */}
           <div className="about-panel p-8 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">

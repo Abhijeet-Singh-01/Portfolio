@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { skillsCategories } from '../../data/skills';
 import { SkillTile } from './SkillTile';
 import { Terminal, Cpu, Database, Server, Code, Layout, Wrench } from 'lucide-react';
@@ -14,6 +14,9 @@ const categoryIcons: Record<string, React.ReactNode> = {
 };
 
 export const Skills: React.FC = () => {
+  const [activeSkill,setActiveSkill]=useState('');
+  const [activeStep,setActiveStep]=useState(-1);
+  const relatedCategory=skillsCategories.find(category=>category.skills.some(skill=>skill.name===activeSkill));
   return (
     <section id="skills" className="py-24 sm:py-32 px-6 md:px-10 max-w-7xl mx-auto">
       {/* Section Header */}
@@ -50,11 +53,11 @@ export const Skills: React.FC = () => {
             { step: '04', name: 'Respond', detail: 'Useful output' },
           ].map((item, index) => (
             <React.Fragment key={item.step}>
-              <div className="ai-flow-node">
+              <button type="button" className={`ai-flow-node ${activeStep===index?'flow-active':''}`} aria-pressed={activeStep===index} onFocus={()=>setActiveStep(index)} onMouseEnter={()=>setActiveStep(index)} onClick={()=>setActiveStep(current=>current===index?-1:index)}>
                 <span className="ai-flow-index">{item.step}</span>
                 <strong>{item.name}</strong>
                 <small>{item.detail}</small>
-              </div>
+              </button>
               {index < 3 && <span className="ai-flow-link" aria-hidden="true"><i /></span>}
             </React.Fragment>
           ))}
@@ -62,6 +65,10 @@ export const Skills: React.FC = () => {
       </div>
 
       {/* Categories Grid */}
+      <div className="flex items-center justify-between min-h-8 mb-3 text-xs font-mono text-[#8e95a2]" aria-live="polite">
+        <span>{activeSkill?`Related skills highlighted: ${relatedCategory?.title}`:'Focus or select any skill to highlight its category.'}</span>
+        {activeSkill&&<button type="button" className="text-[#70e5f2] underline underline-offset-4" onClick={()=>setActiveSkill('')}>Clear highlight</button>}
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {skillsCategories.map((category, idx) => {
           const isEven = idx % 2 === 1;
@@ -87,11 +94,13 @@ export const Skills: React.FC = () => {
                 </div>
 
                 {/* Tiles Container */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 list-none p-0 m-0">
                   {category.skills.map((skill) => (
-                    <SkillTile key={skill.name} skill={skill} accent={accent} />
+                    <li key={skill.name} className={activeSkill&&relatedCategory?.id!==category.id?'skill-muted':''}>
+                      <SkillTile skill={skill} accent={accent} selected={activeSkill===skill.name} related={activeSkill!==''&&relatedCategory?.id===category.id} onActivate={()=>setActiveSkill(skill.name)} />
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             </div>
           );

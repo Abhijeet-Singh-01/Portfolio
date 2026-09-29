@@ -52,15 +52,23 @@ export const CustomCursor: React.FC = () => {
       const magnetic=document.querySelector<HTMLElement>('[data-magnetic="true"]:hover');
       if(lastMagnetic && lastMagnetic!==magnetic){lastMagnetic.style.removeProperty('--magnetic-x');lastMagnetic.style.removeProperty('--magnetic-y');}
       lastMagnetic=magnetic;
-      if(magnetic){const b=magnetic.getBoundingClientRect();magnetic.style.setProperty('--magnetic-x',`${((targetX-(b.left+b.width/2))*config.cursor.magnetStrength).toFixed(1)}px`);magnetic.style.setProperty('--magnetic-y',`${((targetY-(b.top+b.height/2))*config.cursor.magnetStrength).toFixed(1)}px`);}
+      if(magnetic){
+        const b=magnetic.getBoundingClientRect(),dx=targetX-(b.left+b.width/2),dy=targetY-(b.top+b.height/2),distance=Math.hypot(dx,dy);
+        const pull=Math.max(0,1-distance/config.motion.magneticRadius)*config.cursor.magnetStrength;
+        magnetic.style.setProperty('--magnetic-x',`${(dx*pull).toFixed(1)}px`);magnetic.style.setProperty('--magnetic-y',`${(dy*pull).toFixed(1)}px`);
+      }
       if (Math.abs(targetX - ringX) + Math.abs(targetY - ringY) > 0.5 || points.some(p=>p.life>.08) || burst.length) frame = requestAnimationFrame(follow);
       else frame = 0;
     };
     const hover = (event: PointerEvent) => {
       const target = event.target;
-      if (target instanceof Element && target.closest('a, button, [role="button"], input, textarea, .project-card')) ring.classList.add('cursor-hover');
-      else ring.classList.remove('cursor-hover');
-      if(target instanceof Element){ const labeled=target.closest<HTMLElement>('[data-cursor]'); ring.dataset.label=labeled?.dataset.cursor||''; }
+      if(target instanceof Element){
+        const labeled=target.closest<HTMLElement>('[data-cursor]');
+        const link=target.closest('a');
+        const interactive=target.closest('a, button, [role="button"], input, textarea, .project-card, [data-cursor]');
+        ring.classList.toggle('cursor-hover',Boolean(interactive));
+        ring.dataset.label=labeled?.dataset.cursor||(link?'↗':'');
+      } else { ring.classList.remove('cursor-hover'); ring.dataset.label=''; }
     };
     const down=(event:PointerEvent)=>{if(event.pointerType!=='mouse')return;pointerStore.pressed=true;pointerStore.burst++; ring.classList.add('cursor-pressed'); burst=Array.from({length:config.cursor.burstCount},()=>{const angle=Math.random()*Math.PI*2,speed=1+Math.random()*3;return{x:event.clientX,y:event.clientY,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1};});if(!frame)frame=requestAnimationFrame(follow);};
     const up=()=>{pointerStore.pressed=false;ring.classList.remove('cursor-pressed');};

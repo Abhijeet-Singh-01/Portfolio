@@ -31,14 +31,21 @@ function Network() {
     geometry.setAttribute('position', new BufferAttribute(new Float32Array(nodes.flatMap(p => [p.x,p.y,p.z])), 3));
     return geometry;
   }, [nodes]);
-  useFrame(({ clock }) => {
-    const t = clock.elapsedTime;
-    const scrollProgress = Math.min(1, window.scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight));
+  useFrame(() => {
+    const scrollProgress = pointerStore.heroProgress;
     if (group.current) {
-      group.current.rotation.y = t * config.motion.floatSpeed * .14 + pointerStore.nx * .1 + scrollProgress * .24;
-      group.current.rotation.x = Math.sin(t * .12) * .035 - pointerStore.ny * .05 + scrollProgress * .08;
+      if (!pointerStore.dragging) {
+        pointerStore.rotationY += pointerStore.velocityX + config.scene.idleRotation;
+        pointerStore.rotationX += pointerStore.velocityY;
+        pointerStore.velocityX *= config.scene.dragInertia;
+        pointerStore.velocityY *= config.scene.dragInertia;
+      }
+      group.current.rotation.y = pointerStore.rotationY + pointerStore.nx * .1;
+      group.current.rotation.x = pointerStore.rotationX - pointerStore.ny * .05;
       group.current.position.x = (viewport.width < 8 ? .3 : 2.2) + (pointerStore.nx || 0) * .18;
-      group.current.position.y = Math.sin(scrollProgress * Math.PI * 2) * .22;
+      group.current.position.y = Math.sin(scrollProgress * Math.PI) * .22;
+      group.current.position.z = -scrollProgress * config.scene.heroExitDepth;
+      group.current.scale.setScalar(1 - scrollProgress * (1 - config.scene.heroExitScale));
     }
     if (pointLight.current) {
       pointLight.current.position.set(pointerStore.nx * viewport.width * .42, -pointerStore.ny * viewport.height * .4, 2.8);
@@ -46,8 +53,8 @@ function Network() {
     }
   });
   return <group ref={group}>
-    <lineSegments geometry={links}><lineBasicMaterial color={config.palette.cyan} transparent opacity={.1} blending={AdditiveBlending} /></lineSegments>
-    <points geometry={dots}><pointsMaterial color={config.palette.cyan} size={.027} transparent opacity={.65} sizeAttenuation blending={AdditiveBlending} /></points>
+    <lineSegments geometry={links}><lineBasicMaterial color={config.palette.cyan} transparent opacity={config.scene.lineOpacity} blending={AdditiveBlending} /></lineSegments>
+    <points geometry={dots}><pointsMaterial color={config.palette.cyan} size={config.scene.nodeSize} transparent opacity={config.scene.nodeOpacity} sizeAttenuation blending={AdditiveBlending} /></points>
     <mesh>
       <icosahedronGeometry args={[1.05, config.scene.sphereSegments > 32 ? 4 : 3]} />
       <meshStandardMaterial color="#101d2b" emissive="#143b55" emissiveIntensity={.65} roughness={.24} metalness={.7} wireframe />
@@ -72,7 +79,7 @@ function ParticleField() {
     const g = new BufferGeometry(); g.setAttribute('position',new BufferAttribute(positions,3)); return g;
   }, []);
   useFrame(({clock}) => { if(points.current) { points.current.rotation.y=clock.elapsedTime*.012; points.current.rotation.x=pointerStore.ny*.025; } });
-  return <points ref={points} geometry={geometry}><pointsMaterial color={config.palette.white} size={.012} transparent opacity={.48} sizeAttenuation blending={AdditiveBlending} /></points>;
+  return <points ref={points} geometry={geometry}><pointsMaterial color={config.palette.white} size={.012} transparent opacity={config.scene.particleOpacity} sizeAttenuation blending={AdditiveBlending} /></points>;
 }
 
 function SceneContent({ lowPower }: { lowPower: boolean }) {
@@ -89,6 +96,7 @@ export const NeuralLandscape: React.FC = () => {
   const reduced = usePrefersReducedMotion();
   const [enabled,setEnabled]=useState(false);
   const [quality,setQuality]=useState(.5);
+  const [pageVisible,setPageVisible]=useState(!document.hidden);
   const lowPowerDevice = window.matchMedia('(max-width: 700px), (prefers-reduced-motion: reduce)').matches || (navigator.hardwareConcurrency || 8) <= 4;
   const lowPower = lowPowerDevice || quality < config.scene.qualityFloor;
   const dpr = lowPower ? 1 : Math.min(config.scene.dprMax, 1 + quality * (config.scene.dprMax - 1));
@@ -97,6 +105,11 @@ export const NeuralLandscape: React.FC = () => {
     const timer=window.setTimeout(()=>setEnabled(true),180);
     return ()=>window.clearTimeout(timer);
   },[reduced]);
+  useEffect(()=>{
+    const updateVisibility=()=>setPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange',updateVisibility);
+    return ()=>document.removeEventListener('visibilitychange',updateVisibility);
+  },[]);
   if(!enabled || reduced) return null;
-  return <div className="neural-landscape" aria-hidden="true"><Canvas camera={{position:[0,0,11],fov:47}} dpr={dpr} performance={{min:config.scene.fpsFloor/60,max:config.scene.fpsCeiling/60,debounce:1600}} gl={{alpha:true,antialias:false,powerPreference:'low-power'}}><Suspense fallback={null}><PerformanceMonitor flipflops={3} onChange={({factor})=>setQuality(factor)} onFallback={()=>setQuality(0)}><SceneContent lowPower={lowPower} /></PerformanceMonitor></Suspense></Canvas></div>;
+  return <div className="neural-landscape" aria-hidden="true"><Canvas frameloop={pageVisible ? 'always' : 'never'} camera={{position:[0,0,11],fov:47}} dpr={dpr} performance={{min:config.scene.fpsFloor/60,max:config.scene.fpsCeiling/60,debounce:1600}} gl={{alpha:true,antialias:false,powerPreference:'low-power'}}><Suspense fallback={null}><PerformanceMonitor flipflops={3} onChange={({factor})=>setQuality(factor)} onFallback={()=>setQuality(0)}><SceneContent lowPower={lowPower} /></PerformanceMonitor></Suspense></Canvas></div>;
 };

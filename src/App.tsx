@@ -14,6 +14,8 @@ import { experienceConfig } from './config/experienceConfig';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { pointerStore } from './lib/pointerStore';
+import { ExperienceIntro } from './components/common/ExperienceIntro';
 
 const NeuralLandscape = lazy(() => import('./components/Background/NeuralLandscape').then((module) => ({ default: module.NeuralLandscape })));
 gsap.registerPlugin(ScrollTrigger);
@@ -26,7 +28,11 @@ const ScrollEngine: React.FC<{ reduced: boolean }> = ({ reduced }) => {
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
-    return () => { gsap.ticker.remove(tick); lenis.destroy(); };
+    const context=gsap.context(()=>{
+      const timeline=gsap.timeline({scrollTrigger:{trigger:'#home',start:'top top',end:'bottom top',scrub:.8,onUpdate:(self)=>{pointerStore.heroProgress=self.progress;}}});
+      timeline.to('.hero-copy',{y:experienceConfig.motion.heroExitY,opacity:experienceConfig.motion.heroExitOpacity,ease:'none'},0);
+    });
+    return () => { gsap.ticker.remove(tick); lenis.destroy(); context.revert(); pointerStore.heroProgress=0; };
   }, [reduced]);
   return null;
 };
@@ -50,6 +56,7 @@ export const App: React.FC = () => {
 
     targets.forEach((target, index) => {
       target.classList.add('depth-enter');
+      target.style.setProperty('--reveal-duration', `${experienceConfig.motion.revealDuration}ms`);
       target.style.setProperty('--reveal-delay', `${Math.min(index % 4, 3) * 70}ms`);
       observer.observe(target);
     });
@@ -63,6 +70,7 @@ export const App: React.FC = () => {
       <Suspense fallback={null}><NeuralLandscape /></Suspense>
       <CustomCursor />
       <ElevationHud />
+      <ExperienceIntro />
       <ScrollEngine reduced={prefersReducedMotion} />
 
       {/* Sticky Editorial Navigation */}
