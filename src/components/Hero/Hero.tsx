@@ -57,7 +57,7 @@ export const Hero: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <button type="button" onClick={() => scrollTo('projects')} className="hero-primary group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-md font-medium text-xs font-mono uppercase tracking-widest">
+            <button type="button" onClick={() => scrollTo('projects')} data-magnetic="true" className="hero-primary group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-md font-medium text-xs font-mono uppercase tracking-widest">
               <span>Explore projects</span><ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
             <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-md bg-white/[0.035] hover:bg-white/[0.07] text-[#d7d9dc] border border-white/[0.1] hover:border-[#2dd4bf]/30 text-xs font-mono uppercase tracking-widest transition-all">
@@ -67,7 +67,7 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
-        <div ref={sceneRef} className="hero-art relative mx-auto w-full max-w-[490px] aspect-square" aria-hidden="true">
+        <div ref={sceneRef} data-cursor="EXPLORE" className="hero-art relative mx-auto w-full max-w-[490px] aspect-square" aria-hidden="true">
           <div className="hero-orbit hero-orbit-outer" />
           <div className="hero-orbit hero-orbit-inner" />
           <div className="hero-orbit hero-orbit-core"><span /></div>

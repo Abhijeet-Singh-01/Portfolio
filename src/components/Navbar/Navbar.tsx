@@ -93,6 +93,7 @@ export const Navbar: React.FC = () => {
               return (
                 <a
                   key={item.name}
+                  data-magnetic="true"
                   href={item.href}
                   onClick={(e) => {
                     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { AtmosphericBackground } from './components/Background/AtmosphericBackground';
 import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
@@ -10,6 +10,26 @@ import { Footer } from './components/Footer/Footer';
 import { CustomCursor } from './components/common/CustomCursor';
 import { ElevationHud } from './components/common/ElevationHud';
 import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
+import { experienceConfig } from './config/experienceConfig';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+const NeuralLandscape = lazy(() => import('./components/Background/NeuralLandscape').then((module) => ({ default: module.NeuralLandscape })));
+gsap.registerPlugin(ScrollTrigger);
+
+const ScrollEngine: React.FC<{ reduced: boolean }> = ({ reduced }) => {
+  useEffect(() => {
+    if (reduced) return;
+    const lenis = new Lenis({ duration: experienceConfig.motion.scrollDuration, smoothWheel: true, touchMultiplier: 1.2 });
+    const tick = (time: number) => lenis.raf(time * 1000);
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+    return () => { gsap.ticker.remove(tick); lenis.destroy(); };
+  }, [reduced]);
+  return null;
+};
 
 export const App: React.FC = () => {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -40,8 +60,10 @@ export const App: React.FC = () => {
     <div className="relative min-h-screen bg-[var(--ascent-background)] text-[var(--ascent-text)] selection:bg-[#70e5f2]/25 selection:text-white">
       {/* Cinematic Atmospheric Glow & Particle Canvas */}
       <AtmosphericBackground />
+      <Suspense fallback={null}><NeuralLandscape /></Suspense>
       <CustomCursor />
       <ElevationHud />
+      <ScrollEngine reduced={prefersReducedMotion} />
 
       {/* Sticky Editorial Navigation */}
       <Navbar />
