@@ -273,9 +273,17 @@
 .custom-cursor-dot,.custom-cursor-ring {position:fixed;left:0;top:0;z-index:1000;pointer-events:none;border-radius:50%;opacity:0;will-change:transform;transition:opacity .2s ease, width .2s ease, height .2s ease, border-color .2s ease, background .2s ease}
 .custom-cursor-dot {width:5px;height:5px;margin:-2.5px 0 0 -2.5px;background:#b8eee4;box-shadow:0 0 12px rgba(94,234,212,.65)}
 .custom-cursor-ring {width:30px;height:30px;margin:-15px 0 0 -15px;border:1px solid rgba(184,238,228,.55);background:rgba(94,234,212,.025);transition:opacity .2s ease,width .2s ease,height .2s ease,border-color .2s ease,background .2s ease,transform .12s ease-out}
+.custom-cursor-ring {width:var(--cursor-ring-size,30px);height:var(--cursor-ring-size,30px);margin:calc(var(--cursor-ring-size,30px) / -2) 0 0 calc(var(--cursor-ring-size,30px) / -2)}
+.custom-cursor-ring::after {content:attr(data-label);position:absolute;inset:0;display:grid;place-items:center;color:#e8fbff;font:8px var(--font-mono);letter-spacing:.08em;text-shadow:0 0 8px #70e5f2}
 .has-custom-cursor .custom-cursor-dot,.has-custom-cursor .custom-cursor-ring {opacity:1}
 .has-custom-cursor,.has-custom-cursor * {cursor:none!important}
-.custom-cursor-ring.cursor-hover {width:42px;height:42px;margin:-21px 0 0 -21px;border-color:rgba(184,238,228,.9);background:rgba(94,234,212,.09)}
+.custom-cursor-ring.cursor-hover {width:var(--cursor-hover-size,46px);height:var(--cursor-hover-size,46px);margin:calc(var(--cursor-hover-size,46px) / -2) 0 0 calc(var(--cursor-hover-size,46px) / -2);border-color:rgba(184,238,228,.9);background:rgba(94,234,212,.09)}
+.custom-cursor-ring.cursor-pressed {scale:.76;border-color:#a58cff;background:rgba(165,140,255,.18)}
+.cursor-trail {position:fixed;inset:0;z-index:998;pointer-events:none}
+.cursor-spotlight {position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(440px circle at var(--pointer-x,-1000px) var(--pointer-y,-1000px),rgba(66,190,224,.045),transparent 72%);transition:background .08s linear}
+[data-magnetic="true"] {translate:var(--magnetic-x,0px) var(--magnetic-y,0px);transition:translate .16s cubic-bezier(.2,.7,.2,1)}
+.neural-landscape {position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.46;mask-image:linear-gradient(to bottom,black 0%,rgba(0,0,0,.8) 65%,transparent 100%)}
+.neural-landscape canvas {display:block;width:100%;height:100%}
 .custom-cursor-dot.cursor-hidden,.custom-cursor-ring.cursor-hidden {opacity:0}
 :focus-visible {outline:2px solid #8fddd0;outline-offset:4px}
 
@@ -301,6 +309,7 @@
   .ai-flow-link {display:none}
   .ai-flow-node {min-height:88px;padding:12px}
   .custom-cursor-dot,.custom-cursor-ring {display:none}
+  .neural-landscape {opacity:.28}
 }
 @media (max-width: 767px) {
   .hero-grid {grid-template-columns:minmax(0,1fr)}
@@ -326,4 +335,5 @@
   .depth-enter {opacity:1;translate:0 0;filter:none;transition:none}
   .ai-flow-link i {animation:none}
   .custom-cursor-dot,.custom-cursor-ring {display:none}
+  .cursor-trail {display:none}
 }
