@@ -10,7 +10,7 @@ export const About: React.FC = () => {
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]" />
           <span className="text-xs font-mono uppercase tracking-widest text-[#d4af37]">
-            Background & Focus
+            02 / Trail · Background & Focus
           </span>
         </div>
 
@@ -27,7 +27,7 @@ export const About: React.FC = () => {
         {/* Left Column: Bio & Core Philosophy (7 cols) */}
         <div className="lg:col-span-7 space-y-8">
           {/* Main Editorial Bio Card */}
-          <div className="p-8 sm:p-10 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
+          <div className="about-panel p-8 sm:p-10 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
             <h3 className="text-2xl sm:text-3xl font-serif text-[#f4f1ea] mb-4">
               Building serious software with curious precision.
             </h3>
@@ -83,7 +83,7 @@ export const About: React.FC = () => {
         {/* Right Column: Identity Monogram & Education Timeline (5 cols) */}
         <div className="lg:col-span-5 space-y-8">
           {/* Engineering Monogram / Profile Seal */}
-          <div className="p-8 rounded-xl bg-gradient-to-br from-[#12151e]/80 to-[#0b0d13]/80 border border-white/[0.08] backdrop-blur-md relative overflow-hidden">
+          <div className="about-panel p-8 rounded-xl bg-gradient-to-br from-[#12151e]/80 to-[#0b0d13]/80 border border-white/[0.08] backdrop-blur-md relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#d4af37]/10 rounded-full blur-2xl pointer-events-none" />
 
             <div className="flex items-center gap-4 mb-6">
@@ -119,7 +119,7 @@ export const About: React.FC = () => {
           </div>
 
           {/* Vertical Education Timeline */}
-          <div className="p-8 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
+          <div className="about-panel p-8 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
             <div className="flex items-center gap-2 mb-6 pb-3 border-b border-white/[0.06]">
               <GraduationCap className="w-4 h-4 text-[#d4af37]" />
               <h4 className="text-xs font-mono uppercase tracking-widest text-[#f4f1ea] font-medium">

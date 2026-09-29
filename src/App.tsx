@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AtmosphericBackground } from './components/Background/AtmosphericBackground';
 import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
@@ -7,12 +7,41 @@ import { Skills } from './components/Skills/Skills';
 import { About } from './components/About/About';
 import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
+import { CustomCursor } from './components/common/CustomCursor';
+import { ElevationHud } from './components/common/ElevationHud';
+import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 
 export const App: React.FC = () => {
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    if (!('IntersectionObserver' in window) || prefersReducedMotion) return;
+    const targets = document.querySelectorAll<HTMLElement>(
+      '#projects .project-card, #skills .skill-category, #about .about-panel, #contact .contact-panel',
+    );
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('depth-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+
+    targets.forEach((target, index) => {
+      target.classList.add('depth-enter');
+      target.style.setProperty('--reveal-delay', `${Math.min(index % 4, 3) * 70}ms`);
+      observer.observe(target);
+    });
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
   return (
-    <div className="relative min-h-screen bg-[#08090b] text-[#f4f1ea] selection:bg-[#d4af37]/25 selection:text-[#fbf8f2]">
+    <div className="relative min-h-screen bg-[var(--ascent-background)] text-[var(--ascent-text)] selection:bg-[#70e5f2]/25 selection:text-white">
       {/* Cinematic Atmospheric Glow & Particle Canvas */}
       <AtmosphericBackground />
+      <CustomCursor />
+      <ElevationHud />
 
       {/* Sticky Editorial Navigation */}
       <Navbar />
@@ -20,9 +49,9 @@ export const App: React.FC = () => {
       {/* Main Content Sections */}
       <main className="relative z-10">
         <Hero />
-        <Projects />
-        <Skills />
         <About />
+        <Skills />
+        <Projects />
         <Contact />
       </main>
 

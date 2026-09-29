@@ -22,7 +22,7 @@ export const Projects: React.FC = () => {
           <div className="flex items-center gap-2 mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]" />
             <span className="text-xs font-mono uppercase tracking-widest text-[#d4af37]">
-              Engineered Works
+              04 / Peak Challenges · Engineered Works
             </span>
           </div>
 

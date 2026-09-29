@@ -41,7 +41,7 @@ export const Contact: React.FC = () => {
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]" />
           <span className="text-xs font-mono uppercase tracking-widest text-[#d4af37]">
-            Get In Touch
+            05 / Summit · Get In Touch
           </span>
         </div>
 
@@ -59,7 +59,7 @@ export const Contact: React.FC = () => {
         {/* Left Column: Direct Links & Quick Copy (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
           {/* Quick Copy Email Card */}
-          <div className="p-6 sm:p-8 rounded-xl bg-[#0c0e14]/70 border border-[#d4af37]/20 backdrop-blur-md relative overflow-hidden">
+          <div className="contact-panel p-6 sm:p-8 rounded-xl bg-[#0c0e14]/70 border border-[#d4af37]/20 backdrop-blur-md relative overflow-hidden">
             <div className="absolute top-0 right-0 w-28 h-28 bg-[#d4af37]/10 rounded-full blur-xl pointer-events-none" />
 
             <span className="text-xs font-mono uppercase tracking-widest text-[#8e95a2] block mb-2">
@@ -129,7 +129,7 @@ export const Contact: React.FC = () => {
 
         {/* Right Column: Interactive Direct Message Form (7 cols) */}
         <div className="lg:col-span-7">
-          <div className="p-8 sm:p-10 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
+          <div className="contact-panel p-8 sm:p-10 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
             <h3 className="text-xl sm:text-2xl font-serif text-[#f4f1ea] mb-2">
               Send a Direct Message
             </h3>

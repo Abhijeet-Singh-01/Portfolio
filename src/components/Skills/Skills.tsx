@@ -21,7 +21,7 @@ export const Skills: React.FC = () => {
         <div className="flex items-center gap-2 mb-3">
           <span className="w-1.5 h-1.5 rounded-full bg-[#2dd4bf]" />
           <span className="text-xs font-mono uppercase tracking-widest text-[#2dd4bf]">
-            Technical Arsenal
+            03 / Ridge · Technical Arsenal
           </span>
         </div>
 
@@ -34,6 +34,33 @@ export const Skills: React.FC = () => {
         </p>
       </div>
 
+      <div className="ai-flow-panel mb-10 p-5 sm:p-7 rounded-xl border border-[#2dd4bf]/15 bg-[#0b1015]/75 backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-[.2em] text-[#2dd4bf]">Applied AI / System view</span>
+            <h3 className="mt-1 text-xl sm:text-2xl font-serif text-[#f4f1ea]">From signal to grounded output</h3>
+          </div>
+          <p className="max-w-md text-xs leading-relaxed text-[#8e95a2]">A simplified view of the retrieval and evidence flow described in my AI projects.</p>
+        </div>
+        <div className="ai-flow" aria-label="AI workflow: input, retrieval, grounding, and useful output">
+          {[
+            { step: '01', name: 'Input', detail: 'Question or event' },
+            { step: '02', name: 'Retrieve', detail: 'Relevant context' },
+            { step: '03', name: 'Ground', detail: 'Check evidence' },
+            { step: '04', name: 'Respond', detail: 'Useful output' },
+          ].map((item, index) => (
+            <React.Fragment key={item.step}>
+              <div className="ai-flow-node">
+                <span className="ai-flow-index">{item.step}</span>
+                <strong>{item.name}</strong>
+                <small>{item.detail}</small>
+              </div>
+              {index < 3 && <span className="ai-flow-link" aria-hidden="true"><i /></span>}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
       {/* Categories Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {skillsCategories.map((category, idx) => {
@@ -43,7 +70,7 @@ export const Skills: React.FC = () => {
           return (
             <div
               key={category.id}
-              className="p-6 rounded-xl bg-[#0b0d13]/60 border border-white/[0.07] backdrop-blur-md flex flex-col justify-between"
+              className="skill-category p-6 rounded-xl bg-[#0b0d13]/60 border border-white/[0.07] backdrop-blur-md flex flex-col justify-between"
             >
               <div>
                 {/* Category Header */}

@@ -22,10 +22,29 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
     ? 'text-[#edd894] bg-[#d4af37]/10 border-[#d4af37]/25'
     : 'text-[#2dd4bf] bg-[#2dd4bf]/10 border-[#2dd4bf]/25';
 
+  const handlePointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+    event.currentTarget.style.setProperty('--tilt-x', `${(0.5 - y) * 2.2}deg`);
+    event.currentTarget.style.setProperty('--tilt-y', `${(x - 0.5) * 2.2}deg`);
+    event.currentTarget.style.setProperty('--light-x', `${x * 100}%`);
+    event.currentTarget.style.setProperty('--light-y', `${y * 100}%`);
+  };
+
+  const resetPointer = (event: React.PointerEvent<HTMLElement>) => {
+    event.currentTarget.style.setProperty('--tilt-x', '0deg');
+    event.currentTarget.style.setProperty('--tilt-y', '0deg');
+  };
+
   return (
     <article
-      className={`group relative rounded-xl border border-white/[0.08] bg-[#0c0e14]/70 backdrop-blur-md p-6 sm:p-8 lg:p-10 transition-all duration-300 ${accentBorderHover}`}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetPointer}
+      className={`project-card group relative rounded-xl border border-white/[0.08] bg-[#0c0e14]/70 backdrop-blur-md p-6 sm:p-8 lg:p-10 transition-all duration-300 ${accentBorderHover}`}
     >
+      <span className="project-card-light" aria-hidden="true" />
       {/* Subtle corner index label */}
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-3">

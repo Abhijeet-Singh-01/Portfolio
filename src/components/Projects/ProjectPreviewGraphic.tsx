@@ -32,7 +32,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444] animate-pulse" />
             <span className="text-[#cfcac0] text-[11px] font-medium tracking-wide">
-              INCIDENT TRACE #INC-8921
+              INCIDENT TRACE / DEMO
             </span>
           </div>
           <span className="text-[10px] text-[#edd894] px-2 py-0.5 rounded bg-[#d4af37]/10 border border-[#d4af37]/25">
@@ -55,7 +55,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
               <Search className="w-3.5 h-3.5 text-[#2dd4bf]" />
               <span className="text-[#f4f1ea] text-[11px]">Dense Vector Similarity Search</span>
             </div>
-            <span className="text-[10px] text-[#2dd4bf]">0.94 Cosine Rank</span>
+            <span className="text-[10px] text-[#2dd4bf]">Vector retrieval</span>
           </div>
 
           <div className="p-2.5 rounded bg-[#10131b] border border-[#d4af37]/20 flex items-center justify-between bg-gradient-to-r from-[#d4af37]/5 to-transparent">
@@ -63,7 +63,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
               <CheckCircle2 className="w-3.5 h-3.5 text-[#edd894]" />
               <span className="text-[#edd894] text-[11px] font-medium">Root Cause Grounded</span>
             </div>
-            <span className="text-[10px] text-[#cfcac0]">Zero Hallucination</span>
+            <span className="text-[10px] text-[#cfcac0]">Evidence grounded</span>
           </div>
         </div>
 
@@ -99,7 +99,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
         <div className="my-4 py-2 px-3 rounded bg-[#10131b] border border-white/[0.05]">
           <div className="flex justify-between text-[10px] text-[#8e95a2] mb-3">
             <span>Daily Irradiance vs Grid Export</span>
-            <span className="text-[#2dd4bf]">+42.8 kWh Peak</span>
+            <span className="text-[#2dd4bf]">Yield estimate</span>
           </div>
           {/* Simulated mini chart */}
           <div className="h-16 flex items-end gap-2 pt-2">
@@ -118,11 +118,11 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/[0.06]">
           <div className="flex items-center gap-2 text-[10px] text-[#cfcac0]">
             <Zap className="w-3 h-3 text-[#edd894]" />
-            <span>Cap: 8.5 kWp Model</span>
+            <span>Capacity modeling</span>
           </div>
           <div className="flex items-center gap-2 text-[10px] text-[#cfcac0]">
             <TrendingUp className="w-3 h-3 text-[#2dd4bf]" />
-            <span>ROI: 3.4 Yr Breakeven</span>
+            <span>Savings analysis</span>
           </div>
         </div>
       </div>
@@ -150,7 +150,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
               <Shield className="w-3.5 h-3.5 text-[#edd894]" />
               <span className="text-[#f4f1ea] text-[11px]">JWT RBAC Security Middleware</span>
             </div>
-            <span className="text-[10px] text-[#2dd4bf]">Admin / Editor / Reader</span>
+            <span className="text-[10px] text-[#2dd4bf]">Role-based access</span>
           </div>
 
           <div className="p-2.5 rounded bg-[#10131b] border border-white/[0.05] flex items-center justify-between">
@@ -164,7 +164,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
 
         <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-[#8e95a2]">
           <span>REST API + Express + MongoDB</span>
-          <span className="text-[#edd894]">Zero Layout Shift</span>
+          <span className="text-[#edd894]">Cached content delivery</span>
         </div>
       </div>
     );
