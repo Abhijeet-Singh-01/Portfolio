@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
+import { experienceConfig } from '../../config/experienceConfig';
 
 interface Particle {
   x: number;
@@ -37,7 +38,7 @@ export const AtmosphericBackground: React.FC = () => {
       'rgba(200, 205, 215,', // silver
     ];
 
-    const particleCount = Math.min(Math.floor((width * height) / 32000), 55);
+    const particleCount = Math.min(Math.floor((width * height) / 32000), experienceConfig.atmosphere.stars);
     const particles: Particle[] = [];
 
     for (let i = 0; i < particleCount; i++) {

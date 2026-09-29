@@ -8,4 +8,21 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'webgl-vendor',
+              test: /node_modules[\\/](three|@react-three|postprocessing|react-reconciler)[\\/]/,
+              minSize: 20_000,
+              maxSize: 280_000,
+              priority: 20,
+            },
+          ],
+        },
+      },
+    },
+  },
 })
