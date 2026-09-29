@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { PerformanceMonitor } from '@react-three/drei';
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import { AdditiveBlending, BufferAttribute, BufferGeometry, Group, PointLight, Points, Vector3 } from 'three';
 import { experienceConfig as config } from '../../config/experienceConfig';
@@ -87,12 +88,15 @@ function SceneContent({ lowPower }: { lowPower: boolean }) {
 export const NeuralLandscape: React.FC = () => {
   const reduced = usePrefersReducedMotion();
   const [enabled,setEnabled]=useState(false);
-  const lowPower = window.matchMedia('(max-width: 700px), (prefers-reduced-motion: reduce)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+  const [quality,setQuality]=useState(.5);
+  const lowPowerDevice = window.matchMedia('(max-width: 700px), (prefers-reduced-motion: reduce)').matches || (navigator.hardwareConcurrency || 8) <= 4;
+  const lowPower = lowPowerDevice || quality < config.scene.qualityFloor;
+  const dpr = lowPower ? 1 : Math.min(config.scene.dprMax, 1 + quality * (config.scene.dprMax - 1));
   useEffect(()=>{
     if (reduced || !('WebGLRenderingContext' in window)) return;
     const timer=window.setTimeout(()=>setEnabled(true),180);
     return ()=>window.clearTimeout(timer);
   },[reduced]);
   if(!enabled || reduced) return null;
-  return <div className="neural-landscape" aria-hidden="true"><Canvas camera={{position:[0,0,11],fov:47}} dpr={lowPower ? 1 : [1,config.scene.dprMax]} gl={{alpha:true,antialias:false,powerPreference:'low-power'}}><Suspense fallback={null}><SceneContent lowPower={lowPower} /></Suspense></Canvas></div>;
+  return <div className="neural-landscape" aria-hidden="true"><Canvas camera={{position:[0,0,11],fov:47}} dpr={dpr} performance={{min:config.scene.fpsFloor/60,max:config.scene.fpsCeiling/60,debounce:1600}} gl={{alpha:true,antialias:false,powerPreference:'low-power'}}><Suspense fallback={null}><PerformanceMonitor flipflops={3} onChange={({factor})=>setQuality(factor)} onFallback={()=>setQuality(0)}><SceneContent lowPower={lowPower} /></PerformanceMonitor></Suspense></Canvas></div>;
 };
