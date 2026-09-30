@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Moon, Sun, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 import { applyAuroraTheme, type AuroraTheme } from '../../lib/theme';
-import { scrollToRoom } from '../../lib/experienceStore';
+import { scrollToRoom, experienceState } from '../../lib/experienceStore';
 import { sound } from '../../lib/sound';
 
 interface NavDestination {

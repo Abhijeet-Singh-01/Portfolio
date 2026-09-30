@@ -6,7 +6,6 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import Lenis from 'lenis';
 import { visualConfig as vConfig } from '../../config/visualConfig';
-import { experienceConfig as config } from '../../config/experienceConfig';
 import { experienceState, setSmoothScroll } from '../../lib/experienceStore';
 import { projectsData } from '../../data/projects';
 import { skillsCategories } from '../../data/skills';
@@ -178,56 +177,6 @@ function StorytellingEnvironment() {
   const tempFill = useMemo(() => new THREE.Color(), []);
   const tempFog = useMemo(() => new THREE.Color(), []);
 
-  const p1Colors = useMemo(
-    () => ({
-      ambient: new THREE.Color(vConfig.lighting.project1.ambient),
-      key: new THREE.Color(vConfig.lighting.project1.key),
-      fill: new THREE.Color(vConfig.lighting.project1.fill),
-      fog: new THREE.Color(vConfig.lighting.project1.fog),
-    }),
-    []
-  );
-
-  const p2Colors = useMemo(
-    () => ({
-      ambient: new THREE.Color(vConfig.lighting.project2.ambient),
-      key: new THREE.Color(vConfig.lighting.project2.key),
-      fill: new THREE.Color(vConfig.lighting.project2.fill),
-      fog: new THREE.Color(vConfig.lighting.project2.fog),
-    }),
-    []
-  );
-
-  const p3Colors = useMemo(
-    () => ({
-      ambient: new THREE.Color(vConfig.lighting.project3.ambient),
-      key: new THREE.Color(vConfig.lighting.project3.key),
-      fill: new THREE.Color(vConfig.lighting.project3.fill),
-      fog: new THREE.Color(vConfig.lighting.project3.fog),
-    }),
-    []
-  );
-
-  const p4Colors = useMemo(
-    () => ({
-      ambient: new THREE.Color(vConfig.lighting.project4.ambient),
-      key: new THREE.Color(vConfig.lighting.project4.key),
-      fill: new THREE.Color(vConfig.lighting.project4.fill),
-      fog: new THREE.Color(vConfig.lighting.project4.fog),
-    }),
-    []
-  );
-
-  const defaultColors = useMemo(
-    () => ({
-      ambient: new THREE.Color(vConfig.lighting.default.ambient),
-      key: new THREE.Color(vConfig.lighting.default.key),
-      fill: new THREE.Color(vConfig.lighting.default.fill),
-      fog: new THREE.Color(vConfig.lighting.default.fog),
-    }),
-    []
-  );
-
   useFrame((_, delta) => {
     const safeDelta = Math.min(delta, 0.05);
     const timeline = getTimelineState(experienceState.scrollProgress);
@@ -359,8 +308,6 @@ function EnvironmentalMegastructures() {
   const ringRef = useRef<THREE.Group>(null);
   const aquaColor = useAuroraColor('--accent-aqua');
   const violetColor = useAuroraColor('--accent-violet');
-  const magentaColor = useAuroraColor('--accent-magenta');
-  const orangeColor = useAuroraColor('--accent-tangerine');
 
   const { ringRadius, ringZ, gridWidth, gridLength, gridY } = vConfig.megastructures;
 
@@ -453,7 +400,6 @@ function LivingArchitecturalSpine() {
   const aquaColor = useAuroraColor('--accent-aqua');
   const limeColor = useAuroraColor('--accent-lime');
   const indigoColor = useAuroraColor('--accent-indigo');
-  const magentaColor = useAuroraColor('--accent-magenta');
 
   const { nodesPerStrand, radius, secondaryRadius, height, strutsCount } = vConfig.backbone;
   const totalNodes = nodesPerStrand * 2;
@@ -1032,12 +978,12 @@ function PhysicalArtifactSingle({
 }: {
   project: (typeof projectsData)[0];
   index: number;
-  coord: (typeof vConfig.projects.coords)[0];
+  coord: (typeof vConfig.projects.coords)[number];
   texture: THREE.CanvasTexture;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const visualMountRef = useRef<THREE.Group>(null);
-  const { slabWidth, slabHeight, slabDepth, inspectScale } = vConfig.projects;
+  const { slabWidth, slabHeight, slabDepth } = vConfig.projects;
 
   const aquaColor = useAuroraColor('--accent-aqua');
   const surfaceColor = useAuroraColor('--surface');
@@ -1160,13 +1106,13 @@ function HeroPortraitRing() {
     // React to drag rotation stored in experienceState
     ringRef.current.rotation.y = THREE.MathUtils.damp(
       ringRef.current.rotation.y,
-      experienceState.heroRotationY,
+      experienceState.portraitRotationY,
       4,
       safeDelta
     );
     ringRef.current.rotation.x = THREE.MathUtils.damp(
       ringRef.current.rotation.x,
-      experienceState.heroRotationX,
+      experienceState.portraitRotationX,
       4,
       safeDelta
     );
@@ -1317,6 +1263,10 @@ function CalmSceneVisuals() {
     []
   );
   const lineGeometry = useMemo(() => new THREE.BufferGeometry().setFromPoints(linePoints), [linePoints]);
+  const aboutLine = useMemo(() => {
+    const mat = new THREE.LineBasicMaterial({ color: aqua, transparent: true, opacity: 0.55 });
+    return new THREE.Line(lineGeometry, mat);
+  }, [lineGeometry, aqua]);
 
   useFrame((_, delta) => {
     const safeDelta = Math.min(delta, 0.05);
@@ -1343,9 +1293,7 @@ function CalmSceneVisuals() {
   return (
     <>
       <group ref={aboutRef}>
-        <line geometry={lineGeometry}>
-          <lineBasicMaterial color={aqua} transparent opacity={0.55} />
-        </line>
+        <primitive object={aboutLine} />
         {linePoints.map((pt, i) => (
           <mesh key={i} position={[pt.x, pt.y, 0]}>
             <sphereGeometry args={[0.09, 12, 12]} />

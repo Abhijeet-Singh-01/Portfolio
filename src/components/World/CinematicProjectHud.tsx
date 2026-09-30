@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { projectsData } from '../../data/projects';
-import { BEATS, getTimelineState } from '../../config/sceneTimeline';
+import { getTimelineState } from '../../config/sceneTimeline';
 import { experienceState } from '../../lib/experienceStore';
-import { ExternalLink, CheckCircle, Cpu, X, Sparkles } from 'lucide-react';
+import { ExternalLink, CheckCircle, Cpu, X } from 'lucide-react';
 import { GithubIcon } from '../common/BrandIcons';
 import { gsap } from 'gsap';
 

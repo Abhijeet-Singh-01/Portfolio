@@ -11,6 +11,7 @@ import { ElevationHud } from './components/common/ElevationHud';
 import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import { IntroLoader, ExperienceCursor } from './components/World/ExperienceOverlays';
 import { CinematicProjectHud } from './components/World/CinematicProjectHud';
+import { experienceConfig } from './config/experienceConfig';
 
 const ExperienceCanvas = lazy(() => import('./components/World/ExperienceCanvas'));
 
