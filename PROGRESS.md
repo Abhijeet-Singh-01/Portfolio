@@ -22,9 +22,10 @@
 ## Completed phases
 - Phase 0: Inspect and plan (Completed)
 - Phase 1: Foundation (Completed - tokens, fonts, config, data files, SEO, resume download)
+- Phase 2: World, camera, scroll (Completed - R3F canvas sync with Lenis + GSAP, damped camera rig, persistent progress line, 01/05 HUD scene counter, adaptive quality monitor)
 
 ## Current phase
-- Phase 2: World, camera, scroll
+- Phase 3: Loader and hero
 - GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden until provided; SolisIQ source URL is provided).
 - Any live demo URLs (buttons hidden until provided).
 - `profile-400.webp` (currently using optimized `profile.webp` 800x800).
