@@ -50,8 +50,33 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
     experienceState.detailZoom = 0;
   }, [index]);
 
+  const articleRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = articleRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            experienceState.activeProject = index;
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: '-12% 0px -12% 0px',
+      }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [index]);
+
   return (
     <article
+      ref={articleRef}
       onPointerMove={handlePointerMove}
       onPointerLeave={resetPointer}
       onPointerEnter={() => { experienceState.activeProject = index; }}

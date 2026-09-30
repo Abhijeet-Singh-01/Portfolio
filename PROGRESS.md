@@ -31,6 +31,14 @@
 - Phase 7: Cursor and micro-interactions (Completed - fine-pointer custom cursor with VIEW / DRAG states and ripple, magnetic pills, theme toggle animation, Web Audio synthesizer toggle for optional UI audio [default OFF])
 - Phase 8: Performance and fallbacks (Completed - capped DPR 1.5/1.0, visibility-paused RAF loop, lazy code-split ExperienceCanvas, instant 2D Lite Mode fallback toggle in navigation & auto-detection for weak devices or prefers-reduced-motion)
 - Phase 9: Master Directive 3D Backbone & QA (Completed - dual-helix parametric central spine with 96 instanced crystal nodes, connecting ribs, traveling energy pulses, umbilical tendrils to 4 procedural 3D project visuals, depth parallax, 0 type errors via `tsc --noEmit`, 100% verified facts from resume.pdf)
+- Phase 10: Second-Pass Master Directive — Award-Level 3D Experience (Completed):
+  - Living Architectural Spine & Data Conduit: 112 instanced crystal nodes, secondary spiraling energy cables, traveling inter-project energy surges.
+  - 8-Layer Z-Depth Hierarchy: Volumetric project-tinted atmosphere, dual-tier cosmic dust + conduit stream, distant megastructures (R=26 ring & technical grid), living spine, 4 bespoke 3D project worlds, physical glass slabs, colossal 3D spatial numbers (01-04 at Z=-34 to -76), and reactive cursor point light.
+  - 3D Composition & Occlusion: Non-facing project orientations (-16°, +22°, -24°, +18°), P03 partially occluded behind spine until approach, dynamic hero inspection expansion.
+  - 4 Bespoke Procedural Worlds: AI Incident telemetry neural cluster with anomaly wave; SolisIQ solar core with 3 orbital rings & PV collectors; Instanews 3-tier staggered data planes & RBAC auth node; ZeroHour precision chronograph with 60 tick marks, interlocking gears & sweeping second hand.
+  - Dynamic Camera & Lens: Velocity-based dynamic FOV (50 rest -> 58 travel -> 42 inspection), smooth GSAP damping.
+  - Storytelling Lighting: Smooth per-project RGB lighting interpolation across active projects.
+  - IntersectionObserver auto-activation for scroll-driven inspection and lighting transitions.
 
 ## Needs owner input
 - GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden cleanly until provided; SolisIQ source URL is active).
