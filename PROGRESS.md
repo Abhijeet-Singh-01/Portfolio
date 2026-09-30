@@ -26,9 +26,10 @@
 - Phase 3: Loader and hero (Completed - skippable vertical particle stream loader with lime-cyan ring logo, Active Theory stacked blocky display, 360° inertia draggable glass ring with photo card, right mono objective, bottom-left explore list, AS mark, MENU --- CONTACT glass pill & overlay)
 - Phase 4: Projects (Work) (Completed - 4 giant glass slabs in depth, big gradient numbers, blocky uppercase titles, telemetry/energy/news/countdown visuals, tilt & scanline shader reveal, dive-in detail view modal with camera zoom, empty URLs hidden)
 - Phase 5: Lab (Skills) (Completed - // THE LAB scene with glowing star icon, hex grid cells, interactive beam triggers and category dimming, accessible plain-list view toggle, verified skills including Generative AI)
+- Phase 6: About, Contact (Completed - 04 / ABOUT scene with framed untouched portrait, developer terminal, certifications, LeetCode 250+ achievement, glowing education nodes; 05 / CONTACT scene with giant LET'S BUILD SOMETHING WORTH SHIPPING line, magnetic pills, and minimal 2026 footer)
 
 ## Current phase
-- Phase 6: About, Contact
+- Phase 7: Cursor and micro-interactions
 - GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden until provided; SolisIQ source URL is provided).
 - Any live demo URLs (buttons hidden until provided).
 - `profile-400.webp` (currently using optimized `profile.webp` 800x800).

@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { socialLinks } from '../../data/socialLinks';
-import { Mail, Code2, ArrowUpRight, Copy, Check, Send, Sparkles, FileText } from 'lucide-react';
-import { GithubIcon, LinkedinIcon } from '../common/BrandIcons';
-import { siteLinks } from '../../data/socialLinks';
+import { socialLinks, siteLinks } from '../../data/socialLinks';
+import { Mail, ArrowUpRight, Copy, Check, Send, Download } from 'lucide-react';
+import { GithubIcon, LinkedinIcon, LeetcodeIcon } from '../common/BrandIcons';
 
 const iconMap: Record<string, React.ReactNode> = {
   Mail: <Mail className="w-4 h-4" />,
   Github: <GithubIcon className="w-4 h-4" />,
   Linkedin: <LinkedinIcon className="w-4 h-4" />,
-  Code2: <Code2 className="w-4 h-4" />,
-  FileText: <FileText className="w-4 h-4" />,
+  Code2: <LeetcodeIcon className="w-4 h-4" />,
+  FileText: <Download className="w-4 h-4" />,
 };
 
 export const Contact: React.FC = () => {
@@ -28,8 +27,6 @@ export const Contact: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formState.email || !formState.message) return;
-    
-    // Fallback directly to mailto
     const subject = encodeURIComponent(`Portfolio Inquiry from ${formState.name || 'Visitor'}`);
     const body = encodeURIComponent(`Name: ${formState.name}\nEmail: ${formState.email}\n\nMessage:\n${formState.message}`);
     window.location.href = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
@@ -37,124 +34,116 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 sm:py-32 px-6 md:px-10 max-w-7xl mx-auto">
+    <section id="contact" className="py-24 sm:py-32 px-6 md:px-12 max-w-7xl mx-auto">
       {/* Section Header */}
-      <div className="mb-16 pb-6 border-b border-white/[0.06]">
+      <div className="mb-16 pb-6 border-b border-border/15">
         <div className="flex items-center gap-2 mb-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]" />
-          <span className="text-xs font-mono uppercase tracking-widest text-[#d4af37]">
-            05 / Summit · Get In Touch
+          <span className="w-2 h-2 rounded-full bg-accent-magenta animate-pulse" />
+          <span className="text-xs font-mono uppercase tracking-[0.25em] text-accent-magenta-ink font-semibold">
+            05 / CONTACT · // CONVERGENCE
           </span>
         </div>
 
-        <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif text-[#f4f1ea] tracking-tight">
-          Let&apos;s build something{' '}
-          <span className="text-[#edd894] italic font-light">worth shipping.</span>
+        {/* Huge Line: LET'S BUILD SOMETHING WORTH SHIPPING. */}
+        <h2 className="font-display font-extrabold uppercase text-4xl sm:text-6xl md:text-7xl lg:text-8xl text-text tracking-tighter leading-[0.92] max-w-5xl">
+          LET&apos;S BUILD SOMETHING{' '}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-indigo via-accent-magenta to-accent-tangerine">
+            WORTH SHIPPING.
+          </span>
         </h2>
 
-        <p className="mt-4 text-base sm:text-lg text-[#8e95a2] max-w-2xl font-mono leading-relaxed">
-          I&apos;m seeking backend and full-stack software development opportunities.
+        <p className="mt-6 text-sm sm:text-base text-text-2 max-w-2xl font-mono leading-relaxed">
+          Open to backend and full-stack software development opportunities. Let&apos;s talk engineering, APIs, and scalable systems.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        {/* Left Column: Direct Links & Quick Copy (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
-          {/* Quick Copy Email Card */}
-          <div className="contact-panel p-6 sm:p-8 rounded-xl bg-[#0c0e14]/70 border border-[#d4af37]/20 backdrop-blur-md relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-28 h-28 bg-[#d4af37]/10 rounded-full blur-xl pointer-events-none" />
+      {/* Magnetic Pills Row */}
+      <div className="mb-16">
+        <span className="text-xs font-mono uppercase tracking-[0.2em] text-accent-aqua-ink block mb-4 font-semibold">
+          DIRECT REACH &amp; CHANNELS:
+        </span>
+        <div className="flex flex-wrap gap-3 sm:gap-4">
+          {socialLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.url}
+              target={link.openInNewTab ? '_blank' : undefined}
+              rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+              download={link.download}
+              aria-label={link.accessibilityLabel}
+              data-magnetic
+              className="magnetic group inline-flex items-center gap-2.5 px-5 py-3 rounded-full border border-border/20 bg-surface-glass backdrop-blur-xl hover:border-accent-aqua/50 hover:bg-surface text-xs font-mono uppercase tracking-wider text-text transition-all duration-200 shadow-md hover:shadow-lg shadow-black/15"
+            >
+              <span className="text-accent-aqua-ink group-hover:text-text transition-colors">
+                {iconMap[link.iconName]}
+              </span>
+              <span className="font-semibold">{link.name}</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-text-2 group-hover:text-accent-aqua-ink group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            </a>
+          ))}
 
-            <span className="text-xs font-mono uppercase tracking-widest text-[#8e95a2] block mb-2">
-              Primary Direct Contact
+          <button
+            type="button"
+            data-magnetic
+            onClick={copyToClipboard}
+            className="magnetic inline-flex items-center gap-2 px-5 py-3 rounded-full border border-border/20 bg-surface/60 hover:bg-surface text-xs font-mono uppercase tracking-wider text-text-2 hover:text-text transition-all"
+            aria-label="Copy email address to clipboard"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-accent-aqua-ink" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copied ? 'Copied' : 'Copy Email'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Grid: Email Info & Direct Message Form */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Left Column: Direct Info Card */}
+        <div className="lg:col-span-5 space-y-6">
+          <div className="contact-panel p-8 rounded-2xl bg-surface-glass border border-border/15 backdrop-blur-xl relative overflow-hidden">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-text-2 block mb-2 font-medium">
+              Primary Direct Email
             </span>
 
-            <div className="font-serif text-xl sm:text-2xl text-[#f4f1ea] mb-4 break-all">
+            <div className="font-mono font-bold text-lg sm:text-xl text-text mb-4 break-all">
               {emailAddress}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <a
-                href={siteLinks.email.url}
-                aria-label={siteLinks.email.accessibilityLabel}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#d4af37] hover:bg-[#e0c268] text-[#08090b] font-medium text-xs font-mono uppercase tracking-wider transition-all duration-200 shadow-[0_0_15px_rgba(212,175,55,0.2)]"
-              >
-                <Mail className="w-3.5 h-3.5" />
-                <span>Send Email</span>
-              </a>
+            <p className="text-xs font-mono text-text-2 leading-relaxed mb-6">
+              Based in Lucknow, India. Fast response time for internship, project, and engineering opportunities.
+            </p>
 
-              <button
-                type="button"
-                onClick={copyToClipboard}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#131620] hover:bg-[#181c28] border border-white/[0.08] text-[#cfcac0] hover:text-[#edd894] text-xs font-mono uppercase tracking-wider transition-colors cursor-pointer"
-                aria-label="Copy email address to clipboard"
-              >
-                {copied ? <Check className="w-3.5 h-3.5 text-[#2dd4bf]" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copied ? 'Copied to Clipboard' : 'Copy Address'}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Social Profiles Grid */}
-          <div className="space-y-3">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#8e95a2] block">
-              Contact, Profiles & Resume
-            </span>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.url}
-                  target={link.openInNewTab ? '_blank' : undefined}
-                  rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
-                  download={link.download}
-                  aria-label={link.accessibilityLabel}
-                  className="group flex items-center justify-between p-4 rounded-lg bg-[#0e1117]/60 hover:bg-[#131722]/80 border border-white/[0.06] hover:border-[#d4af37]/30 transition-all duration-200"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="text-[#d4af37] group-hover:text-[#edd894] transition-colors">
-                      {iconMap[link.iconName]}
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-mono text-[#f4f1ea] font-medium">
-                        {link.name}
-                      </h4>
-                      <p className="text-[11px] font-mono text-[#8e95a2]">
-                        {link.label}
-                      </p>
-                    </div>
-                  </div>
-
-                  <ArrowUpRight className="w-4 h-4 text-[#8e95a2] group-hover:text-[#edd894] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                </a>
-              ))}
-            </div>
+            <a
+              href={siteLinks.email.url}
+              aria-label={siteLinks.email.accessibilityLabel}
+              data-magnetic
+              className="magnetic inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-button text-text-on-accent text-xs font-mono uppercase tracking-widest font-semibold shadow-lg shadow-accent-indigo/25 hover:shadow-accent-indigo/40 hover:scale-105 active:scale-95 transition-all"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span>Launch Mail Client</span>
+            </a>
           </div>
         </div>
 
-        {/* Right Column: Interactive Direct Message Form (7 cols) */}
+        {/* Right Column: Direct Message Form */}
         <div className="lg:col-span-7">
-          <div className="contact-panel p-8 sm:p-10 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
-            <h3 className="text-xl sm:text-2xl font-serif text-[#f4f1ea] mb-2">
-              Send a Direct Message
+          <div className="contact-panel p-8 sm:p-10 rounded-2xl bg-surface-glass border border-border/15 backdrop-blur-xl font-mono text-xs">
+            <h3 className="font-display font-bold uppercase text-xl sm:text-2xl text-text mb-2 tracking-tight">
+              SEND A DIRECT MESSAGE
             </h3>
-            <p className="text-xs font-mono text-[#8e95a2] mb-6">
-              Have a question, opportunity, or feedback? Leave a message below.
+            <p className="text-text-2 mb-6">
+              Fill out the details below to open a pre-filled email draft.
             </p>
 
             {submitted ? (
-              <div className="p-6 rounded-lg bg-[#11181c] border border-[#2dd4bf]/30 text-center py-8">
-                <Sparkles className="w-8 h-8 text-[#2dd4bf] mx-auto mb-3" />
-                <h4 className="text-base font-serif text-[#f4f1ea] mb-1">
-                  Message Prepared
-                </h4>
-                <p className="text-xs font-mono text-[#8e95a2] mb-4">
-                  Your email client has been opened. If it didn&apos;t pop up, feel free to email directly at {emailAddress}.
+              <div className="p-8 rounded-xl bg-surface border border-accent-aqua/30 text-center">
+                <p className="text-accent-aqua-ink text-sm font-semibold mb-2">Message Draft Prepared</p>
+                <p className="text-text-2 text-xs mb-4">
+                  Your default email client has been opened. You can also email directly at {emailAddress}.
                 </p>
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="text-xs font-mono text-[#edd894] underline hover:text-[#f4f1ea] cursor-pointer"
+                  className="text-xs text-accent-aqua-ink underline hover:text-text"
                 >
                   Send another message
                 </button>
@@ -163,7 +152,7 @@ export const Contact: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-xs font-mono uppercase tracking-wider text-[#8e95a2] mb-1.5">
+                    <label htmlFor="name" className="block uppercase tracking-wider text-text-2 mb-1.5 text-[11px]">
                       Your Name
                     </label>
                     <input
@@ -172,13 +161,13 @@ export const Contact: React.FC = () => {
                       value={formState.name}
                       onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                       placeholder="Jane Doe"
-                      className="w-full px-3.5 py-2.5 rounded-md bg-[#090b10] border border-white/[0.08] focus:border-[#d4af37]/60 text-xs font-mono text-[#f4f1ea] placeholder-[#555a64] focus:outline-none transition-colors"
+                      className="w-full px-4 py-3 rounded-lg bg-surface border border-border/20 focus:border-accent-aqua text-xs text-text placeholder-text-2/50 focus:outline-none transition-colors"
                       required
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-xs font-mono uppercase tracking-wider text-[#8e95a2] mb-1.5">
+                    <label htmlFor="email" className="block uppercase tracking-wider text-text-2 mb-1.5 text-[11px]">
                       Your Email
                     </label>
                     <input
@@ -187,30 +176,30 @@ export const Contact: React.FC = () => {
                       value={formState.email}
                       onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                       placeholder="jane@company.com"
-                      className="w-full px-3.5 py-2.5 rounded-md bg-[#090b10] border border-white/[0.08] focus:border-[#d4af37]/60 text-xs font-mono text-[#f4f1ea] placeholder-[#555a64] focus:outline-none transition-colors"
+                      className="w-full px-4 py-3 rounded-lg bg-surface border border-border/20 focus:border-accent-aqua text-xs text-text placeholder-text-2/50 focus:outline-none transition-colors"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-xs font-mono uppercase tracking-wider text-[#8e95a2] mb-1.5">
+                  <label htmlFor="message" className="block uppercase tracking-wider text-text-2 mb-1.5 text-[11px]">
                     Message
                   </label>
                   <textarea
                     id="message"
-                    rows={5}
+                    rows={4}
                     value={formState.message}
                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                     placeholder="Hello Abhijeet, I came across your portfolio and wanted to discuss..."
-                    className="w-full px-3.5 py-2.5 rounded-md bg-[#090b10] border border-white/[0.08] focus:border-[#d4af37]/60 text-xs font-mono text-[#f4f1ea] placeholder-[#555a64] focus:outline-none transition-colors resize-none"
+                    className="w-full px-4 py-3 rounded-lg bg-surface border border-border/20 focus:border-accent-aqua text-xs text-text placeholder-text-2/50 focus:outline-none transition-colors resize-none"
                     required
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-[#d4af37] hover:bg-[#e0c268] text-[#08090b] font-medium text-xs font-mono uppercase tracking-wider transition-all duration-200 shadow-[0_0_15px_rgba(212,175,55,0.15)] cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-gradient-button text-text-on-accent font-semibold uppercase tracking-wider text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Send Message</span>
