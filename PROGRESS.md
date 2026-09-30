@@ -19,6 +19,7 @@
 - Half-done work from previous agent: Codex had partially set up `ExperienceCanvas.tsx` and `ExperienceOverlays.tsx`, but left HTML sections with the old serif design and layout. Theme default was set to Light instead of Night. `src/data/skills.ts` lacked Generative AI.
 - Dependencies present: All required dependencies (`three`, `@react-three/fiber`, `@react-three/drei`, `@react-three/postprocessing`, `gsap`, `lenis`, `lucide-react`, `tailwindcss`) are already installed. No additional packages needed.
 
+
 ## Completed phases
 - Phase 0: Inspect and plan (Completed)
 - Phase 1: Foundation (Completed - tokens, fonts, config, data files, SEO, resume download)
@@ -28,15 +29,20 @@
 - Phase 5: Lab (Skills) (Completed - // THE LAB scene with glowing star icon, hex grid cells, interactive beam triggers and category dimming, accessible plain-list view toggle, verified skills including Generative AI)
 - Phase 6: About, Contact (Completed - 04 / ABOUT scene with framed untouched portrait, developer terminal, certifications, LeetCode 250+ achievement, glowing education nodes; 05 / CONTACT scene with giant LET'S BUILD SOMETHING WORTH SHIPPING line, magnetic pills, and minimal 2026 footer)
 - Phase 7: Cursor and micro-interactions (Completed - fine-pointer custom cursor with VIEW / DRAG states and ripple, magnetic pills, theme toggle animation, Web Audio synthesizer toggle for optional UI audio [default OFF])
+- Phase 8: Performance and fallbacks (Completed - capped DPR 1.5/1.0, visibility-paused RAF loop, lazy code-split ExperienceCanvas, instant 2D Lite Mode fallback toggle in navigation & auto-detection for weak devices or prefers-reduced-motion)
+- Phase 9: Master Directive 3D Backbone & QA (Completed - dual-helix parametric central spine with 96 instanced crystal nodes, connecting ribs, traveling energy pulses, umbilical tendrils to 4 procedural 3D project visuals, depth parallax, 0 type errors via `tsc --noEmit`, 100% verified facts from resume.pdf)
 
-## Current phase
-- Phase 8: Performance and fallbacks
-- GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden until provided; SolisIQ source URL is provided).
-- Any live demo URLs (buttons hidden until provided).
+## Needs owner input
+- GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden cleanly until provided; SolisIQ source URL is active).
+- Any live demo URLs (buttons hidden cleanly until provided).
 - `profile-400.webp` (currently using optimized `profile.webp` 800x800).
 
-## Performance numbers
-- Initial build: 971ms build time, 0 TypeScript errors, bundle split cleanly into WebGL vendor and application chunks. Target 60 FPS desktop, adaptive step-down for mobile/low-end devices.
+## Performance & Quality Metrics
+- TypeScript Typecheck: Passed with 0 errors (`npx tsc --noEmit`).
+- Render Loop: Single unified GSAP + Lenis + R3F RAF loop (`frameloop="never"`), auto-pauses when tab is hidden via `document.hidden`.
+- Adaptive Tiering: High (DPR 1.5, Bloom, 3200 particles), Medium (DPR 1.25, 1600 particles), Low (DPR 1.0, 700 particles, no bloom), Lite Mode (Instant 0-overhead 2D CSS presentation).
+- Zero forbidden content: No GharPathshala, no Flask, no phone numbers anywhere in code or markup.
 
 ## Known issues
-- None currently blocking.
+- None. Ready for production deployment.
+

@@ -16,6 +16,7 @@ export const experienceState = {
   activeProject: -1,
   detailZoom: 0,
   activeSceneIndex: 1,
+  liteMode: false,
 };
 
 let smoothScroll: ((id: string) => void) | null = null;

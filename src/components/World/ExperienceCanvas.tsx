@@ -5,6 +5,7 @@ import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import Lenis from 'lenis';
+import { visualConfig as vConfig } from '../../config/visualConfig';
 import { experienceConfig as config } from '../../config/experienceConfig';
 import { experienceState, setSmoothScroll } from '../../lib/experienceStore';
 import { projectsData } from '../../data/projects';
@@ -12,26 +13,33 @@ import { skillsCategories } from '../../data/skills';
 
 type Quality = 'high' | 'medium' | 'low';
 const PARTICLE_COUNTS: Record<Quality, number> = {
-  high: config.scene.particles.high,
-  medium: config.scene.particles.medium,
-  low: config.scene.particles.low,
+  high: vConfig.particles.counts.high,
+  medium: vConfig.particles.counts.medium,
+  low: vConfig.particles.counts.low,
 };
 
-const cssColor = (token: string) => getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+const cssColor = (token: string) =>
+  typeof document !== 'undefined'
+    ? getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+    : '#7C6CFF';
 const color = (token: string) => new THREE.Color(cssColor(token));
+
 function useAuroraColor(token: string) {
   const value = cssColor(token);
   return useMemo(() => new THREE.Color(value), [value]);
 }
+
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 
 const initialQuality = (): Quality => {
-  const mobile = window.innerWidth <= config.scene.quality.mobileWidth;
+  if (typeof window === 'undefined') return 'high';
+  const mobile = window.innerWidth <= vConfig.quality.mobileBreakpoint;
   const nav = navigator as Navigator & { deviceMemory?: number };
   const cores = navigator.hardwareConcurrency;
   const memory = nav.deviceMemory;
-  const weak = (cores !== undefined && cores <= config.scene.quality.weakCores)
-    || (memory !== undefined && memory <= config.scene.quality.weakMemoryGb);
+  const weak =
+    (cores !== undefined && cores <= vConfig.quality.weakCoresThreshold) ||
+    (memory !== undefined && memory <= vConfig.quality.weakMemoryGbThreshold);
   if (mobile || weak) return 'low';
   return cores !== undefined && cores >= 8 && memory !== undefined && memory >= 8 ? 'high' : 'medium';
 };
@@ -43,30 +51,30 @@ function makePortalLabel(name: string, index: number, theme: string) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return new THREE.CanvasTexture(canvas);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.globalAlpha = theme === 'night' ? 0.74 : 0.78;
+  ctx.globalAlpha = theme === 'night' ? 0.76 : 0.82;
   ctx.fillStyle = cssColor('--surface');
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.globalAlpha = 1;
-  ctx.fillStyle = cssColor('--accent-indigo');
-  ctx.font = '600 22px monospace';
-  ctx.fillText(`PROJECT / 0${index + 1}`, 34, 55);
+  ctx.fillStyle = cssColor('--accent-aqua');
+  ctx.font = '700 20px monospace';
+  ctx.fillText(`PROJECT // 0${index + 1}`, 36, 56);
   ctx.fillStyle = cssColor('--text');
-  ctx.font = '500 34px Georgia, serif';
-  const words = name.split(' ');
+  ctx.font = '800 32px sans-serif';
+  const words = name.toUpperCase().split(' ');
   let line = '';
-  let y = 122;
+  let y = 120;
   for (const word of words) {
     const trial = line ? `${line} ${word}` : word;
     if (ctx.measureText(trial).width > 440 && line) {
-      ctx.fillText(line, 34, y);
+      ctx.fillText(line, 36, y);
       line = word;
-      y += 46;
+      y += 44;
     } else line = trial;
   }
-  ctx.fillText(line, 34, y);
+  ctx.fillText(line, 36, y);
   ctx.fillStyle = cssColor('--text-2');
-  ctx.font = '16px monospace';
-  ctx.fillText('SELECTED WORK', 34, 277);
+  ctx.font = '14px monospace';
+  ctx.fillText('CLICK TO EXPLORE EVIDENCE', 36, 280);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   return texture;
@@ -86,60 +94,59 @@ function useTheme() {
   return theme;
 }
 
+/**
+ * 1. MULTI-LAYER GPU PARTICLES
+ * GPU-accelerated points that drift with organic Brownian flow and illuminate surrounding scenes.
+ */
 function ParticleField({ quality }: { quality: Quality }) {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const { gl } = useThree();
-  const maxCount = config.scene.particles.high;
+  const maxCount = vConfig.particles.counts.high;
   const geometry = useMemo(() => {
     const positions = new Float32Array(maxCount * 3);
     for (let index = 0; index < maxCount; index += 1) {
       const angle = index * 2.399963229728653;
       const layer = index % 97;
-      const radius = 0.6 + (index % 43) * 0.105;
+      const radius = 0.8 + (index % 47) * 0.12;
       positions[index * 3] = Math.cos(angle) * radius;
-      positions[index * 3 + 1] = Math.sin(angle * 0.73) * (0.45 + (layer % 29) * 0.075);
-      positions[index * 3 + 2] = -((index * 0.61803398875) % config.scene.camera.travelZ);
+      positions[index * 3 + 1] = Math.sin(angle * 0.73) * (0.5 + (layer % 31) * 0.08);
+      positions[index * 3 + 2] = -((index * 0.61803398875) % vConfig.camera.travelZ);
     }
     const result = new THREE.BufferGeometry();
     result.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     return result;
   }, [maxCount]);
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uPointer: { value: new THREE.Vector2() },
-    uPixelRatio: { value: Math.min(gl.getPixelRatio(), config.scene.quality.high.maxDpr) },
-    uIndigo: { value: color(config.scene.colors.indigo) },
-    uAqua: { value: color(config.scene.colors.aqua) },
-    uSize: { value: config.scene.particles.size },
-    uGlow: { value: config.scene.particles.glow },
-  }), [gl]);
+
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uPointer: { value: new THREE.Vector2() },
+      uPixelRatio: { value: Math.min(gl.getPixelRatio(), vConfig.quality.high.maxDpr) },
+      uIndigo: { value: color('--accent-indigo') },
+      uAqua: { value: color('--accent-aqua') },
+      uSize: { value: vConfig.particles.baseSize },
+      uGlow: { value: vConfig.particles.glowMultiplier },
+    }),
+    [gl]
+  );
 
   useEffect(() => {
-    // R3F geometry is intentionally mutated here so adaptive quality changes draw count without reallocating buffers.
-    // eslint-disable-next-line react/immutability
     geometry.setDrawRange(0, PARTICLE_COUNTS[quality]);
   }, [geometry, quality]);
+
   useEffect(() => {
     const updateTheme = () => {
-      // Shader uniforms are mutable GPU state and are updated only when the theme changes.
-      // eslint-disable-next-line react/immutability
-      uniforms.uIndigo.value.copy(color(config.scene.colors.indigo));
-      // eslint-disable-next-line react/immutability
-      uniforms.uAqua.value.copy(color(config.scene.colors.aqua));
-    };
-    const updatePixelRatio = () => {
-      // Shader uniform mutation avoids a React render for a renderer setting change.
-      // eslint-disable-next-line react/immutability
-      uniforms.uPixelRatio.value = gl.getPixelRatio();
+      uniforms.uIndigo.value.copy(color('--accent-indigo'));
+      uniforms.uAqua.value.copy(color('--accent-aqua'));
     };
     window.addEventListener('aurora-theme-change', updateTheme);
-    updatePixelRatio();
     return () => window.removeEventListener('aurora-theme-change', updateTheme);
-  }, [gl, quality, uniforms]);
+  }, [uniforms]);
+
   useFrame(({ clock }) => {
     if (!materialRef.current) return;
-    materialRef.current.uniforms.uTime.value = clock.elapsedTime * config.scene.particles.driftSpeed;
+    materialRef.current.uniforms.uTime.value = clock.elapsedTime * vConfig.particles.driftSpeed;
     materialRef.current.uniforms.uPointer.value.set(experienceState.pointerX, experienceState.pointerY);
   });
 
@@ -156,13 +163,13 @@ function ParticleField({ quality }: { quality: Quality }) {
           varying float vGlow;
           void main() {
             vec3 p = position;
-            float phase = uTime + position.z * 0.035;
-            p.x += sin(phase + position.y * 0.22) * 0.16 + uPointer.x * 0.12;
-            p.y += cos(phase * 0.72 + position.x * 0.18) * 0.12 - uPointer.y * 0.10;
+            float phase = uTime + position.z * 0.032;
+            p.x += sin(phase + position.y * 0.25) * 0.18 + uPointer.x * 0.14;
+            p.y += cos(phase * 0.75 + position.x * 0.2) * 0.14 - uPointer.y * 0.12;
             vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
             gl_Position = projectionMatrix * mvPosition;
-            gl_PointSize = clamp(uSize * uPixelRatio * (110.0 / max(1.0, -mvPosition.z)), 1.0, 5.0);
-            vGlow = 0.36 + 0.64 * abs(sin(phase * 0.65 + position.x));
+            gl_PointSize = clamp(uSize * uPixelRatio * (115.0 / max(1.0, -mvPosition.z)), 1.0, 5.5);
+            vGlow = 0.4 + 0.6 * abs(sin(phase * 0.68 + position.x));
           }
         `}
         fragmentShader={`
@@ -173,9 +180,9 @@ function ParticleField({ quality }: { quality: Quality }) {
           void main() {
             vec2 point = gl_PointCoord - vec2(0.5);
             float radius = length(point);
-            float alpha = smoothstep(0.5, 0.03, radius) * vGlow * 0.52;
+            float alpha = smoothstep(0.5, 0.02, radius) * vGlow * 0.55;
             vec3 tint = mix(uIndigo, uAqua, smoothstep(0.0, 1.0, gl_FragCoord.y / 900.0));
-            gl_FragColor = vec4(tint * (0.75 + uGlow * 0.45), alpha);
+            gl_FragColor = vec4(tint * (0.8 + uGlow * 0.45), alpha);
           }
         `}
         transparent
@@ -186,405 +193,657 @@ function ParticleField({ quality }: { quality: Quality }) {
   );
 }
 
-function AuroraBeam({ x, z, token }: { x: number; z: number; token: string }) {
-  const material = useRef<THREE.ShaderMaterial>(null);
+/**
+ * 2. THE 3D PROJECT BACKBONE (The Master Signature Metaphor)
+ * A luminous double-helix spine running through the projects depth with instanced crystal nodes,
+ * connecting ribs, traveling energy pulses, and umbilical tendrils reaching out to floating project slabs.
+ */
+function ProjectBackbone() {
   useTheme();
-  const tint = useAuroraColor(token);
-  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uTint: { value: tint } }), [tint]);
-  useFrame(({ clock }) => {
-    if (material.current) material.current.uniforms.uTime.value = clock.elapsedTime;
-  });
-  return (
-    <mesh position={[x, 0, z]} rotation={[0, 0, x > 0 ? -0.16 : 0.16]}>
-      <planeGeometry args={[4.4, 36, 1, 32]} />
-      <shaderMaterial
-        ref={material}
-        uniforms={uniforms}
-        transparent
-        depthWrite={false}
-        side={THREE.DoubleSide}
-        vertexShader={`uniform float uTime; varying vec2 vUv; void main(){vUv=uv;vec3 p=position;p.x+=sin(uv.y*5.0+uTime*0.18)*0.22;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`}
-        fragmentShader={`uniform float uTime;uniform vec3 uTint;varying vec2 vUv;void main(){float edge=smoothstep(0.0,0.34,vUv.x)*(1.0-smoothstep(0.66,1.0,vUv.x));float pulse=0.5+0.5*sin(vUv.y*5.0+uTime*0.22);float alpha=edge*(0.025+pulse*0.028);gl_FragColor=vec4(uTint,alpha);}`}
-      />
-    </mesh>
-  );
-}
+  const spineGroup = useRef<THREE.Group>(null);
+  const nodesMesh = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
 
-function HeroRoom() {
-  const room = useRef<THREE.Group>(null);
-  useTheme();
-  const glow = useAuroraColor(config.scene.colors.indigo);
-  useFrame((_, delta) => {
-    if (room.current) room.current.position.z = THREE.MathUtils.damp(room.current.position.z, -config.scene.camera.travelZ * experienceState.roomProgress.home, 4, Math.min(delta, 0.05));
+  const aquaColor = useAuroraColor('--accent-aqua');
+  const limeColor = useAuroraColor('--accent-lime');
+  const indigoColor = useAuroraColor('--accent-indigo');
+
+  const { nodesPerStrand, radius, height, strutsCount } = vConfig.backbone;
+  const totalNodes = nodesPerStrand * 2;
+
+  // Node Positions along Strand A and Strand B
+  const nodeData = useMemo(() => {
+    const data: { x: number; y: number; z: number; strand: number; t: number }[] = [];
+    const zStart = -10.0;
+    const zStep = height / nodesPerStrand;
+
+    for (let i = 0; i < nodesPerStrand; i++) {
+      const t = i / nodesPerStrand;
+      const angle = t * Math.PI * 8; // 4 full helix turns
+      const z = zStart - i * zStep;
+
+      // Strand A
+      data.push({
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius * 0.7,
+        z,
+        strand: 0,
+        t,
+      });
+
+      // Strand B (Opposite Phase, PI offset)
+      data.push({
+        x: Math.cos(angle + Math.PI) * radius,
+        y: Math.sin(angle + Math.PI) * radius * 0.7,
+        z,
+        strand: 1,
+        t,
+      });
+    }
+    return data;
+  }, [height, nodesPerStrand, radius]);
+
+  // Rib Strut Connections between Strand A and Strand B
+  const strutGeometry = useMemo(() => {
+    const positions = new Float32Array(strutsCount * 6);
+    const zStart = -10.0;
+    const zStep = height / strutsCount;
+
+    for (let i = 0; i < strutsCount; i++) {
+      const t = i / strutsCount;
+      const angle = t * Math.PI * 8;
+      const z = zStart - i * zStep;
+
+      const ax = Math.cos(angle) * radius;
+      const ay = Math.sin(angle) * radius * 0.7;
+      const bx = Math.cos(angle + Math.PI) * radius;
+      const by = Math.sin(angle + Math.PI) * radius * 0.7;
+
+      positions.set([ax, ay, z, bx, by, z], i * 6);
+    }
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    return geom;
+  }, [height, radius, strutsCount]);
+
+  // Umbilical Energy Tendrils connecting Backbone Nodes to Project Slabs
+  const tendrilGeometry = useMemo(() => {
+    const positions: number[] = [];
+    const coords = vConfig.projects.coords;
+
+    coords.forEach((coord) => {
+      // Find closest backbone node along Z
+      const targetZ = coord.z;
+      const closest = nodeData.reduce((prev, curr) =>
+        Math.abs(curr.z - targetZ) < Math.abs(prev.z - targetZ) ? curr : prev
+      );
+
+      // Create a 3-segment energy line from backbone to project slab
+      const midX = (closest.x + coord.x) * 0.5 + (coord.side === 'left' ? -0.4 : 0.4);
+      const midY = (closest.y + coord.y) * 0.5 + 0.3;
+      const midZ = (closest.z + coord.z) * 0.5;
+
+      positions.push(closest.x, closest.y, closest.z, midX, midY, midZ);
+      positions.push(midX, midY, midZ, coord.x, coord.y, coord.z);
+    });
+
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    return geom;
+  }, [nodeData]);
+
+  const nodeGeometry = useMemo(() => new THREE.OctahedronGeometry(vConfig.backbone.nodeSize, 1), []);
+  const nodeMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: aquaColor,
+        emissive: limeColor,
+        emissiveIntensity: 0.65,
+        roughness: 0.2,
+        metalness: 0.8,
+      }),
+    [aquaColor, limeColor]
+  );
+
+  const strutMaterial = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: aquaColor,
+        transparent: true,
+        opacity: 0.38,
+        depthWrite: false,
+      }),
+    [aquaColor]
+  );
+
+  const tendrilMaterial = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: limeColor,
+        transparent: true,
+        opacity: 0.65,
+        depthWrite: false,
+      }),
+    [limeColor]
+  );
+
+  useFrame(({ clock }) => {
+    if (!nodesMesh.current || !spineGroup.current) return;
+    const time = clock.elapsedTime;
+    const scrollZ = experienceState.scrollProgress * vConfig.camera.travelZ;
+
+    // Subtle axial breathing and rotation
+    spineGroup.current.rotation.z = Math.sin(time * 0.15) * 0.08;
+    spineGroup.current.position.x = Math.sin(time * 0.25) * 0.06;
+
+    // Traveling energy wave pulse along nodes
+    for (let i = 0; i < totalNodes; i++) {
+      const d = nodeData[i];
+      // Wave traveling along Z
+      const wave = Math.sin(d.z * vConfig.backbone.pulseFrequency + time * vConfig.backbone.pulseSpeed);
+      const isNearProject = Math.abs(-d.z - scrollZ) < 6.0;
+      const scale = (0.75 + wave * 0.35 + (isNearProject ? 0.6 : 0)) * (d.strand === 0 ? 1 : 0.9);
+
+      dummy.position.set(d.x, d.y, d.z);
+      dummy.scale.setScalar(scale);
+      dummy.rotation.set(time * 0.4 + i, time * 0.3, i);
+      dummy.updateMatrix();
+      nodesMesh.current.setMatrixAt(i, dummy.matrix);
+
+      // Color tint modulation (Aqua to Lime pulse)
+      const pulseColor = isNearProject ? limeColor : wave > 0.4 ? aquaColor : indigoColor;
+      nodesMesh.current.setColorAt(i, pulseColor);
+    }
+
+    nodesMesh.current.instanceMatrix.needsUpdate = true;
+    if (nodesMesh.current.instanceColor) nodesMesh.current.instanceColor.needsUpdate = true;
   });
+
   return (
-    <group ref={room}>
-      <mesh position={[-2.6, 0, -1.4]} rotation={[0, 0, Math.PI * 0.25]}>
-        <torusKnotGeometry args={[0.55, 0.012, 110, 8, 2, 3]} />
-        <meshBasicMaterial color={glow} transparent opacity={0.35} />
-      </mesh>
-      <pointLight position={[-2.4, 1.2, 0]} color={glow} intensity={0.5} distance={9} />
+    <group ref={spineGroup}>
+      {/* Dual Helix Instanced Nodes */}
+      <instancedMesh ref={nodesMesh} args={[nodeGeometry, nodeMaterial, totalNodes]} />
+
+      {/* Cross-connecting Strut Ribs */}
+      <lineSegments geometry={strutGeometry} material={strutMaterial} />
+
+      {/* Umbilical Tendril Cables to Project Slabs */}
+      <lineSegments geometry={tendrilGeometry} material={tendrilMaterial} />
+
+      {/* Traveling Core Glow Light */}
+      <pointLight position={[0, 0, -28]} color={aquaColor} intensity={0.9} distance={18} />
     </group>
   );
 }
 
-function ProjectArt({ index }: { index: number }) {
-  const accent = index % 2 ? color(config.scene.colors.aqua) : color(config.scene.colors.magenta);
-  if (index === 0) {
-    return <group position={[0, -0.53, 0.04]}>{[0, 1, 2, 3, 4, 5].map((bar) => <mesh key={bar} position={[-0.72 + bar * 0.28, (bar % 3) * 0.12, 0]}><boxGeometry args={[0.08, 0.12 + (bar % 4) * 0.09, 0.025]} /><meshBasicMaterial color={accent} transparent opacity={0.72} /></mesh>)}</group>;
-  }
-  if (index === 1) return <mesh position={[0.75, -0.54, 0.04]} rotation={[0, 0, 0.2]}><torusGeometry args={[0.38, 0.012, 8, 48]} /><meshBasicMaterial color={accent} transparent opacity={0.8} /></mesh>;
-  if (index === 2) return <group position={[0.72, -0.48, 0.04]}>{[0, 1, 2].map((layer) => <mesh key={layer} position={[-layer * 0.12, layer * 0.12, layer * 0.01]}><planeGeometry args={[0.52, 0.35]} /><meshBasicMaterial color={accent} transparent opacity={0.17 + layer * 0.1} /></mesh>)}</group>;
-  return <mesh position={[0.78, -0.5, 0.04]}><torusGeometry args={[0.34, 0.018, 8, 48]} /><meshBasicMaterial color={accent} transparent opacity={0.8} /></mesh>;
-}
+/**
+ * 3. PROJECT PROCEDURAL 3D VISUALS (One Signature Identity per Project)
+ */
 
-function PortalShader({ index }: { index: number }) {
-  const material = useRef<THREE.ShaderMaterial>(null);
-  useTheme();
-  const tint = useAuroraColor(index % 2 ? config.scene.colors.aqua : config.scene.colors.violet);
-  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uReveal: { value: 0.18 }, uDive: { value: 0 }, uTint: { value: tint } }), [tint]);
+// Project 01: AI Incident Intelligence (Neural graph with anomaly pulse & evidence links)
+function VisualAIIncident() {
+  const group = useRef<THREE.Group>(null);
+  const aqua = useAuroraColor('--accent-aqua');
+  const magenta = useAuroraColor('--accent-magenta');
   useFrame(({ clock }) => {
-    if (!material.current) return;
-    material.current.uniforms.uTime.value = clock.elapsedTime;
-    material.current.uniforms.uReveal.value = experienceState.activeProject === index ? 1 : 0.18;
-    material.current.uniforms.uDive.value = experienceState.detailZoom;
+    if (!group.current) return;
+    const time = clock.elapsedTime;
+    group.current.rotation.y = time * 0.2;
+    group.current.rotation.x = Math.sin(time * 0.3) * 0.1;
   });
   return (
-    <shaderMaterial
-      ref={material}
-      transparent
-      depthWrite={false}
-      uniforms={uniforms}
-      vertexShader={`varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`}
-      fragmentShader={`
-        uniform float uTime; uniform float uReveal; uniform float uDive; uniform vec3 uTint; varying vec2 vUv;
-        void main(){
-          vec2 gridUv=vUv*vec2(22.0,12.0);
-          vec2 cell=abs(fract(gridUv-0.5)-0.5);
-          float grid=1.0-smoothstep(0.025,0.075,min(cell.x,cell.y));
-          float scan=1.0-smoothstep(0.0,0.035,abs(fract(vUv.y*12.0-uTime*0.12)-0.5));
-          float sweep=1.0-smoothstep(0.0,0.08,abs(vUv.x-fract(uTime*0.08)));
-          float alpha=grid*(0.025+uReveal*0.07)+scan*0.025+sweep*uReveal*0.08+uDive*0.035;
-          gl_FragColor=vec4(uTint,alpha);
-        }
-      `}
-    />
-  );
-}
-
-function ProjectPortals() {
-  const room = useRef<THREE.Group>(null);
-  const theme = useTheme();
-  const accent = useAuroraColor(config.scene.colors.violet);
-  const labelTextures = useMemo(() => projectsData.map((project, index) => makePortalLabel(project.name, index, theme)), [theme]);
-  useEffect(() => () => labelTextures.forEach((texture) => texture.dispose()), [labelTextures]);
-  useFrame((_, delta) => {
-    if (room.current) {
-      room.current.position.z = THREE.MathUtils.damp(room.current.position.z, -config.scene.camera.travelZ * experienceState.roomProgress.projects, 4, Math.min(delta, 0.05));
-      room.current.visible = Math.abs(experienceState.scrollProgress - experienceState.roomProgress.projects) < 0.14;
-    }
-    if (room.current) room.current.scale.z = THREE.MathUtils.damp(room.current.scale.z, 1 + experienceState.detailZoom * 0.25, 4, Math.min(delta, 0.05));
-  });
-  return (
-    <group ref={room}>
-      {projectsData.map((project, index) => {
-        const x = (index - 1.5) * 2.55;
-        const z = (1.5 - index) * 0.72;
+    <group ref={group} position={[0, 0, 0.08]}>
+      {/* Central Anomaly Core Node */}
+      <mesh position={[0, 0, 0]}>
+        <sphereGeometry args={[0.22, 16, 16]} />
+        <meshStandardMaterial color={magenta} emissive={magenta} emissiveIntensity={0.8} />
+      </mesh>
+      {/* Evidence Graph Satellite Nodes */}
+      {[0, 1, 2, 3, 4].map((i) => {
+        const a = (i / 5) * Math.PI * 2;
+        const r = 0.55;
         return (
-          <group key={project.id} position={[x, Math.sin(index * 1.2) * 0.22, z]} rotation={[0, (1.5 - index) * 0.07, 0]}>
-            <RoundedBox args={[2.2, 1.8, 0.09]} radius={0.08} smoothness={2}>
-              <meshPhysicalMaterial color={color('--surface')} roughness={0.3} metalness={0.1} clearcoat={0.5} transparent opacity={0.82} />
-            </RoundedBox>
-            <mesh position={[0, 0, 0.048]}>
-              <planeGeometry args={[2.04, 1.68]} />
-              <PortalShader index={index} />
+          <group key={i} position={[Math.cos(a) * r, Math.sin(a) * r * 0.7, Math.sin(a * 2) * 0.2]}>
+            <mesh>
+              <octahedronGeometry args={[0.07, 0]} />
+              <meshBasicMaterial color={aqua} />
             </mesh>
-            <mesh position={[0, 0, 0.052]}>
-              <planeGeometry args={[2.04, 1.68]} />
-              <meshBasicMaterial map={labelTextures[index]} transparent toneMapped={false} />
-            </mesh>
-            <mesh position={[0, 0, -0.055]}>
-              <boxGeometry args={[2.22, 1.82, 0.02]} />
-              <meshBasicMaterial color={accent} wireframe transparent opacity={0.28} />
-            </mesh>
-            <ProjectArt index={index} />
           </group>
         );
       })}
-      <pointLight position={[0, 1.8, 1]} color={accent} intensity={0.8} distance={12} />
     </group>
   );
 }
 
-function SkillsConstellation() {
-  useTheme();
-  const instance = useRef<THREE.InstancedMesh>(null);
-  const [activeSkill, setActiveSkill] = useState('');
-  const count = skillsCategories.reduce((total, category) => total + category.skills.length, 0);
-  const geometry = useMemo(() => new THREE.IcosahedronGeometry(0.11, 1), []);
-  const material = useMemo(() => new THREE.MeshStandardMaterial({ color: color('--text-on-accent'), metalness: 0.25, roughness: 0.28, emissive: color(config.scene.colors.indigo), emissiveIntensity: 0.28 }), []);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const aquaValue = cssColor(config.scene.colors.aqua);
-  const violetValue = cssColor(config.scene.colors.violet);
-  const indigoValue = cssColor(config.scene.colors.indigo);
-  const beamGeometry = useMemo(() => {
-    const positions = new Float32Array(count * 6);
-    const colors = new Float32Array(count * 6);
-    const activeCategory = skillsCategories.find((category) => category.skills.some((skill) => skill.name === activeSkill))?.id;
-    let index = 0;
-    for (const category of skillsCategories) {
-      for (const skill of category.skills) {
-        const angle = (index / count) * Math.PI * 2;
-        const radius = 1.55 + (index % 3) * 0.28;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius * 0.62;
-        const z = Math.sin(angle * 2) * 0.45;
-        positions.set([0, 0, 0, x, y, z], index * 6);
-        const tint = new THREE.Color(index % 2 ? aquaValue : violetValue);
-        const strength = !activeSkill ? 0.18 : category.id === activeCategory ? skill.name === activeSkill ? 1.2 : 0.72 : 0.06;
-        tint.multiplyScalar(strength);
-        colors.set([tint.r, tint.g, tint.b, tint.r, tint.g, tint.b], index * 6);
-        index += 1;
-      }
-    }
-    const result = new THREE.BufferGeometry();
-    result.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    result.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    return result;
-  }, [activeSkill, aquaValue, count, violetValue]);
-  const beamMaterial = useMemo(() => new THREE.LineBasicMaterial({ transparent: true, vertexColors: true, opacity: 0.65, depthWrite: false }), []);
-  const beams = useMemo(() => new THREE.LineSegments(beamGeometry, beamMaterial), [beamGeometry, beamMaterial]);
-  useEffect(() => () => beamGeometry.dispose(), [beamGeometry]);
-  useEffect(() => {
-    const update = (event: Event) => setActiveSkill((event as CustomEvent<string>).detail);
-    window.addEventListener('aurora-skill-change', update);
-    return () => window.removeEventListener('aurora-skill-change', update);
-  }, []);
-  useEffect(() => {
-    if (!instance.current) return;
-    const mesh = instance.current;
-    const tint = new THREE.Color(cssColor(config.scene.colors.aqua));
-    let index = 0;
-    const activeCategory = skillsCategories.find((category) => category.skills.some((skill) => skill.name === activeSkill))?.id;
-    for (const category of skillsCategories) {
-      for (const skill of category.skills) {
-        const angle = (index / count) * Math.PI * 2;
-        const radius = 1.55 + (index % 3) * 0.28;
-        dummy.position.set(Math.cos(angle) * radius, Math.sin(angle) * radius * 0.62, Math.sin(angle * 2) * 0.45);
-        dummy.scale.setScalar(skill.name === activeSkill ? 1.55 : skill.highlight ? 1.15 : 0.82);
-        dummy.updateMatrix();
-        mesh.setMatrixAt(index, dummy.matrix);
-        tint.set(index % 2 ? aquaValue : violetValue);
-        if (activeSkill && category.id !== activeCategory) tint.multiplyScalar(0.24);
-        else if (skill.name === activeSkill) tint.multiplyScalar(1.45);
-        mesh.setColorAt(index, tint);
-        index += 1;
-      }
-    }
-    mesh.instanceMatrix.needsUpdate = true;
-    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  }, [activeSkill, aquaValue, count, dummy, violetValue]);
-  useEffect(() => {
-    // Material color is GPU state; update it only when the Aurora token changes.
-    // eslint-disable-next-line react/immutability
-    material.emissive.set(indigoValue);
-  }, [indigoValue, material]);
-  return <><primitive object={beams} /><instancedMesh ref={instance} args={[geometry, material, count]} /></>;
+// Project 02: SolisIQ (Solar orbital disc, radiant energy arcs, and capacity gauges)
+function VisualSolisIQ() {
+  const ringRef = useRef<THREE.Group>(null);
+  const lime = useAuroraColor('--accent-lime');
+  const aqua = useAuroraColor('--accent-aqua');
+  useFrame(({ clock }) => {
+    if (!ringRef.current) return;
+    ringRef.current.rotation.z = clock.elapsedTime * 0.35;
+    ringRef.current.rotation.x = 0.35 + Math.sin(clock.elapsedTime * 0.5) * 0.1;
+  });
+  return (
+    <group ref={ringRef} position={[0, 0, 0.08]}>
+      <mesh>
+        <torusGeometry args={[0.42, 0.02, 12, 48]} />
+        <meshBasicMaterial color={lime} />
+      </mesh>
+      <mesh rotation={[Math.PI * 0.5, 0, 0]}>
+        <torusGeometry args={[0.58, 0.012, 8, 48]} />
+        <meshBasicMaterial color={aqua} transparent opacity={0.65} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.18, 16, 16]} />
+        <meshStandardMaterial color={lime} emissive={lime} emissiveIntensity={0.6} />
+      </mesh>
+    </group>
+  );
 }
 
-function HoneycombFloor() {
+// Project 03: Instanews (Cascading data feed layers and news stream scanlines)
+function VisualInstanews() {
+  const group = useRef<THREE.Group>(null);
+  const indigo = useAuroraColor('--accent-indigo');
+  const aqua = useAuroraColor('--accent-aqua');
+  useFrame(({ clock }) => {
+    if (!group.current) return;
+    group.current.position.y = Math.sin(clock.elapsedTime * 0.8) * 0.05;
+  });
+  return (
+    <group ref={group} position={[0, 0, 0.08]}>
+      {[0, 1, 2].map((layer) => (
+        <mesh key={layer} position={[-layer * 0.12, layer * 0.12, layer * 0.03]} rotation={[0, 0, -0.08]}>
+          <planeGeometry args={[0.62, 0.42]} />
+          <meshBasicMaterial color={layer === 0 ? aqua : indigo} transparent opacity={0.25 + layer * 0.18} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// Project 04: ZeroHour (Concentric mechanical countdown rings with seconds pulse node)
+function VisualZeroHour() {
+  const group = useRef<THREE.Group>(null);
+  const ticker = useRef<THREE.Mesh>(null);
+  const aqua = useAuroraColor('--accent-aqua');
+  useFrame(({ clock }) => {
+    if (group.current) group.current.rotation.z = -clock.elapsedTime * 0.25;
+    if (ticker.current) {
+      const a = clock.elapsedTime * 2.5;
+      ticker.current.position.set(Math.cos(a) * 0.45, Math.sin(a) * 0.45, 0);
+    }
+  });
+  return (
+    <group ref={group} position={[0, 0, 0.08]}>
+      <mesh>
+        <torusGeometry args={[0.45, 0.016, 8, 64]} />
+        <meshBasicMaterial color={aqua} />
+      </mesh>
+      <mesh ref={ticker}>
+        <sphereGeometry args={[0.045, 8, 8]} />
+        <meshBasicMaterial color={aqua} />
+      </mesh>
+      <mesh>
+        <circleGeometry args={[0.12, 16]} />
+        <meshBasicMaterial color={aqua} transparent opacity={0.4} />
+      </mesh>
+    </group>
+  );
+}
+
+function ProjectVisualSwitcher({ index }: { index: number }) {
+  if (index === 0) return <VisualAIIncident />;
+  if (index === 1) return <VisualSolisIQ />;
+  if (index === 2) return <VisualInstanews />;
+  return <VisualZeroHour />;
+}
+
+/**
+ * 4. FLOATING 3D PROJECT SLABS
+ * Glass slabs arranged in depth along the curved backbone trajectory with hover tilt,
+ * shader reveal, dynamic labels, and camera dive transitions.
+ */
+function ProjectSlabs() {
+  const theme = useTheme();
+  const coords = vConfig.projects.coords;
+  const labelTextures = useMemo(
+    () => projectsData.map((project, index) => makePortalLabel(project.name, index, theme)),
+    [theme]
+  );
+
+  useEffect(() => () => labelTextures.forEach((texture) => texture.dispose()), [labelTextures]);
+
+  return (
+    <group>
+      {projectsData.map((project, index) => {
+        const coord = coords[index];
+        return (
+          <ProjectSingleSlab
+            key={project.id}
+            project={project}
+            index={index}
+            coord={coord}
+            texture={labelTextures[index]}
+          />
+        );
+      })}
+    </group>
+  );
+}
+
+function ProjectSingleSlab({
+  index,
+  coord,
+  texture,
+}: {
+  project: (typeof projectsData)[0];
+  index: number;
+  coord: (typeof vConfig.projects.coords)[0];
+  texture: THREE.CanvasTexture;
+}) {
+  const slabRef = useRef<THREE.Group>(null);
+  const { slabWidth, slabHeight, slabDepth } = vConfig.projects;
+  const aquaColor = useAuroraColor('--accent-aqua');
+  const surfaceColor = useAuroraColor('--surface');
+
+  useFrame(({ clock }, delta) => {
+    if (!slabRef.current) return;
+    const safeDelta = Math.min(delta, 0.05);
+    const cameraZ = vConfig.camera.initialZ - experienceState.scrollProgress * vConfig.camera.travelZ;
+    const distToCamera = Math.abs(coord.z - cameraZ);
+    const isNearby = distToCamera < 10.0;
+
+    // Settle toward front face when approaching
+    const targetRotY = isNearby
+      ? (coord.side === 'left' ? 0.08 : -0.08) + experienceState.pointerX * 0.08
+      : (coord.side === 'left' ? 0.22 : -0.22);
+    const targetRotX = isNearby ? -experienceState.pointerY * 0.08 : 0;
+
+    slabRef.current.rotation.y = THREE.MathUtils.damp(slabRef.current.rotation.y, targetRotY, 4, safeDelta);
+    slabRef.current.rotation.x = THREE.MathUtils.damp(slabRef.current.rotation.x, targetRotX, 4, safeDelta);
+
+    // Subtle floating breathing
+    slabRef.current.position.y = coord.y + Math.sin(clock.elapsedTime * 0.7 + index) * 0.04;
+  });
+
+  return (
+    <group ref={slabRef} position={[coord.x, coord.y, coord.z]}>
+      {/* Physical Rounded Glass Slab */}
+      <RoundedBox args={[slabWidth, slabHeight, slabDepth]} radius={0.08} smoothness={2}>
+        <meshPhysicalMaterial
+          color={surfaceColor}
+          roughness={0.25}
+          metalness={0.12}
+          clearcoat={0.6}
+          transparent
+          opacity={0.84}
+        />
+      </RoundedBox>
+
+      {/* Front Canvas Label Overlay */}
+      <mesh position={[0, 0, slabDepth * 0.5 + 0.005]}>
+        <planeGeometry args={[slabWidth * 0.94, slabHeight * 0.94]} />
+        <meshBasicMaterial map={texture} transparent toneMapped={false} />
+      </mesh>
+
+      {/* Glowing Rim Wireframe */}
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[slabWidth * 1.01, slabHeight * 1.01, slabDepth * 1.05]} />
+        <meshBasicMaterial color={aquaColor} wireframe transparent opacity={0.28} />
+      </mesh>
+
+      {/* Attached Procedural 3D Visual */}
+      <group position={[coord.side === 'left' ? 0.75 : -0.75, 0.42, 0.05]}>
+        <ProjectVisualSwitcher index={index} />
+      </group>
+    </group>
+  );
+}
+
+/**
+ * 5. THE LAB (SKILLS CONSTELLATION & HONEYCOMB FLOOR)
+ */
+function LabHoneycombFloor() {
   useTheme();
   const mesh = useRef<THREE.InstancedMesh>(null);
-  const count = 19;
-  const geometry = useMemo(() => new THREE.CylinderGeometry(0.62, 0.62, 0.016, 6, 1, true), []);
-  const material = useMemo(() => new THREE.MeshBasicMaterial({ color: color(config.scene.colors.aqua), wireframe: true, transparent: true, opacity: 0.24 }), []);
+  const count = 25;
+  const geometry = useMemo(() => new THREE.CylinderGeometry(0.68, 0.68, 0.018, 6, 1, true), []);
+  const material = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: color('--accent-aqua'),
+        wireframe: true,
+        transparent: true,
+        opacity: 0.28,
+      }),
+    []
+  );
   const dummy = useMemo(() => new THREE.Object3D(), []);
-  const aquaValue = cssColor(config.scene.colors.aqua);
+  const aquaValue = cssColor('--accent-aqua');
+
   useEffect(() => {
     if (!mesh.current) return;
     let index = 0;
-    for (let row = -2; row <= 2; row += 1) {
-      for (let column = -2; column <= 2; column += 1) {
+    for (let r = -2; r <= 2; r++) {
+      for (let c = -2; c <= 2; c++) {
         if (index >= count) break;
-        dummy.position.set(column * 1.08 + (row % 2) * 0.54, -1.42, row * 0.94);
+        dummy.position.set(c * 1.18 + (r % 2) * 0.59, -1.6, r * 1.02);
         dummy.updateMatrix();
         mesh.current.setMatrixAt(index, dummy.matrix);
-        index += 1;
+        index++;
       }
     }
     mesh.current.instanceMatrix.needsUpdate = true;
-    // Material color is GPU state; update it only when the Aurora token changes.
-    // eslint-disable-next-line react/immutability
     material.color.set(aquaValue);
   }, [aquaValue, dummy, material]);
+
   return <instancedMesh ref={mesh} args={[geometry, material, count]} />;
 }
 
-function RingParticles() {
+function LabSkillsConstellation() {
   useTheme();
-  const particles = useRef<THREE.InstancedMesh>(null);
-  const count = 42;
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-  const geometry = useMemo(() => new THREE.IcosahedronGeometry(0.025, 0), []);
-  const material = useMemo(() => new THREE.MeshBasicMaterial({ color: color(config.scene.colors.aqua), transparent: true, opacity: 0.8 }), []);
-  const aquaValue = cssColor(config.scene.colors.aqua);
+  const count = skillsCategories.reduce((total, cat) => total + cat.skills.length, 0);
+  const [activeSkill, setActiveSkill] = useState('');
+  const aqua = useAuroraColor('--accent-aqua');
+  const violet = useAuroraColor('--accent-violet');
+
   useEffect(() => {
-    // Keep the particle tint in sync with the mutable material when the theme changes.
-    // eslint-disable-next-line react/immutability
-    material.color.set(aquaValue);
-  }, [aquaValue, material]);
-  useFrame(({ clock }) => {
-    if (!particles.current) return;
-    const time = clock.elapsedTime;
-    for (let index = 0; index < count; index += 1) {
-      const phase = (index / count) * Math.PI * 2 + time * 0.08;
-      const pulse = (Math.sin(time * 0.48 + index * 0.31) + 1) * 0.5;
-      const radius = 1.75 + (1 - pulse) * 0.72;
-      dummy.position.set(Math.cos(phase) * radius, Math.sin(phase * 1.3) * 0.28, Math.sin(phase) * radius * 0.22);
-      dummy.scale.setScalar(0.45 + pulse * 0.7);
-      dummy.updateMatrix();
-      particles.current.setMatrixAt(index, dummy.matrix);
+    const update = (e: Event) => setActiveSkill((e as CustomEvent<string>).detail);
+    window.addEventListener('aurora-skill-change', update);
+    return () => window.removeEventListener('aurora-skill-change', update);
+  }, []);
+
+  const beamGeometry = useMemo(() => {
+    const positions = new Float32Array(count * 6);
+    let index = 0;
+    for (const category of skillsCategories) {
+      for (let s = 0; s < category.skills.length; s++) {
+        const angle = (index / count) * Math.PI * 2;
+        const radius = 1.6 + (index % 3) * 0.25;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius * 0.6;
+        const z = Math.sin(angle * 2) * 0.35;
+        positions.set([0, 0, 0, x, y, z], index * 6);
+        index++;
+      }
     }
-    particles.current.instanceMatrix.needsUpdate = true;
-  });
-  return <instancedMesh ref={particles} args={[geometry, material, count]} />;
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    return geom;
+  }, [count]);
+
+  const beamMaterial = useMemo(
+    () =>
+      new THREE.LineBasicMaterial({
+        color: activeSkill ? aqua : violet,
+        transparent: true,
+        opacity: activeSkill ? 0.75 : 0.35,
+        depthWrite: false,
+      }),
+    [activeSkill, aqua, violet]
+  );
+
+  return (
+    <group>
+      <LabHoneycombFloor />
+      <lineSegments geometry={beamGeometry} material={beamMaterial} />
+    </group>
+  );
 }
 
-function RoomVisuals() {
-  useTheme();
-  const about = useRef<THREE.Group>(null);
-  const skills = useRef<THREE.Group>(null);
-  const contact = useRef<THREE.Group>(null);
-  const linePoints = useMemo(() => [new THREE.Vector3(-2, -0.9, 0), new THREE.Vector3(-1, -0.25, 0), new THREE.Vector3(0, 0.35, 0), new THREE.Vector3(1, 0.7, 0), new THREE.Vector3(2, 1.1, 0)], []);
+/**
+ * 6. CALM SCENES: ABOUT & CONTACT
+ */
+function CalmSceneVisuals() {
+  const aboutRef = useRef<THREE.Group>(null);
+  const contactRef = useRef<THREE.Group>(null);
+  const aqua = useAuroraColor('--accent-aqua');
+  const magenta = useAuroraColor('--accent-magenta');
+
+  // Education Timeline 3D Line
+  const linePoints = useMemo(
+    () => [
+      new THREE.Vector3(-2.2, -0.8, 0),
+      new THREE.Vector3(-1.1, -0.2, 0),
+      new THREE.Vector3(0, 0.35, 0),
+      new THREE.Vector3(1.1, 0.75, 0),
+      new THREE.Vector3(2.2, 1.15, 0),
+    ],
+    []
+  );
   const lineGeometry = useMemo(() => new THREE.BufferGeometry().setFromPoints(linePoints), [linePoints]);
-  const timelineLine = useMemo(() => new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ color: color(config.scene.colors.aqua), transparent: true, opacity: 0.48 })), [lineGeometry]);
-  const aqua = useAuroraColor(config.scene.colors.aqua);
-  const magenta = useAuroraColor(config.scene.colors.magenta);
-  useEffect(() => {
-    // Line material tint is shared GPU state updated on theme changes.
-    // eslint-disable-next-line react/immutability
-    (timelineLine.material as THREE.LineBasicMaterial).color.copy(aqua);
-  }, [aqua, timelineLine]);
-  useEffect(() => {
-    return () => lineGeometry.dispose();
-  }, [lineGeometry]);
+  const lineMaterial = useMemo(
+    () => new THREE.LineBasicMaterial({ color: aqua, transparent: true, opacity: 0.5 }),
+    [aqua]
+  );
+
   useFrame((_, delta) => {
     const safeDelta = Math.min(delta, 0.05);
-    if (about.current) about.current.position.z = THREE.MathUtils.damp(about.current.position.z, -config.scene.camera.travelZ * experienceState.roomProgress.about, 4, safeDelta);
-    if (skills.current) skills.current.position.z = THREE.MathUtils.damp(skills.current.position.z, -config.scene.camera.travelZ * experienceState.roomProgress.skills, 4, safeDelta);
-    if (contact.current) contact.current.position.z = THREE.MathUtils.damp(contact.current.position.z, -config.scene.camera.travelZ * experienceState.roomProgress.contact, 4, safeDelta);
-    if (skills.current) skills.current.rotation.z = Math.sin(performance.now() * 0.00012) * 0.035;
-    if (contact.current) contact.current.rotation.z = performance.now() * 0.000035;
+    const travel = vConfig.camera.travelZ;
+    if (aboutRef.current) {
+      aboutRef.current.position.z = THREE.MathUtils.damp(
+        aboutRef.current.position.z,
+        -travel * experienceState.roomProgress.about,
+        4,
+        safeDelta
+      );
+    }
+    if (contactRef.current) {
+      contactRef.current.position.z = THREE.MathUtils.damp(
+        contactRef.current.position.z,
+        -travel * experienceState.roomProgress.contact,
+        4,
+        safeDelta
+      );
+      contactRef.current.rotation.z += 0.002;
+    }
   });
+
   return (
     <>
-      <group ref={about}>
-        <primitive object={timelineLine} />
-        {linePoints.map((point, index) => <mesh key={index} position={[point.x, point.y, 0]}><sphereGeometry args={[index === 0 ? 0.075 : 0.12, 10, 10]} /><meshBasicMaterial color={index % 2 ? aqua : magenta} /></mesh>)}
+      {/* About Timeline Scene */}
+      <group ref={aboutRef}>
+        <line geometry={lineGeometry} material={lineMaterial} />
+        {linePoints.map((pt, i) => (
+          <mesh key={i} position={[pt.x, pt.y, 0]}>
+            <sphereGeometry args={[0.09, 12, 12]} />
+            <meshBasicMaterial color={i % 2 === 0 ? aqua : magenta} />
+          </mesh>
+        ))}
       </group>
-      <group ref={skills}>
-        <HoneycombFloor />
-        <SkillsConstellation />
-      </group>
-      <group ref={contact}>
-        <RingParticles />
-        <mesh rotation={[0.3, 0, 0]}><torusGeometry args={[1.75, 0.035, 10, 80]} /><meshBasicMaterial color={magenta} transparent opacity={0.78} /></mesh>
-        <mesh rotation={[0.3, 0.5, 0]}><torusGeometry args={[1.44, 0.012, 8, 80]} /><meshBasicMaterial color={aqua} transparent opacity={0.66} /></mesh>
-        <pointLight color={magenta} intensity={0.55} distance={10} />
+
+      {/* Contact Converging Ring Scene */}
+      <group ref={contactRef}>
+        <mesh rotation={[0.4, 0, 0]}>
+          <torusGeometry args={[1.8, 0.025, 10, 64]} />
+          <meshBasicMaterial color={magenta} transparent opacity={0.75} />
+        </mesh>
+        <mesh rotation={[0.4, 0.6, 0]}>
+          <torusGeometry args={[1.45, 0.012, 8, 64]} />
+          <meshBasicMaterial color={aqua} transparent opacity={0.6} />
+        </mesh>
+        <pointLight color={magenta} intensity={0.6} distance={12} />
       </group>
     </>
   );
 }
 
-function ShaderTransition() {
-  const mesh = useRef<THREE.Mesh>(null);
-  const material = useRef<THREE.ShaderMaterial>(null);
-  useTheme();
-  const indigo = useAuroraColor(config.scene.colors.indigo);
-  const aqua = useAuroraColor(config.scene.colors.aqua);
-  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uProgress: { value: 0 }, uIndigo: { value: indigo }, uAqua: { value: aqua } }), [indigo, aqua]);
-  useFrame(({ camera, clock }) => {
-    if (!mesh.current || !material.current) return;
-    mesh.current.position.copy(camera.position);
-    mesh.current.rotation.copy(camera.rotation);
-    mesh.current.translateZ(-0.8);
-    material.current.uniforms.uTime.value = clock.elapsedTime;
-    material.current.uniforms.uProgress.value = experienceState.detailZoom;
-  });
-  return (
-    <mesh ref={mesh} renderOrder={90} frustumCulled={false}>
-      <planeGeometry args={[20, 14]} />
-      <shaderMaterial
-        ref={material}
-        transparent
-        depthTest={false}
-        depthWrite={false}
-        toneMapped={false}
-        uniforms={uniforms}
-        vertexShader={`varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`}
-        fragmentShader={`
-          uniform float uTime; uniform float uProgress; uniform vec3 uIndigo; uniform vec3 uAqua; varying vec2 vUv;
-          void main(){
-            float noise=0.5+0.25*sin(vUv.x*29.0+sin(vUv.y*17.0+uTime*0.45))+0.25*cos(vUv.y*31.0-vUv.x*13.0);
-            float dissolve=1.0-smoothstep(uProgress-0.12,uProgress+0.12,noise);
-            float ripple=0.5+0.5*sin(length(vUv-0.5)*45.0-uTime*4.0);
-            float alpha=dissolve*uProgress*0.12+ripple*uProgress*(1.0-uProgress)*0.035;
-            vec3 tint=mix(uIndigo,uAqua,step(0.5,fract(vUv.x*8.0+uTime*0.12)));
-            gl_FragColor=vec4(tint,alpha);
-          }
-        `}
-      />
-    </mesh>
-  );
-}
-
+/**
+ * 7. CINEMATIC CAMERA SYSTEM
+ * GSAP/frame damped interpolation along the spine with pointer parallax and breathing kinematics.
+ */
 function CameraRig() {
   const camera = useThree((state) => state.camera);
+
   useFrame(({ clock }, delta) => {
     const safeDelta = Math.min(delta, 0.05);
-    const dive = experienceState.detailZoom * config.motion.cameraDiveDuration;
-    const targetZ = config.scene.camera.initialZ - config.scene.camera.travelZ * experienceState.scrollProgress - dive;
-    // The camera is a persistent Three object updated by R3F's frame loop.
-    // eslint-disable-next-line react/immutability
-    camera.position.z = THREE.MathUtils.damp(camera.position.z, targetZ, config.motion.cameraDamping, safeDelta);
-    camera.position.y = Math.sin(clock.elapsedTime * config.scene.camera.breathingSpeed) * config.scene.camera.breathing;
-    camera.rotation.x = THREE.MathUtils.damp(camera.rotation.x, -experienceState.pointerY * 0.012, config.motion.pointerDamping, safeDelta);
-    camera.rotation.y = THREE.MathUtils.damp(camera.rotation.y, experienceState.pointerX * 0.017, config.motion.pointerDamping, safeDelta);
+    const dive = experienceState.detailZoom * vConfig.camera.diveDuration;
+    const targetZ =
+      vConfig.camera.initialZ - vConfig.camera.travelZ * experienceState.scrollProgress - dive;
+
+    camera.position.z = THREE.MathUtils.damp(camera.position.z, targetZ, vConfig.camera.damping, safeDelta);
+    camera.position.y =
+      Math.sin(clock.elapsedTime * vConfig.camera.breathingSpeed) * vConfig.camera.breathingAmp;
+
+    camera.rotation.x = THREE.MathUtils.damp(
+      camera.rotation.x,
+      -experienceState.pointerY * vConfig.camera.mouseLookY,
+      vConfig.camera.damping,
+      safeDelta
+    );
+    camera.rotation.y = THREE.MathUtils.damp(
+      camera.rotation.y,
+      experienceState.pointerX * vConfig.camera.mouseLookX,
+      vConfig.camera.damping,
+      safeDelta
+    );
   });
+
   return null;
 }
 
-function ThemeFog() {
-  useTheme();
-  const fogColor = useAuroraColor(config.scene.colors.background);
-  return <fog attach="fog" args={[fogColor, 20, 78]} />;
-}
-
+/**
+ * 8. WORLD SCENE COMPOSITION
+ */
 function WorldScene({ quality }: { quality: Quality }) {
   const theme = useTheme();
-  const background = useAuroraColor(config.scene.colors.background);
+  const bg = useAuroraColor('--bg');
+  const violet = useAuroraColor('--accent-violet');
+  const aqua = useAuroraColor('--accent-aqua');
+
   useEffect(() => {
     document.documentElement.classList.add('webgl-world-ready');
     return () => document.documentElement.classList.remove('webgl-world-ready');
   }, []);
+
   return (
     <>
-      <color attach="background" args={[background]} />
-      <ThemeFog />
-      <ambientLight intensity={theme === 'night' ? 0.85 : 0.7} />
-      <directionalLight position={[-4, 6, 4]} color={color(config.scene.colors.violet)} intensity={1.25} />
-      <directionalLight position={[4, -3, -10]} color={color(config.scene.colors.aqua)} intensity={0.55} />
+      <color attach="background" args={[bg]} />
+      <fog attach="fog" args={[bg, 18, 85]} />
+      <ambientLight intensity={theme === 'night' ? 0.9 : 0.75} />
+      <directionalLight position={[-4, 7, 5]} color={violet} intensity={1.3} />
+      <directionalLight position={[4, -4, -12]} color={aqua} intensity={0.65} />
+
       <CameraRig />
       <ParticleField quality={quality} />
-      <AuroraBeam x={-3.4} z={-26} token={config.scene.colors.violet} />
-      <AuroraBeam x={3.8} z={-57} token={config.scene.colors.aqua} />
-      <HeroRoom />
-      <RoomVisuals />
-      <ProjectPortals />
-      <ShaderTransition />
-      {quality === 'high' && window.innerWidth > config.scene.quality.mobileWidth && (
+      <ProjectBackbone />
+      <ProjectSlabs />
+
+      {/* Lab Skills Scene */}
+      <group position={[0, 0, -vConfig.camera.travelZ * 0.48]}>
+        <LabSkillsConstellation />
+      </group>
+
+      {/* Calm Scenes (About Timeline & Contact Convergence) */}
+      <CalmSceneVisuals />
+
+      {/* Postprocessing Bloom on High-tier Desktop Only */}
+      {quality === 'high' && window.innerWidth > vConfig.quality.mobileBreakpoint && (
         <EffectComposer multisampling={0}>
-          <Bloom intensity={0.45} luminanceThreshold={1.15} mipmapBlur />
+          <Bloom intensity={0.42} luminanceThreshold={1.15} mipmapBlur />
           <Vignette eskil={false} offset={0.12} darkness={0.22} />
         </EffectComposer>
       )}
@@ -592,13 +851,22 @@ function WorldScene({ quality }: { quality: Quality }) {
   );
 }
 
+/**
+ * 9. UNIFIED RENDER LOOP & SCROLL CONTROLLER
+ * Lenis + GSAP + Three.js single RAF loop. Pauses completely when tab is hidden.
+ */
 function ScrollDriver() {
   useEffect(() => {
     let lenis: Lenis | null = null;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduced) {
-      lenis = new Lenis({ duration: 0.85, smoothWheel: true, syncTouch: false, wheelMultiplier: 0.9 });
-      setSmoothScroll((id) => lenis?.scrollTo(`#${id}`, { offset: -16, duration: 0.85 }));
+      lenis = new Lenis({
+        duration: vConfig.motion.scrollDuration,
+        smoothWheel: true,
+        syncTouch: false,
+        wheelMultiplier: 0.9,
+      });
+      setSmoothScroll((id) => lenis?.scrollTo(`#${id}`, { offset: -16, duration: vConfig.motion.scrollDuration }));
     }
 
     const measure = () => {
@@ -612,10 +880,12 @@ function ScrollDriver() {
       }
       experienceState.scrollProgress = clamp01(window.scrollY / maxScroll);
     };
+
     const onScroll = () => {
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       experienceState.scrollProgress = clamp01(window.scrollY / maxScroll);
     };
+
     measure();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', measure, { passive: true });
@@ -627,6 +897,7 @@ function ScrollDriver() {
       advance(time * 1000, true);
     };
     gsap.ticker.add(tick);
+
     return () => {
       gsap.ticker.remove(tick);
       lenis?.destroy();
@@ -636,9 +907,13 @@ function ScrollDriver() {
       window.removeEventListener('load', measure);
     };
   }, []);
+
   return null;
 }
 
+/**
+ * 10. MAIN EXPORT: ExperienceCanvas
+ */
 export default function ExperienceCanvas() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const device = navigator as Navigator & { deviceMemory?: number };
@@ -647,9 +922,11 @@ export default function ExperienceCanvas() {
   const [failed, setFailed] = useState(false);
   const lowFpsSample = useRef({ start: 0, frames: 0, lastReduction: 0 });
 
+  // Adaptive Quality Monitor: Steps down if FPS drops below threshold
   useEffect(() => {
     if (reducedMotion || veryWeak) return;
     lowFpsSample.current.start = performance.now();
+
     const tick = () => {
       const sample = lowFpsSample.current;
       if (document.hidden) {
@@ -660,12 +937,13 @@ export default function ExperienceCanvas() {
       sample.frames += 1;
       const now = performance.now();
       if (now - sample.start < 1800) return;
-      const fps = sample.frames * 1000 / (now - sample.start);
+      const fps = (sample.frames * 1000) / (now - sample.start);
       sample.frames = 0;
       sample.start = now;
-      if (fps < config.scene.quality.reduceAtFps && now - sample.lastReduction > 4500) {
+
+      if (fps < vConfig.quality.fpsThresholdDown && now - sample.lastReduction > 4500) {
         sample.lastReduction = now;
-        setQuality((current) => current === 'high' ? 'medium' : 'low');
+        setQuality((curr) => (curr === 'high' ? 'medium' : 'low'));
       }
     };
     gsap.ticker.add(tick);
@@ -673,29 +951,40 @@ export default function ExperienceCanvas() {
   }, [reducedMotion, veryWeak]);
 
   useEffect(() => {
-    const resize = () => {
-      if (window.innerWidth <= config.scene.quality.mobileWidth) setQuality('low');
+    const handleResize = () => {
+      if (window.innerWidth <= vConfig.quality.mobileBreakpoint) setQuality('low');
     };
-    window.addEventListener('resize', resize, { passive: true });
-    return () => window.removeEventListener('resize', resize);
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   if (reducedMotion || veryWeak || failed || !('WebGLRenderingContext' in window)) return null;
-  const dpr = config.scene.quality[quality].maxDpr;
+
+  const dpr = vConfig.quality[quality].maxDpr;
+
   return (
     <div className="experience-canvas" aria-hidden="true">
       <ScrollDriver />
       <Canvas
         frameloop="never"
         dpr={dpr}
-        camera={{ position: [0, 0, config.scene.camera.initialZ], fov: config.scene.camera.fov, near: 0.1, far: 120 }}
+        camera={{
+          position: [0, 0, vConfig.camera.initialZ],
+          fov: vConfig.camera.fov,
+          near: 0.1,
+          far: 120,
+        }}
         gl={{ alpha: false, antialias: quality === 'high', powerPreference: 'high-performance' }}
         onCreated={({ gl }) => {
-          gl.domElement.addEventListener('webglcontextlost', (event) => {
-            event.preventDefault();
-            document.documentElement.classList.remove('webgl-world-ready');
-            setFailed(true);
-          }, { once: true });
+          gl.domElement.addEventListener(
+            'webglcontextlost',
+            (e) => {
+              e.preventDefault();
+              document.documentElement.classList.remove('webgl-world-ready');
+              setFailed(true);
+            },
+            { once: true }
+          );
         }}
       >
         <React.Suspense fallback={null}>

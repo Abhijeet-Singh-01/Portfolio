@@ -4,6 +4,9 @@ import './index.css'
 import App from './App.tsx'
 import { careerObjective, personalBio } from './data/education.ts'
 import { sameAsLinks, siteLinks } from './data/socialLinks.ts'
+import { experienceState } from './lib/experienceStore.ts'
+
+experienceState.theme = document.documentElement.dataset.theme === 'night' ? 'night' : 'light'
 
 const personSchema = document.createElement('script')
 personSchema.type = 'application/ld+json'

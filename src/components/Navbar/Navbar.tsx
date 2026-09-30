@@ -23,6 +23,7 @@ const destinations: NavDestination[] = [
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(() => sound.isEnabled());
+  const [isLite, setIsLite] = useState(false);
   const [theme, setTheme] = useState<AuroraTheme>(() =>
     typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light' ? 'light' : 'night'
   );
@@ -75,6 +76,13 @@ export const Navbar: React.FC = () => {
     const nextTheme: AuroraTheme = theme === 'night' ? 'light' : 'night';
     applyAuroraTheme(nextTheme);
     setTheme(nextTheme);
+  };
+
+  const toggleLiteMode = () => {
+    const nextLite = !isLite;
+    setIsLite(nextLite);
+    experienceState.liteMode = nextLite;
+    window.dispatchEvent(new CustomEvent('aurora-lite-mode-change', { detail: nextLite }));
   };
 
   return (
@@ -205,6 +213,15 @@ export const Navbar: React.FC = () => {
               >
                 {soundOn ? <Volume2 className="w-3.5 h-3.5 text-accent-lime" /> : <VolumeX className="w-3.5 h-3.5 text-text-2" />}
                 <span>{soundOn ? 'AUDIO ON' : 'AUDIO OFF'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={toggleLiteMode}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/25 bg-surface/60 text-xs font-mono uppercase tracking-widest text-text hover:border-accent-aqua/50 transition-all focus-visible:ring-2 focus-visible:ring-accent-aqua"
+                aria-label="Toggle 3D world or 2D Lite mode"
+              >
+                <span>{isLite ? '3D WORLD' : 'LITE MODE'}</span>
               </button>
 
               <a

@@ -44,12 +44,12 @@ export const achievementData = [
 ];
 
 export const careerObjective =
-  'Computer Science undergraduate seeking software development opportunities in backend and full-stack engineering, interested in scalable APIs, database-driven applications, and AI-powered solutions, while strengthening DSA, Generative AI, and modern software development.';
+  'Computer Science undergraduate seeking software development opportunities to apply problem-solving and programming skills in backend and full-stack engineering. Interested in building scalable APIs, database-driven applications, and AI-powered solutions while strengthening expertise in DSA, Generative AI, and modern software development.';
 
 export const personalBio = {
   name: 'Abhijeet Singh',
   role: 'Computer Science undergraduate',
-  subRole: 'Backend & Full-Stack Engineering · AI/ML · DSA',
+  subRole: 'Software Developer · AI/ML · Full-Stack Development',
   location: 'Lucknow, India',
   college: 'Pranveer Singh Institute of Technology (PSIT), AKTU',
   years: '2024 - 2028',
