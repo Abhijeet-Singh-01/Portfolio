@@ -10,6 +10,7 @@ import { experienceConfig as config } from '../../config/experienceConfig';
 import { experienceState, setSmoothScroll } from '../../lib/experienceStore';
 import { projectsData } from '../../data/projects';
 import { skillsCategories } from '../../data/skills';
+import { getTimelineState } from '../../config/sceneTimeline';
 
 type Quality = 'high' | 'medium' | 'low';
 const PARTICLE_COUNTS: Record<Quality, number> = {
@@ -229,26 +230,17 @@ function StorytellingEnvironment() {
 
   useFrame((_, delta) => {
     const safeDelta = Math.min(delta, 0.05);
-    const scrollZ = experienceState.scrollProgress * vConfig.camera.travelZ;
-    const cameraZ = vConfig.camera.initialZ - scrollZ;
+    const timeline = getTimelineState(experienceState.scrollProgress);
 
-    // Determine current project lighting influence based on activeProject or camera Z depth
-    const active = experienceState.activeProject;
-    let target = defaultColors;
-    if (active === 0 || (active === -1 && cameraZ <= -10 && cameraZ > -24)) {
-      target = p1Colors;
-    } else if (active === 1 || (active === -1 && cameraZ <= -24 && cameraZ > -38)) {
-      target = p2Colors;
-    } else if (active === 2 || (active === -1 && cameraZ <= -38 && cameraZ > -52)) {
-      target = p3Colors;
-    } else if (active === 3 || (active === -1 && cameraZ <= -52 && cameraZ > -68)) {
-      target = p4Colors;
-    }
+    tempAmbient.set(timeline.lighting.ambient);
+    tempKey.set(timeline.lighting.key);
+    tempFill.set(timeline.lighting.fill);
+    tempFog.set(timeline.lighting.fog);
 
-    if (ambientRef.current) ambientRef.current.color.lerp(target.ambient, safeDelta * 2.5);
-    if (keyRef.current) keyRef.current.color.lerp(target.key, safeDelta * 2.5);
-    if (fillRef.current) fillRef.current.color.lerp(target.fill, safeDelta * 2.5);
-    if (fogRef.current) fogRef.current.color.lerp(target.fog, safeDelta * 2.5);
+    if (ambientRef.current) ambientRef.current.color.lerp(tempAmbient, safeDelta * 3.5);
+    if (keyRef.current) keyRef.current.color.lerp(tempKey, safeDelta * 3.5);
+    if (fillRef.current) fillRef.current.color.lerp(tempFill, safeDelta * 3.5);
+    if (fogRef.current) fogRef.current.color.lerp(tempFog, safeDelta * 3.5);
   });
 
   return (
@@ -611,25 +603,34 @@ function LivingArchitecturalSpine() {
     if (!nodesMesh.current || !spineGroup.current) return;
     const time = clock.elapsedTime;
     const safeDelta = Math.min(delta, 0.05);
-    const scrollZ = experienceState.scrollProgress * vConfig.camera.travelZ;
+    const timeline = getTimelineState(experienceState.scrollProgress);
+    const dispersion = timeline.spineDispersion;
 
     // Organic axial sway
     spineGroup.current.rotation.z = Math.sin(time * 0.12) * 0.06;
+
     // When inspecting or active, shift spine slightly to side to heroize the project
-    const activeIdx = experienceState.activeProject;
-    const targetSpineX = activeIdx >= 0 ? (vConfig.projects.coords[activeIdx]?.side === 'left' ? 1.4 : -1.4) : 0;
+    const activeIdx = timeline.activeProjectIndex;
+    const targetSpineX = activeIdx >= 0 ? (vConfig.projects.coords[activeIdx]?.side === 'left' ? 1.6 : -1.6) : 0;
     spineGroup.current.position.x = THREE.MathUtils.damp(spineGroup.current.position.x, targetSpineX, 3.5, safeDelta);
 
     // Traveling Data Conduit Energy Pulse along spine nodes
     for (let i = 0; i < totalNodes; i++) {
       const d = nodeData[i];
       // Wave traveling forward along Z
-      const wave = Math.sin(d.z * vConfig.backbone.pulseFrequency + time * vConfig.backbone.pulseSpeed);
-      const isNearProject = Math.abs(-d.z - scrollZ) < 7.0;
+      const wave = Math.sin(d.z * vConfig.backbone.pulseFrequency + time * 1.8 + timeline.energyPulsePhase);
+      const isNearProject = Math.abs(-d.z - (vConfig.camera.initialZ - timeline.cameraPos.z)) < 7.0;
 
-      const scale = (0.75 + wave * 0.35 + (isNearProject ? 0.7 : 0)) * d.thickness;
+      // When dispersion > 0 (transitioning into skills constellation), nodes detach and fly outward
+      const disperseDist = dispersion * (3.8 + (i % 7) * 0.65);
+      const disperseAngle = i * 0.45;
+      const posX = d.x + Math.cos(disperseAngle) * disperseDist;
+      const posY = d.y + Math.sin(disperseAngle) * disperseDist;
+      const posZ = d.z;
 
-      dummy.position.set(d.x, d.y, d.z);
+      const scale = (0.75 + wave * 0.35 + (isNearProject ? 0.7 : 0)) * d.thickness * (1.0 - dispersion * 0.55);
+
+      dummy.position.set(posX, posY, posZ);
       dummy.scale.setScalar(scale);
       dummy.rotation.set(time * 0.3 + i, time * 0.2, i);
       dummy.updateMatrix();
@@ -1044,18 +1045,17 @@ function PhysicalArtifactSingle({
   useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
     const safeDelta = Math.min(delta, 0.05);
-    const scrollZ = experienceState.scrollProgress * vConfig.camera.travelZ;
-    const distToCamera = Math.abs(coord.z - (vConfig.camera.initialZ - scrollZ));
-    const isApproaching = distToCamera < 12.0;
-    const isActive = experienceState.activeProject === index || (isApproaching && distToCamera < 5.0);
+    const timeline = getTimelineState(experienceState.scrollProgress);
+    const visibility = timeline.projectVisibilities[index] || 0;
+    const isActive = timeline.activeProjectIndex === index || experienceState.activeProject === index;
 
     // Dynamic 3D Composition: Projects sit at natural angles (front vs side),
     // then gracefully ease forward when actively inspected
     const baseRotY = coord.rotY;
     const baseRotX = coord.rotX;
-    const targetRotY = isActive ? baseRotY * 0.35 + experienceState.pointerX * 0.12 : baseRotY;
-    const targetRotX = isActive ? baseRotX * 0.4 - experienceState.pointerY * 0.1 : baseRotX;
-    const targetScale = isActive ? coord.scale * inspectScale : coord.scale;
+    const targetRotY = isActive ? baseRotY * 0.25 + experienceState.pointerX * 0.12 : baseRotY;
+    const targetRotX = isActive ? baseRotX * 0.25 - experienceState.pointerY * 0.1 : baseRotX;
+    const targetScale = coord.scale * (0.6 + visibility * 0.75);
 
     groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, targetRotY, 3.8, safeDelta);
     groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, targetRotX, 3.8, safeDelta);
@@ -1068,7 +1068,7 @@ function PhysicalArtifactSingle({
 
     // Visual mount expands and rotates slightly
     if (visualMountRef.current) {
-      visualMountRef.current.scale.setScalar(isActive ? 1.25 : 1.0);
+      visualMountRef.current.scale.setScalar(isActive ? 1.35 : 1.0);
     }
   });
 
@@ -1366,42 +1366,49 @@ function CalmSceneVisuals() {
 // ----------------------------------------------------------------------------------
 function CameraRig() {
   const camera = useThree((state) => state.camera as THREE.PerspectiveCamera);
-  const lastScrollZ = useRef(0);
+  const lastProgress = useRef(experienceState.scrollProgress);
 
   useFrame(({ clock }, delta) => {
     const safeDelta = Math.min(delta, 0.05);
+    const p = experienceState.scrollProgress;
+    const velocity = (p - lastProgress.current) / safeDelta;
+    lastProgress.current = p;
+
+    const timeline = getTimelineState(p, velocity);
     const dive = experienceState.detailZoom * vConfig.camera.diveDuration * 3.5;
-    const targetZ = vConfig.camera.initialZ - vConfig.camera.travelZ * experienceState.scrollProgress - dive;
 
-    // Velocity-based Dynamic FOV: stretches wider on fast scroll, compresses tight on inspection dive
-    const velocityZ = Math.abs(targetZ - lastScrollZ.current) / safeDelta;
-    lastScrollZ.current = targetZ;
+    // Camera 3D spline position interpolation
+    camera.position.x = THREE.MathUtils.damp(
+      camera.position.x,
+      timeline.cameraPos.x + experienceState.pointerX * 0.18,
+      vConfig.camera.damping,
+      safeDelta
+    );
+    camera.position.y = THREE.MathUtils.damp(
+      camera.position.y,
+      timeline.cameraPos.y - experienceState.pointerY * 0.14 + Math.sin(clock.elapsedTime * 0.38) * 0.035,
+      vConfig.camera.damping,
+      safeDelta
+    );
+    camera.position.z = THREE.MathUtils.damp(
+      camera.position.z,
+      timeline.cameraPos.z - dive,
+      vConfig.camera.damping,
+      safeDelta
+    );
 
-    const isInspecting = experienceState.detailZoom > 0.1 || experienceState.activeProject >= 0;
-    const targetFov = isInspecting
-      ? vConfig.camera.inspectFov
-      : Math.min(vConfig.camera.travelFov, vConfig.camera.baseFov + velocityZ * 0.35);
+    // Look at choreographed focus target along the cinematic spline
+    camera.lookAt(
+      timeline.cameraTarget.x,
+      timeline.cameraTarget.y,
+      timeline.cameraTarget.z
+    );
 
-    camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 3.5, safeDelta);
+    // Dynamic FOV: Base Hermite + Velocity warp
+    camera.fov = THREE.MathUtils.damp(camera.fov, timeline.cameraFov, 3.5, safeDelta);
     camera.updateProjectionMatrix();
 
-    // Camera position interpolation
-    camera.position.z = THREE.MathUtils.damp(camera.position.z, targetZ, vConfig.camera.damping, safeDelta);
-    camera.position.y = Math.sin(clock.elapsedTime * vConfig.camera.breathingSpeed) * vConfig.camera.breathingAmp;
-
-    // Subtle orbital mouse parallax
-    camera.rotation.x = THREE.MathUtils.damp(
-      camera.rotation.x,
-      -experienceState.pointerY * vConfig.camera.mouseLookY,
-      vConfig.camera.damping,
-      safeDelta
-    );
-    camera.rotation.y = THREE.MathUtils.damp(
-      camera.rotation.y,
-      experienceState.pointerX * vConfig.camera.mouseLookX,
-      vConfig.camera.damping,
-      safeDelta
-    );
+    experienceState.activeProject = timeline.activeProjectIndex;
   });
 
   return null;

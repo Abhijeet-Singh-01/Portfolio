@@ -9,8 +9,8 @@ import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
 import { ElevationHud } from './components/common/ElevationHud';
 import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
-import { experienceConfig } from './config/experienceConfig';
 import { IntroLoader, ExperienceCursor } from './components/World/ExperienceOverlays';
+import { CinematicProjectHud } from './components/World/CinematicProjectHud';
 
 const ExperienceCanvas = lazy(() => import('./components/World/ExperienceCanvas'));
 
@@ -77,11 +77,14 @@ export const App: React.FC = () => {
       <a className="skip-link" href="#main-content">Skip to content</a>
       {/* Cinematic Atmospheric Glow & Particle Canvas */}
       <AtmosphericBackground />
-      {sceneReady && !liteMode && <ExperienceBoundary>
+      {sceneReady && !liteMode && (
+        <ExperienceBoundary>
           <Suspense fallback={null}>
             <ExperienceCanvas />
+            <CinematicProjectHud />
           </Suspense>
-        </ExperienceBoundary>}
+        </ExperienceBoundary>
+      )}
       <IntroLoader />
       <ExperienceCursor />
       <ElevationHud />
