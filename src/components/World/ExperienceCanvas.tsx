@@ -1173,6 +1173,14 @@ function HeroPortraitRing() {
 
     // Subtle idle float
     ringRef.current.position.y = Math.sin(time * vConfig.hero.idleSwaySpeed) * vConfig.hero.idleSwayAmp;
+
+    // Close-Pass 1: As camera descends through ring portal (p: 0.05 -> 0.15),
+    // expand ring geometry like an iris aperture allowing camera to pass through center
+    const p = experienceState.scrollProgress;
+    const portalDilation = p < 0.22 ? THREE.MathUtils.smoothstep(p, 0.05, 0.15) * 2.2 : 0;
+    const targetScale = 1.0 + portalDilation;
+    const currentScale = THREE.MathUtils.damp(ringRef.current.scale.x, targetScale, 4.0, safeDelta);
+    ringRef.current.scale.setScalar(currentScale);
   });
 
   return (
@@ -1367,6 +1375,7 @@ function CalmSceneVisuals() {
 function CameraRig() {
   const camera = useThree((state) => state.camera as THREE.PerspectiveCamera);
   const lastProgress = useRef(experienceState.scrollProgress);
+  const currentRoll = useRef(0);
 
   useFrame(({ clock }, delta) => {
     const safeDelta = Math.min(delta, 0.05);
@@ -1396,6 +1405,15 @@ function CameraRig() {
       vConfig.camera.damping,
       safeDelta
     );
+
+    // Dynamic Camera Roll (Banking subtly into curved trajectory)
+    currentRoll.current = THREE.MathUtils.damp(
+      currentRoll.current,
+      timeline.cameraRoll,
+      3.5,
+      safeDelta
+    );
+    camera.up.set(Math.sin(-currentRoll.current), Math.cos(currentRoll.current), 0);
 
     // Look at choreographed focus target along the cinematic spline
     camera.lookAt(

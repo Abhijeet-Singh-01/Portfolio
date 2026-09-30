@@ -43,6 +43,13 @@ export const Hero: React.FC = () => {
           ringRef.current.style.transform = `rotateX(${experienceState.portraitRotationX * 57.3}deg) rotateY(${experienceState.portraitRotationY * 57.3}deg)`;
         }
       }
+
+      if (sceneRef.current && document.documentElement.classList.contains('webgl-world-ready')) {
+        const p = experienceState.scrollProgress;
+        const heroOpacity = Math.max(0, 1 - p * 8.5);
+        sceneRef.current.style.opacity = heroOpacity.toFixed(3);
+        sceneRef.current.style.pointerEvents = heroOpacity < 0.1 ? 'none' : 'auto';
+      }
       animFrame = requestAnimationFrame(loop);
     };
     animFrame = requestAnimationFrame(loop);

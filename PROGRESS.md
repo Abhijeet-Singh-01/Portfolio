@@ -32,12 +32,15 @@
 - Phase 8: Performance and fallbacks (Completed - capped DPR 1.5/1.0, visibility-paused RAF loop, lazy code-split ExperienceCanvas, instant 2D Lite Mode fallback toggle in navigation & auto-detection for weak devices or prefers-reduced-motion)
 - Phase 9: Master Directive 3D Backbone & QA (Completed - dual-helix parametric central spine with 96 instanced crystal nodes, connecting ribs, traveling energy pulses, umbilical tendrils to 4 procedural 3D project visuals, depth parallax, 0 type errors via `tsc --noEmit`, 100% verified facts from resume.pdf)
 - Phase 10: Second-Pass Master Directive — Award-Level 3D Experience (Completed)
-- Phase 11: Ultimate Master Directive — Continuous Cinematic 3D Film Timeline (Completed):
-  - Centralized Choreography Engine (`src/config/sceneTimeline.ts`): Mathematical film timeline (0.00 -> 1.00) driving camera 3D spline knots, focal targets, velocity FOV, lighting frames, project visibilities, and spinal dispersion.
-  - S-Curved 3D Camera Journey: Continuous spatial choreography replacing standard document translateY; camera accelerates, pans sideways, passes through information planes, and telephoto-locks onto artifacts.
-  - Pinned Cinematic HUD (`src/components/World/CinematicProjectHud.tsx`): Pinned film HUD synchronizing with timeline beats, featuring dynamic 01-04 counters, domain tags, system highlights, architecture drawers, and verified action links.
-  - Interactive Scrubbing: Timeline progress is completely deterministic; stops at exact moment scroll pauses, with natural forward and reverse choreography.
-  - Full TypeScript & Vite Verification: 0 compilation errors across all modules.
+- Phase 11: Ultimate Master Directive — Continuous Cinematic 3D Film Timeline (Completed)
+- Phase 12: Final Visual Overhaul — Spatial Composition, Camera Roll Banking & Close-Pass Choreography (Completed):
+  - Spatial Roll Banking: Added dynamic camera banking angle (`cameraRoll`) in `src/config/sceneTimeline.ts` applied to `camera.up` in `CameraRig`, banking the horizon into high-speed S-curve turns.
+  - 3 Close-Pass Moments: Hero glass ring portal pass ($t=0.14$), SolisIQ solar core pass ($t=0.50$), Instanews data plane weave ($t=0.70$).
+  - Hero Ring Iris Dilation: Expanded ring geometry during camera dive at $t=0.08 \to 0.18$ so the camera flies seamlessly through its center into the spinal corridor.
+  - 2 Far-Away Scale Moments ($t=0.37$ full spine overview pull-back; $t=0.91$ spinal collapse into The Lab).
+  - 4 Hold Frames for inspection beats ($P01: 0.24-0.32$, $P02: 0.46-0.54$, $P03: 0.67-0.75$, $P04: 0.83-0.88$).
+  - DOM Stacking Elimination in 3D Mode: Clean separation between 3D canvas and HTML DOM. In 3D mode, the DOM `#projects` section acts as a virtual scroll depth runway (`min-height: 480vh`), while the front viewport is controlled by `CinematicProjectHud` with no card clipping. Semantic HTML remains 100% accessible to SEO and screen readers.
+  - Full TypeScript & Vite Verification: `npx tsc --noEmit` passed with 0 errors, Vite dev server verified with 200 OK across all endpoints.
 
 ## Needs owner input
 - GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden cleanly until provided; SolisIQ source URL is active).
