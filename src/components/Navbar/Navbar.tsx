@@ -1,242 +1,245 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { X, Moon, Sun, ArrowUpRight } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
+import { applyAuroraTheme, type AuroraTheme } from '../../lib/theme';
+import { scrollToRoom } from '../../lib/experienceStore';
 
-interface NavItem {
+interface NavDestination {
+  id: string;
+  num: string;
   name: string;
-  href: string;
+  sub: string;
 }
 
-const navItems: NavItem[] = [
-  { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Contact', href: '#contact' },
+const destinations: NavDestination[] = [
+  { id: 'home', num: '01', name: 'HERO', sub: 'Base Camp & Identity' },
+  { id: 'projects', num: '02', name: 'WORK', sub: 'Selected Engineering Projects' },
+  { id: 'skills', num: '03', name: 'LAB', sub: 'Technical Arsenal & Hex Grid' },
+  { id: 'about', num: '04', name: 'ABOUT', sub: 'Trajectory, Education & Terminal' },
+  { id: 'contact', num: '05', name: 'CONTACT', sub: 'Let’s Build Something' },
 ];
 
 export const Navbar: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<string>('home');
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const toggleRef=useRef<HTMLButtonElement>(null);
-  const drawerRef=useRef<HTMLDivElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<AuroraTheme>(() =>
+    typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light' ? 'light' : 'night'
+  );
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
-  useEffect(()=>{
-    if(!mobileMenuOpen) return;
-    const drawer=drawerRef.current;
-    const previousOverflow=document.body.style.overflow;
-    document.body.style.overflow='hidden';
-    const desktopQuery=window.matchMedia('(min-width: 768px)');
-    const closeOnDesktop=()=>{if(desktopQuery.matches)setMobileMenuOpen(false);};
-    const focusable=()=>Array.from(drawer?.querySelectorAll<HTMLElement>('a,button,[tabindex]:not([tabindex="-1"])')||[]).filter(el=>!el.hasAttribute('disabled'));
-    focusable()[0]?.focus();
-    const keydown=(event:KeyboardEvent)=>{
-      if(event.key==='Escape') {setMobileMenuOpen(false);requestAnimationFrame(()=>toggleRef.current?.focus());}
-      if(event.key==='Tab'){
-        const items=focusable(); if(!items.length)return;
-        const first=items[0],last=items[items.length-1];
-        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
-        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
-      }
-    };
-    document.addEventListener('keydown',keydown);
-    desktopQuery.addEventListener('change',closeOnDesktop);
-    return ()=>{
-      document.removeEventListener('keydown',keydown);
-      desktopQuery.removeEventListener('change',closeOnDesktop);
-      document.body.style.overflow=previousOverflow;
-    };
-  },[mobileMenuOpen]);
-
+  // Esc key & focus trap for menu overlay
   useEffect(() => {
-    let frame=0;
-    const updateFromScroll = () => {
-      frame=0;
-      const scrolled=window.scrollY > 20;
-      setIsScrolled((current)=>current===scrolled?current:scrolled);
+    if (!menuOpen) return;
+    const overlay = overlayRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
 
-      const sections = ['home', 'about', 'skills', 'projects', 'contact'];
-      const scrollPosition = window.scrollY + 200;
-      let nextSection='home';
+    const focusables = overlay?.querySelectorAll<HTMLElement>(
+      'a, button, [tabindex]:not([tabindex="-1"])'
+    );
+    focusables?.[0]?.focus();
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const sectionEl = document.getElementById(sections[i]);
-        if (sectionEl) {
-          const top = sectionEl.offsetTop;
-          if (scrollPosition >= top) {
-            nextSection=sections[i];
-            break;
-          }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+      if (e.key === 'Tab' && focusables && focusables.length > 0) {
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
         }
       }
-      setActiveSection((current)=>current===nextSection?current:nextSection);
     };
-    const handleScroll = () => { if(!frame)frame=requestAnimationFrame(updateFromScroll); };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll, { passive: true });
-    handleScroll();
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-      cancelAnimationFrame(frame);
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflow;
     };
-  }, []);
+  }, [menuOpen]);
 
-  const handleLinkClick = (href: string) => {
-    setMobileMenuOpen(false);
-    const targetId = href.replace('#', '');
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-    }
+  const handleNavigate = (id: string) => {
+    setMenuOpen(false);
+    scrollToRoom(id);
+  };
+
+  const toggleTheme = () => {
+    const nextTheme: AuroraTheme = theme === 'night' ? 'light' : 'night';
+    applyAuroraTheme(nextTheme);
+    setTheme(nextTheme);
   };
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? 'py-3.5 bg-[#090a0d]/80 backdrop-blur-md border-b border-white/[0.06] shadow-[0_4px_30px_rgba(0,0,0,0.4)]'
-            : 'py-6 bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between">
-          {/* Minimal Monogram Logo */}
-          <a
-            href="#home"
-            onClick={(e) => {
-              e.preventDefault();
-              handleLinkClick('#home');
-            }}
-            className="group flex items-center gap-3 focus:outline-none"
-            aria-label="Abhijeet Singh Portfolio Home"
-          >
-            <div className="w-9 h-9 rounded-md border border-[#d4af37]/30 bg-[#12141a]/80 flex items-center justify-center transition-all duration-300 group-hover:border-[#d4af37]/60 group-hover:shadow-[0_0_15px_rgba(212,175,55,0.2)]">
-              <span className="font-serif text-sm tracking-wider font-semibold text-[#f4f1ea] group-hover:text-[#edd894] transition-colors">
-                AS
-              </span>
-            </div>
-            <div className="hidden sm:flex flex-col text-left">
-              <span className="text-xs font-medium tracking-widest uppercase text-[#f4f1ea]/90 font-mono">
-                Abhijeet Singh
-              </span>
-              <span className="text-[10px] tracking-wider text-[#8e95a2] font-mono">
-                CSE Undergraduate
-              </span>
-            </div>
-          </a>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/[0.07] bg-[#0f1117]/65 backdrop-blur-md">
-            {navItems.map((item) => {
-              const isActive = activeSection === item.href.replace('#', '');
-              return (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleLinkClick(item.href);
-                  }}
-                  className={`relative px-4 py-1.5 text-xs font-mono uppercase tracking-widest transition-all duration-200 rounded-full ${
-                    isActive
-                      ? 'text-[#edd894] font-medium'
-                      : 'text-[#8e95a2] hover:text-[#f4f1ea]'
-                  }`}
-                >
-                  {isActive && (
-                    <span
-                      className="absolute inset-0 bg-[#d4af37]/10 border border-[#d4af37]/25 rounded-full -z-10 animate-fade-in"
-                    />
-                  )}
-                  {item.name}
-                </a>
-              );
-            })}
-          </nav>
-
-          {/* Right Action: Quick Resume / Contact */}
-          <div className="hidden md:flex items-center gap-3">
-            <a
-              href={siteLinks.resume.url}
-              download={siteLinks.resume.download}
-              aria-label={siteLinks.resume.accessibilityLabel}
-              className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#cfcac0] hover:text-[#edd894] px-3.5 py-1.5 rounded border border-white/[0.08] hover:border-[#d4af37]/40 bg-[#12151c]/60 hover:bg-[#161a23] transition-all duration-200"
-            >
-              Download Resume
-              <ArrowUpRight className="w-3 h-3 text-[#d4af37]" />
-            </a>
+      {/* Top Header Bar */}
+      <header className="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex items-center justify-between pointer-events-none">
+        {/* Top-Left: "AS" Logo Mark */}
+        <a
+          href="#home"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigate('home');
+          }}
+          className="pointer-events-auto group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo rounded-lg"
+          aria-label="Abhijeet Singh Portfolio Home"
+        >
+          <div className="w-10 h-10 rounded-lg border border-border/20 bg-surface/80 backdrop-blur-md flex items-center justify-center transition-all duration-300 group-hover:border-accent-aqua/60 group-hover:shadow-[0_0_16px_var(--accent-aqua-glow)]">
+            <span className="font-display font-bold text-xs tracking-widest text-text group-hover:text-accent-aqua-ink transition-colors">
+              AS
+            </span>
           </div>
+          <span className="hidden sm:block text-[11px] font-mono tracking-widest uppercase text-text-2 group-hover:text-text transition-colors">
+            ABHIJEET SINGH
+          </span>
+        </a>
 
-          {/* Mobile Hamburger Toggle */}
+        {/* Top-Right: Glass Pill "MENU ------ CONTACT" */}
+        <div className="pointer-events-auto flex items-center rounded-full border border-border/25 bg-surface-glass backdrop-blur-xl p-1 shadow-lg shadow-black/25">
           <button
             type="button"
-            ref={toggleRef}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-11 h-11 rounded-md border border-white/[0.08] bg-[#12141a]/80 flex items-center justify-center text-[#f4f1ea] hover:border-[#d4af37]/40 focus:outline-none transition-colors"
-            aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-navigation"
+            ref={menuButtonRef}
+            onClick={() => setMenuOpen(true)}
+            className="px-4 py-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text hover:text-accent-aqua-ink transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua"
+            aria-label="Open navigation menu"
+            aria-expanded={menuOpen}
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            MENU
+          </button>
+          <span className="h-3 w-[1px] bg-border/40 mx-1" aria-hidden="true" />
+          <button
+            type="button"
+            onClick={() => handleNavigate('contact')}
+            className="px-4 py-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-2 hover:text-text transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua"
+          >
+            CONTACT
           </button>
         </div>
       </header>
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
+      {/* Full-Screen Menu Overlay */}
+      {menuOpen && (
         <div
-          ref={drawerRef}
-          id="mobile-navigation"
+          ref={overlayRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Portfolio navigation"
-          className="fixed inset-0 z-40 md:hidden bg-[#08090b]/95 flex flex-col justify-between pt-24 pb-10 px-8 transition-opacity duration-300"
-          style={{ animation: 'fadeIn 0.2s ease-out' }}
+          aria-label="Portfolio navigation overlay"
+          className="fixed inset-0 z-50 bg-bg/95 backdrop-blur-2xl flex flex-col justify-between p-8 sm:p-14 animate-fade-in text-text"
         >
-          <div className="flex flex-col gap-6">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#8e95a2] border-b border-white/[0.06] pb-3">
-              Menu Navigation
-            </span>
-            <nav className="flex flex-col gap-4">
-              {navItems.map((item) => {
-                const isActive = activeSection === item.href.replace('#', '');
-                return (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleLinkClick(item.href);
-                    }}
-                    className={`text-xl font-serif tracking-wide py-2 transition-colors flex items-center justify-between ${
-                      isActive ? 'text-[#edd894] font-medium' : 'text-[#8e95a2] hover:text-[#f4f1ea]'
-                    }`}
-                  >
-                    <span>{item.name}</span>
-                    {isActive && (
-                      <span className="w-2 h-2 rounded-full bg-[#d4af37] shadow-[0_0_8px_#d4af37]" />
-                    )}
-                  </a>
-                );
-              })}
-            </nav>
+          {/* Overlay Top Bar */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg border border-accent-aqua/40 bg-surface/80 flex items-center justify-center shadow-[0_0_15px_var(--accent-aqua-glow)]">
+                <span className="font-display font-bold text-xs tracking-wider text-accent-aqua-ink">
+                  AS
+                </span>
+              </div>
+              <span className="text-xs font-mono uppercase tracking-widest text-text-2">
+                NAVIGATION
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              className="w-11 h-11 rounded-full border border-border/30 bg-surface/80 flex items-center justify-center text-text hover:text-accent-magenta hover:border-accent-magenta/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-magenta transition-all"
+              aria-label="Close navigation menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          <div className="flex flex-col gap-4 pt-6 border-t border-white/[0.06]">
-            <a
-              href={siteLinks.resume.url}
-              download={siteLinks.resume.download}
-              aria-label={siteLinks.resume.accessibilityLabel}
-              className="w-full py-3 text-center text-xs font-mono uppercase tracking-widest text-[#090a0d] bg-[#d4af37] hover:bg-[#e0c268] font-semibold rounded transition-colors"
-            >
-              Download Resume
-            </a>
-            <p className="text-center text-[11px] font-mono text-[#8e95a2]">
-              Abhijeet Singh • Lucknow, India
-            </p>
+          {/* Destinations Grid */}
+          <nav className="my-auto py-8">
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 list-none p-0 m-0 max-w-4xl mx-auto">
+              {destinations.map((dest) => (
+                <li key={dest.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate(dest.id)}
+                    className="w-full text-left group p-5 sm:p-6 rounded-xl border border-border/15 bg-surface/40 hover:bg-surface/80 hover:border-accent-aqua/50 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua"
+                  >
+                    <div className="flex items-baseline justify-between mb-2">
+                      <span className="text-xs font-mono text-accent-aqua-ink tracking-widest">
+                        {dest.num} //
+                      </span>
+                      <ArrowUpRight className="w-4 h-4 text-text-2 group-hover:text-accent-aqua-ink group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    </div>
+                    <span className="block font-display font-bold text-2xl sm:text-3xl tracking-tight text-text group-hover:text-accent-aqua-ink transition-colors">
+                      {dest.name}
+                    </span>
+                    <span className="block text-xs font-mono text-text-2 mt-1">
+                      {dest.sub}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Overlay Footer: Theme Toggle & Social Links */}
+          <div className="pt-6 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/25 bg-surface/60 text-xs font-mono uppercase tracking-widest text-text hover:border-accent-aqua/50 transition-all focus-visible:ring-2 focus-visible:ring-accent-aqua"
+                aria-label={`Switch to ${theme === 'light' ? 'Night' : 'Light'} theme`}
+              >
+                {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-accent-indigo" /> : <Sun className="w-3.5 h-3.5 text-accent-tangerine" />}
+                <span>{theme === 'light' ? 'NIGHT MODE' : 'LIGHT MODE'}</span>
+              </button>
+
+              <a
+                href={siteLinks.resume.url}
+                download={siteLinks.resume.download}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent-indigo/20 border border-accent-indigo/40 text-xs font-mono uppercase tracking-widest text-accent-indigo-ink hover:bg-accent-indigo/30 transition-all"
+              >
+                RESUME (PDF)
+              </a>
+            </div>
+
+            <div className="flex items-center gap-5 text-xs font-mono uppercase tracking-wider text-text-2">
+              <a
+                href={siteLinks.github.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent-aqua-ink transition-colors"
+                aria-label={siteLinks.github.accessibilityLabel}
+              >
+                GITHUB
+              </a>
+              <a
+                href={siteLinks.linkedin.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent-aqua-ink transition-colors"
+                aria-label={siteLinks.linkedin.accessibilityLabel}
+              >
+                LINKEDIN
+              </a>
+              <a
+                href={siteLinks.leetcode.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent-aqua-ink transition-colors"
+                aria-label={siteLinks.leetcode.accessibilityLabel}
+              >
+                LEETCODE
+              </a>
+              <a
+                href={siteLinks.email.url}
+                className="hover:text-accent-aqua-ink transition-colors"
+                aria-label={siteLinks.email.accessibilityLabel}
+              >
+                EMAIL
+              </a>
+            </div>
           </div>
         </div>
       )}

@@ -434,14 +434,33 @@ button,.theme-toggle { min-height:44px; }
 .hero-float-data { left:7%; bottom:20%; }
 .hero-orbit-label { z-index:2; }
 
-/* Short, skippable intro; content is still present and reachable behind it. */
+/* Short, skippable intro with vertical particle stream */
 .intro-loader { position:fixed; inset:0; z-index:110; display:grid; place-items:center; background:var(--bg); color:var(--text); }
-.intro-loader-inner { display:grid; justify-items:center; gap:1rem; }
-.intro-loader-mark { width:clamp(58px,10vw,88px); height:auto; filter:drop-shadow(0 0 22px var(--accent-indigo-glow)); }
-.intro-loader-label { color:var(--text-2); font:10px var(--font-mono); letter-spacing:.18em; }
-.intro-loader-label span { color:var(--accent-indigo-ink); font-variant-numeric:tabular-nums; }
-.intro-loader-skip { position:absolute; right:max(20px,env(safe-area-inset-right)); bottom:max(20px,env(safe-area-inset-bottom)); min-width:44px; min-height:44px; padding:.5rem .85rem; border:1px solid var(--border); border-radius:999px; background:var(--surface-glass); color:var(--text-2); font:10px var(--font-mono); text-transform:uppercase; letter-spacing:.1em; }
-.intro-loader-skip:hover,.intro-loader-skip:focus-visible { color:var(--text); border-color:var(--accent-indigo); }
+.intro-particle-stream { position:absolute; top:20%; display:flex; flex-direction:column; align-items:center; gap:1.2rem; pointer-events:none; }
+.stream-particle { width:2px; height:24px; background:linear-gradient(to bottom, transparent, var(--accent-aqua), var(--accent-lime)); border-radius:9999px; opacity:0.8; animation:streamFall 1.2s ease-in infinite; }
+.stream-p1 { animation-delay:0s; }
+.stream-p2 { animation-delay:0.28s; height:32px; width:3px; }
+.stream-p3 { animation-delay:0.56s; height:18px; }
+@keyframes streamFall {
+  0% { transform:translateY(-30px); opacity:0; }
+  50% { opacity:1; }
+  100% { transform:translateY(60px); opacity:0; }
+}
+.intro-loader-inner { display:grid; justify-items:center; gap:1.25rem; }
+.intro-loader-mark { width:clamp(68px,12vw,96px); height:auto; filter:drop-shadow(0 0 28px var(--accent-lime-glow)); }
+.intro-loader-label { color:var(--text-2); font:10px var(--font-mono); letter-spacing:.22em; text-transform:uppercase; }
+.intro-loader-label span { color:var(--accent-aqua-ink); font-variant-numeric:tabular-nums; }
+.intro-loader-skip { position:absolute; right:max(24px,env(safe-area-inset-right)); bottom:max(24px,env(safe-area-inset-bottom)); min-width:44px; min-height:44px; padding:.5rem 1rem; border:1px solid var(--border); border-radius:999px; background:var(--surface-glass); color:var(--text-2); font:10px var(--font-mono); text-transform:uppercase; letter-spacing:.12em; transition:color 180ms ease,border-color 180ms ease; }
+.intro-loader-skip:hover,.intro-loader-skip:focus-visible { color:var(--text); border-color:var(--accent-aqua); }
+
+/* Hero Ring & Torus */
+.hero-ring-container { touch-action:none; user-select:none; }
+.ring-bezel { border:1px solid var(--border); box-shadow:0 0 35px var(--accent-aqua-glow), inset 0 0 24px var(--accent-indigo-glow); }
+@keyframes spinSlow {
+  from { transform:rotate(0deg); }
+  to { transform:rotate(360deg); }
+}
+.animate-spin-slow { animation:spinSlow 45s linear infinite; }
 
 /* Additive desktop cursor. It is disabled for touch and reduced-motion users. */
 .experience-cursor { position:fixed; inset:0; z-index:130; pointer-events:none; overflow:hidden; }
