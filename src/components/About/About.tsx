@@ -2,6 +2,7 @@ import React from 'react';
 import { educationData, personalBio } from '../../data/education';
 import { GraduationCap, CheckCircle2, MapPin } from 'lucide-react';
 import { DeveloperTerminal } from './DeveloperTerminal';
+import profilePhoto from '../../assets/images/profile.webp';
 
 export const About: React.FC = () => {
   return (
@@ -83,6 +84,30 @@ export const About: React.FC = () => {
 
         {/* Right Column: Identity Monogram & Education Timeline (5 cols) */}
         <div className="lg:col-span-5 space-y-8">
+          <div className="about-portrait-wrap" onPointerMove={(event) => {
+            if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const bounds = event.currentTarget.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+            const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+            event.currentTarget.style.setProperty('--portrait-tilt-x', `${-y * 4}deg`);
+            event.currentTarget.style.setProperty('--portrait-tilt-y', `${x * 4}deg`);
+            event.currentTarget.style.setProperty('--portrait-glow-x', `${50 + x * 24}%`);
+            event.currentTarget.style.setProperty('--portrait-glow-y', `${45 + y * 24}%`);
+          }} onPointerLeave={(event) => {
+            event.currentTarget.style.setProperty('--portrait-tilt-x', '0deg');
+            event.currentTarget.style.setProperty('--portrait-tilt-y', '0deg');
+            event.currentTarget.style.setProperty('--portrait-glow-x', '50%');
+            event.currentTarget.style.setProperty('--portrait-glow-y', '45%');
+          }}>
+            <div className="about-portrait-halo" aria-hidden="true" />
+            <div className="about-portrait-frame">
+              <img src={profilePhoto} width="800" height="800" loading="lazy" alt="Portrait of Abhijeet Singh" />
+            </div>
+            <span className="about-portrait-chip about-portrait-chip-top">CSE Student</span>
+            <span className="about-portrait-chip about-portrait-chip-left">Lucknow, India</span>
+            <span className="about-portrait-chip about-portrait-chip-right">AI/ML</span>
+          </div>
+
           {/* Engineering Monogram / Profile Seal */}
           <div className="about-panel p-8 rounded-xl bg-gradient-to-br from-[#12151e]/80 to-[#0b0d13]/80 border border-white/[0.08] backdrop-blur-md relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#d4af37]/10 rounded-full blur-2xl pointer-events-none" />

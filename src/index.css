@@ -44,6 +44,7 @@
   --ascent-violet: #a58cff;
   --ascent-border: rgb(193 213 238 / 12%);
   --ascent-glow-cyan: rgb(87 222 242 / 18%);
+  --gradient-brand: linear-gradient(135deg, var(--ascent-cyan), var(--ascent-blue) 52%, var(--ascent-violet));
   --ascent-ease: cubic-bezier(.22, 1, .36, 1);
   --ascent-duration-fast: 180ms;
   --ascent-duration: 320ms;
@@ -271,6 +272,89 @@
 .ai-flow-link:nth-of-type(2) i {animation-delay:.6s}.ai-flow-link:nth-of-type(3) i {animation-delay:1.2s}
 @keyframes flowPulse {to{left:100%}}
 .ai-flow-node {text-align:left;color:inherit;cursor:pointer;transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}
+
+.about-portrait-wrap {
+  --portrait-tilt-x: 0deg;
+  --portrait-tilt-y: 0deg;
+  --portrait-glow-x: 50%;
+  --portrait-glow-y: 45%;
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 350px);
+  aspect-ratio: 1;
+  margin: 0 auto 1.5rem;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+.about-portrait-halo {
+  position: absolute;
+  z-index: -1;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at var(--portrait-glow-x) var(--portrait-glow-y), rgb(112 229 242 / 27%), rgb(165 140 255 / 16%) 38%, transparent 72%);
+  filter: blur(24px);
+  transition: background-position 450ms ease, opacity 350ms ease;
+}
+.about-portrait-frame {
+  position: relative;
+  width: 76%;
+  aspect-ratio: 1;
+  padding: 3px;
+  border-radius: 50%;
+  background: var(--gradient-brand);
+  border: 1px solid rgb(220 232 255 / 40%);
+  box-shadow: 0 15px 44px rgb(0 0 0 / 25%), 0 0 28px rgb(112 229 242 / 14%);
+  transform: rotateX(var(--portrait-tilt-x)) rotateY(var(--portrait-tilt-y));
+  transition: transform 420ms cubic-bezier(.22, 1, .36, 1), box-shadow 420ms ease;
+  will-change: transform;
+}
+.about-portrait-frame::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgb(255 255 255 / 38%);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+.about-portrait-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+.about-portrait-wrap:hover .about-portrait-frame {
+  box-shadow: 0 19px 48px rgb(0 0 0 / 30%), 0 0 38px rgb(112 229 242 / 24%);
+}
+.about-portrait-chip {
+  position: absolute;
+  z-index: 2;
+  padding: .55rem .72rem;
+  border: 1px solid var(--ascent-border);
+  border-radius: 999px;
+  background: var(--ascent-surface-glass);
+  color: var(--ascent-text);
+  box-shadow: 0 8px 22px rgb(0 0 0 / 20%);
+  backdrop-filter: blur(12px);
+  font: 10px var(--font-mono);
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.about-portrait-chip-top { top: 7%; right: 0; }
+.about-portrait-chip-left { left: 0; bottom: 18%; }
+.about-portrait-chip-right { right: 1%; bottom: 7%; }
+@media (max-width: 420px) {
+  .about-portrait-wrap { width: min(100%, 310px); }
+  .about-portrait-chip { padding: .45rem .58rem; font-size: 9px; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .about-portrait-wrap:hover .about-portrait-frame { translate: 0 -4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about-portrait-frame, .about-portrait-halo { transition: none; }
+}
 .ai-flow-node.flow-active {border-color:rgba(112,229,242,.6);box-shadow:0 0 25px rgba(112,229,242,.12),inset 0 0 18px rgba(112,229,242,.07);transform:translateY(-2px)}
 .skill-muted {opacity:.28;filter:saturate(.5);transition:opacity .25s ease,filter .25s ease}
 .skill-selected {border-color:rgba(112,229,242,.65)!important;box-shadow:0 0 18px rgba(112,229,242,.15)!important}
