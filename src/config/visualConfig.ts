@@ -1,53 +1,49 @@
 /**
- * CENTRAL VISUAL & MOTION CONFIGURATION — SECOND-PASS MASTER DIRECTIVE
- * Architectural parameters for the Living Project Spine, multi-layer depth hierarchy,
- * bespoke project worlds, dynamic camera choreography, and storytelling lighting.
+ * CENTRAL VISUAL & MOTION CONFIGURATION — MASTER ARCHITECTURE
+ * Parameters for the Architectural Infrastructure Spine, bespoke project worlds,
+ * dual-layout responsive camera choreography (Desktop & Mobile), and storytelling lighting.
  */
 
 export const visualConfig = {
-  // 1. The Living Architectural Project Spine (Signature Conduit)
+  // 1. The Living Architectural Infrastructure Spine (Futuristic Engineered Spine)
   backbone: {
-    height: 62, // Extended vertical/Z span through projects
-    radius: 2.1, // Base radius of primary architectural spine
-    secondaryRadius: 2.7, // Orbit radius of secondary organic energy cables
-    nodesPerStrand: 56, // 112 primary crystal nodes across dual helix
-    cableSegments: 48, // Resolution of secondary spiraling conduits
-    strutsCount: 36, // Structural architectural ribs bridging the conduits
-    rotationSpeed: 0.12, // Slow, dignified dignified axial rotation
-    pulseSpeed: 1.8, // Speed of traveling luminous energy wave along the spine
-    pulseFrequency: 0.22, // Frequency density of traveling data pulses
-    tendrilCount: 4, // Umbilical energy conduits feeding each project
-    nodeSize: 0.082, // Radius of each luminous node crystal
+    height: 64, // Extended Z-span through all 4 projects
+    radius: 2.2, // Structural envelope radius
+    strutsCount: 28, // Architectural cross-rib frames
+    pulseSpeed: 1.9, // Luminous energy pulse propagation velocity
+    pulseFrequency: 0.24, // Data pulse frequency density
+    nodeSize: 0.09, // Luminous junction node crystal scale
     conduitColor: '#7C6CFF', // Base electric indigo
     conduitGlow: '#22D3EE', // Vivid cyan data pulse
+    tendrilColor: '#C6F432', // Lime umbilical conduit
   },
 
   // 2. Cinematic Camera & Lens System
   camera: {
-    baseFov: 50, // Natural cinematic wide perspective
-    travelFov: 58, // Expanded dynamic FOV during high-speed travel / transitions
-    inspectFov: 42, // Compressed telephoto FOV during close artifact inspection
-    initialZ: 8.5, // Hero camera Z position
-    travelZ: 82, // Total travel trajectory through the 5 scenes
-    damping: 3.2, // GSAP/frame damping factor for buttery smooth motion
-    lookAhead: 7.0, // Forward focus distance along travel vector
-    mouseLookX: 0.018, // Parallax yaw sensitivity
-    mouseLookY: 0.014, // Parallax pitch sensitivity
-    breathingSpeed: 0.38, // Organic camera idle breathing frequency
-    breathingAmp: 0.042, // Amplitude of floating camera idle movement
-    diveDuration: 0.95, // Duration of inspection dive transition
+    baseFov: 50,
+    travelFov: 58,
+    inspectFov: 42,
+    initialZ: 8.5,
+    travelZ: 82,
+    damping: 3.4,
+    lookAhead: 7.0,
+    mouseLookX: 0.018,
+    mouseLookY: 0.014,
+    breathingSpeed: 0.38,
+    breathingAmp: 0.04,
+    diveDuration: 0.95,
   },
 
-  // 3. Multi-Layer Depth System (Feel the Z-Axis)
+  // 3. Multi-Layer Depth Hierarchy
   depthLayers: {
-    layer01_atmosphere: { parallax: 0.04 }, // Distant deep void
-    layer02_particles: { parallax: 0.12 }, // Cosmic dust & data fragments
-    layer03_megastructures: { parallax: 0.22 }, // Giant background rings & technical grids
-    layer04_backbone: { parallax: 0.38 }, // The architectural spine
-    layer05_projectVisuals: { parallax: 0.58 }, // Physical project worlds
-    layer06_projectFrames: { parallax: 0.72 }, // Glass slabs & HUD frames
-    layer07_typography: { parallax: 0.28 }, // 3D floating numbers & labels
-    layer08_cursorLight: { intensity: 1.8, distance: 8.5 }, // Interactive cursor point light
+    layer01_atmosphere: { parallax: 0.04 },
+    layer02_particles: { parallax: 0.12 },
+    layer03_megastructures: { parallax: 0.22 },
+    layer04_backbone: { parallax: 0.38 },
+    layer05_projectVisuals: { parallax: 0.58 },
+    layer06_projectFrames: { parallax: 0.72 },
+    layer07_typography: { parallax: 0.28 },
+    layer08_cursorLight: { intensity: 1.8, distance: 8.5 },
   },
 
   // 4. Storytelling Dynamic Lighting (Per-Project Color Worlds)
@@ -92,80 +88,56 @@ export const visualConfig = {
     },
   },
 
-  // 5. Physical Project Artifacts & Spatial 3D Composition (Non-facing angles)
+  // 5. Physical Project Artifacts: Dual-Layout Coordinates (Desktop Asymmetric vs Mobile Vertical Corridor)
   projects: {
     count: 4,
     coords: [
-      // Project 01: AI Incident Intelligence (Angled -16° yaw, +4° pitch, left side)
+      // Project 01: AI Incident Intelligence
       {
-        x: -3.2,
-        y: 0.35,
-        z: -17.0,
-        side: 'left',
-        rotY: -0.28, // ~ -16°
-        rotX: 0.07,
-        scale: 1.15,
-        numberZ: -34.0, // Colossal 01 floating behind
+        desktop: { x: -3.2, y: 0.35, z: -17.0, rotY: -0.25, rotX: 0.05, scale: 1.15, side: 'left' as const },
+        mobile: { x: 0, y: 0.65, z: -16.5, rotY: 0.0, rotX: 0.04, scale: 0.95, side: 'center' as const },
+        numberZ: -34.0,
       },
-      // Project 02: SolisIQ (Angled +22° yaw, -6° pitch, right side diagonal)
+      // Project 02: SolisIQ
       {
-        x: 3.2,
-        y: -0.3,
-        z: -31.0,
-        side: 'right',
-        rotY: 0.38, // ~ +22°
-        rotX: -0.1,
-        scale: 1.18,
-        numberZ: -48.0, // Colossal 02 floating behind
+        desktop: { x: 3.2, y: -0.25, z: -31.0, rotY: 0.30, rotX: -0.06, scale: 1.18, side: 'right' as const },
+        mobile: { x: 0, y: 0.65, z: -30.5, rotY: 0.0, rotX: -0.04, scale: 0.95, side: 'center' as const },
+        numberZ: -48.0,
       },
-      // Project 03: Instanews (Angled -24° yaw, partially occluded behind spine until approach)
+      // Project 03: Instanews
       {
-        x: -3.1,
-        y: 0.25,
-        z: -45.0,
-        side: 'left',
-        rotY: -0.42, // ~ -24°
-        rotX: 0.05,
-        scale: 1.15,
-        numberZ: -62.0, // Colossal 03 floating behind
+        desktop: { x: -2.8, y: 0.8, z: -45.0, rotY: -0.32, rotX: 0.06, scale: 1.15, side: 'left' as const },
+        mobile: { x: 0, y: 0.65, z: -44.5, rotY: 0.0, rotX: 0.04, scale: 0.95, side: 'center' as const },
+        numberZ: -62.0,
       },
-      // Project 04: ZeroHour (Angled +18° yaw, +8° pitch, precision mechanical instrument)
+      // Project 04: ZeroHour
       {
-        x: 3.0,
-        y: -0.2,
-        z: -59.0,
-        side: 'right',
-        rotY: 0.31, // ~ +18°
-        rotX: 0.14,
-        scale: 1.2,
-        numberZ: -76.0, // Colossal 04 floating behind
+        desktop: { x: 2.6, y: -0.3, z: -59.0, rotY: 0.25, rotX: 0.10, scale: 1.2, side: 'right' as const },
+        mobile: { x: 0, y: 0.65, z: -58.5, rotY: 0.0, rotX: 0.06, scale: 0.95, side: 'center' as const },
+        numberZ: -76.0,
       },
     ],
-    slabWidth: 2.8,
-    slabHeight: 2.1,
-    slabDepth: 0.12,
-    inspectScale: 1.35,
   },
 
-  // 6. Environmental Megastructures (Layer 03 Scale)
+  // 6. Environmental Megastructures
   megastructures: {
-    ringRadius: 26, // Enormous distant structural ring
-    ringZ: -42, // Centered in the middle of projects trajectory
-    gridWidth: 70, // Massive technical floor grid
+    ringRadius: 26,
+    ringZ: -42,
+    gridWidth: 70,
     gridLength: 100,
     gridY: -3.8,
   },
 
-  // 7. Multi-Tier GPU Particles
+  // 7. Multi-Tier GPU Particles (Restrained & Purposeful)
   particles: {
     counts: {
-      high: 3800,
-      medium: 2000,
-      low: 800,
+      high: 1800, // Reduced from excessive 3800 to purposeful 1800
+      medium: 1000,
+      low: 400,
     },
-    baseSize: 0.038,
-    driftSpeed: 0.18,
-    streamSpeed: 0.85, // Velocity of particles flowing along the backbone
+    baseSize: 0.035,
+    driftSpeed: 0.16,
+    streamSpeed: 0.75,
   },
 
   // 8. 360° Hero Portrait Orb
@@ -174,7 +146,7 @@ export const visualConfig = {
     verticalRotationLimit: 1.2,
     autoReturnSpeed: 0.045,
     idleSwaySpeed: 0.75,
-    idleSwayAmp: 0.1,
+    idleSwayAmp: 0.08,
     ringRadius: 1.9,
     glassThickness: 0.12,
   },
@@ -192,10 +164,10 @@ export const visualConfig = {
 
   // 10. Motion & Interaction Timings
   motion: {
-    loaderDuration: 1250,
-    themeTransition: 320,
+    loaderDuration: 1200,
+    themeTransition: 300,
     cursorDamping: 0.18,
-    scrollDuration: 0.9,
+    scrollDuration: 0.75, // Responsive crisp scroll duration
   },
 } as const;
 

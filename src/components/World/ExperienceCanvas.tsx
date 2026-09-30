@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, advance, useFrame, useThree } from '@react-three/fiber';
-import { RoundedBox } from '@react-three/drei';
 import { Bloom, EffectComposer, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
@@ -12,21 +11,16 @@ import { skillsCategories } from '../../data/skills';
 import { getTimelineState } from '../../config/sceneTimeline';
 
 type Quality = 'high' | 'medium' | 'low';
-const PARTICLE_COUNTS: Record<Quality, number> = {
-  high: vConfig.particles.counts.high,
-  medium: vConfig.particles.counts.medium,
-  low: vConfig.particles.counts.low,
-};
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 
-const cssColor = (token: string) =>
+const cssColor = (token: string, fallback = '#7C6CFF') =>
   typeof document !== 'undefined'
-    ? getComputedStyle(document.documentElement).getPropertyValue(token).trim()
-    : '#7C6CFF';
+    ? getComputedStyle(document.documentElement).getPropertyValue(token).trim() || fallback
+    : fallback;
 
-function useAuroraColor(token: string) {
-  const value = cssColor(token);
+function useAuroraColor(token: string, fallback = '#7C6CFF') {
+  const value = cssColor(token, fallback);
   return useMemo(() => new THREE.Color(value), [value]);
 }
 
@@ -43,135 +37,15 @@ const initialQuality = (): Quality => {
   return cores !== undefined && cores >= 8 && memory !== undefined && memory >= 8 ? 'high' : 'medium';
 };
 
-function useTheme() {
-  const [theme, setTheme] = useState(experienceState.theme);
-  useEffect(() => {
-    const sync = (event: Event) => {
-      const value = (event as CustomEvent<'light' | 'night'>).detail;
-      experienceState.theme = value;
-      setTheme(value);
-    };
-    window.addEventListener('aurora-theme-change', sync);
-    return () => window.removeEventListener('aurora-theme-change', sync);
-  }, []);
-  return theme;
-}
-
-/**
- * Procedural Crisp Canvas Texture for Colossal Environmental Project Numbers (Layer 07)
- */
-function makeColossalNumberTexture(numStr: string, tintColor: string) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return new THREE.CanvasTexture(canvas);
-
-  ctx.clearRect(0, 0, 512, 512);
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  // Soft atmospheric glow behind number
-  const gradient = ctx.createRadialGradient(256, 256, 40, 256, 256, 240);
-  gradient.addColorStop(0, `${tintColor}22`);
-  gradient.addColorStop(1, 'transparent');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 512, 512);
-
-  // Colossal display numeral with subtle wireframe/stroke
-  ctx.font = '900 320px "Space Grotesk", sans-serif';
-  ctx.strokeStyle = `${tintColor}40`;
-  ctx.lineWidth = 4;
-  ctx.strokeText(numStr, 256, 260);
-
-  ctx.fillStyle = `${tintColor}18`;
-  ctx.fillText(numStr, 256, 260);
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-}
-
-/**
- * Procedural Crisp Canvas Texture for Project Slab Front Glass Faces
- */
-function makeArtifactLabel(name: string, index: number, category: string) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 640;
-  canvas.height = 440;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return new THREE.CanvasTexture(canvas);
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Subtle dark tinted glass backing
-  ctx.fillStyle = 'rgba(10, 6, 32, 0.88)';
-  ctx.roundRect(10, 10, 620, 420, 24);
-  ctx.fill();
-
-  // Glass edge highlight
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Corner tech markings
-  ctx.strokeStyle = '#22D3EE';
-  ctx.lineWidth = 2;
-  // Top-left bracket
-  ctx.beginPath();
-  ctx.moveTo(32, 56);
-  ctx.lineTo(32, 32);
-  ctx.lineTo(56, 32);
-  ctx.stroke();
-
-  // Top-right bracket
-  ctx.beginPath();
-  ctx.moveTo(608, 56);
-  ctx.lineTo(608, 32);
-  ctx.lineTo(584, 32);
-  ctx.stroke();
-
-  // Metadata Header
-  ctx.fillStyle = '#22D3EE';
-  ctx.font = '700 18px "JetBrains Mono", monospace';
-  ctx.fillText(`ARTIFACT // 0${index + 1}  [${category.toUpperCase()}]`, 48, 62);
-
-  // Project Title
-  ctx.fillStyle = '#F8F6FF';
-  ctx.font = '800 38px "Syne", sans-serif';
-  const words = name.toUpperCase().split(' ');
-  let line = '';
-  let y = 130;
-  for (const word of words) {
-    const trial = line ? `${line} ${word}` : word;
-    if (ctx.measureText(trial).width > 540 && line) {
-      ctx.fillText(line, 48, y);
-      line = word;
-      y += 48;
-    } else line = trial;
-  }
-  ctx.fillText(line, 48, y);
-
-  // Technical Sub-readout
-  ctx.fillStyle = '#B9B3E6';
-  ctx.font = '14px "JetBrains Mono", monospace';
-  ctx.fillText('PHYSICAL INSPECTION ACTIVE · SCROLL TO ORBIT', 48, 380);
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-}
-
 // ----------------------------------------------------------------------------------
-// LAYER 01 & DYNAMIC LIGHTING: STORYTELLING ENVIRONMENT & VOLUMETRIC ATMOSPHERE
+// 1. STORYTELLING ENVIRONMENT & DYNAMIC LIGHTING
 // ----------------------------------------------------------------------------------
 function StorytellingEnvironment() {
-  const ambientRef = useRef<THREE.AmbientLight>(null);
-  const keyRef = useRef<THREE.DirectionalLight>(null);
-  const fillRef = useRef<THREE.DirectionalLight>(null);
-  const fogRef = useRef<THREE.Fog>(null);
+  const { scene } = useThree();
+  const ambientLightRef = useRef<THREE.AmbientLight>(null);
+  const keyLightRef = useRef<THREE.DirectionalLight>(null);
+  const fillLightRef = useRef<THREE.PointLight>(null);
 
-  // Target color vectors to avoid per-frame GC allocations
   const tempAmbient = useMemo(() => new THREE.Color(), []);
   const tempKey = useMemo(() => new THREE.Color(), []);
   const tempFill = useMemo(() => new THREE.Color(), []);
@@ -186,114 +60,89 @@ function StorytellingEnvironment() {
     tempFill.set(timeline.lighting.fill);
     tempFog.set(timeline.lighting.fog);
 
-    if (ambientRef.current) ambientRef.current.color.lerp(tempAmbient, safeDelta * 3.5);
-    if (keyRef.current) keyRef.current.color.lerp(tempKey, safeDelta * 3.5);
-    if (fillRef.current) fillRef.current.color.lerp(tempFill, safeDelta * 3.5);
-    if (fogRef.current) fogRef.current.color.lerp(tempFog, safeDelta * 3.5);
+    if (ambientLightRef.current) {
+      ambientLightRef.current.color.lerp(tempAmbient, safeDelta * 4);
+    }
+    if (keyLightRef.current) {
+      keyLightRef.current.color.lerp(tempKey, safeDelta * 4);
+    }
+    if (fillLightRef.current) {
+      fillLightRef.current.color.lerp(tempFill, safeDelta * 4);
+    }
+    if (scene.fog) {
+      scene.fog.color.lerp(tempFog, safeDelta * 4);
+    }
   });
 
   return (
     <>
-      <fog ref={fogRef} attach="fog" args={[vConfig.lighting.default.fog, 18, 92]} />
-      <ambientLight ref={ambientRef} intensity={0.85} />
-      <directionalLight ref={keyRef} position={[-6, 8, 6]} intensity={1.4} />
-      <directionalLight ref={fillRef} position={[6, -5, -15]} intensity={0.75} />
+      <color attach="background" args={[vConfig.lighting.default.fog]} />
+      <fogExp2 attach="fog" args={[vConfig.lighting.default.fog, 0.016]} />
+      <ambientLight ref={ambientLightRef} intensity={0.85} color={vConfig.lighting.default.ambient} />
+      <directionalLight
+        ref={keyLightRef}
+        position={[8, 12, 14]}
+        intensity={1.4}
+        color={vConfig.lighting.default.key}
+      />
+      <pointLight
+        ref={fillLightRef}
+        position={[-8, -4, 6]}
+        intensity={1.1}
+        color={vConfig.lighting.default.fill}
+        distance={45}
+      />
     </>
   );
 }
 
 // ----------------------------------------------------------------------------------
-// LAYER 02: DUAL-TIER PARTICLES (COSMIC DUST + DIRECTIONAL DATA CONDUIT STREAM)
+// 2. PURPOSEFUL SUBTLE PARTICLES
 // ----------------------------------------------------------------------------------
 function PurposefulParticleField({ quality }: { quality: Quality }) {
   const pointsRef = useRef<THREE.Points>(null);
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const { gl } = useThree();
-  const maxCount = vConfig.particles.counts.high;
+  const aqua = useAuroraColor('--accent-aqua', '#22D3EE');
+  const count = vConfig.particles.counts[quality];
 
-  const geometry = useMemo(() => {
-    const positions = new Float32Array(maxCount * 3);
-    const speeds = new Float32Array(maxCount);
-    for (let i = 0; i < maxCount; i++) {
-      const angle = i * 2.399963229728653;
-      // 30% of particles are concentrated tightly along the central spine (conduit stream)
-      const isConduit = i % 3 === 0;
-      const radius = isConduit ? 0.3 + (i % 20) * 0.12 : 1.5 + (i % 60) * 0.22;
-
-      positions[i * 3] = Math.cos(angle) * radius;
-      positions[i * 3 + 1] = Math.sin(angle * 0.8) * radius * 0.65;
-      positions[i * 3 + 2] = -((i * 0.61803398875) % vConfig.camera.travelZ);
-      speeds[i] = isConduit ? 1.8 : 0.4;
+  const [positions, phases] = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const ph = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      const rand1 = ((i * 9301 + 49297) % 233280) / 233280;
+      const rand2 = ((i * 49297 + 9301) % 233280) / 233280;
+      const rand3 = ((i * 12345 + 67891) % 233280) / 233280;
+      pos[i * 3] = (rand1 - 0.5) * 36;
+      pos[i * 3 + 1] = (rand2 - 0.5) * 22;
+      pos[i * 3 + 2] = 12 - rand3 * 95;
+      ph[i] = rand1 * Math.PI * 2;
     }
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute('speed', new THREE.BufferAttribute(speeds, 1));
-    return geom;
-  }, [maxCount]);
-
-  const uniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uPointer: { value: new THREE.Vector2() },
-      uPixelRatio: { value: Math.min(gl.getPixelRatio(), vConfig.quality.high.maxDpr) },
-      uIndigo: { value: new THREE.Color(vConfig.backbone.conduitColor) },
-      uAqua: { value: new THREE.Color(vConfig.backbone.conduitGlow) },
-      uSize: { value: vConfig.particles.baseSize },
-    }),
-    [gl]
-  );
-
-  useEffect(() => {
-    geometry.setDrawRange(0, PARTICLE_COUNTS[quality]);
-  }, [geometry, quality]);
+    return [pos, ph];
+  }, [count]);
 
   useFrame(({ clock }) => {
-    if (!materialRef.current) return;
-    materialRef.current.uniforms.uTime.value = clock.elapsedTime * vConfig.particles.driftSpeed;
-    materialRef.current.uniforms.uPointer.value.set(experienceState.pointerX, experienceState.pointerY);
+    if (!pointsRef.current) return;
+    const time = clock.elapsedTime * 0.2;
+    const geom = pointsRef.current.geometry;
+    const posAttr = geom.attributes.position as THREE.BufferAttribute;
+    const arr = posAttr.array as Float32Array;
+
+    for (let i = 0; i < count; i++) {
+      const idx = i * 3;
+      arr[idx + 1] += Math.sin(time + phases[i]) * 0.003;
+    }
+    posAttr.needsUpdate = true;
   });
 
   return (
-    <points ref={pointsRef} geometry={geometry} frustumCulled={false}>
-      <shaderMaterial
-        ref={materialRef}
-        uniforms={uniforms}
-        vertexShader={`
-          uniform float uTime;
-          uniform vec2 uPointer;
-          uniform float uPixelRatio;
-          uniform float uSize;
-          attribute float speed;
-          varying float vGlow;
-          varying float vSpeed;
-          void main() {
-            vec3 p = position;
-            float streamOffset = mod(p.z + uTime * speed * 6.0, 82.0) - 82.0;
-            p.z = streamOffset;
-            float phase = uTime * speed + p.z * 0.04;
-            p.x += sin(phase + p.y * 0.3) * 0.15 + uPointer.x * 0.22;
-            p.y += cos(phase * 0.8 + p.x * 0.25) * 0.12 - uPointer.y * 0.18;
-            vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-            gl_Position = projectionMatrix * mvPosition;
-            gl_PointSize = clamp(uSize * uPixelRatio * (120.0 / max(1.0, -mvPosition.z)), 1.0, 6.0);
-            vGlow = 0.35 + 0.65 * abs(sin(phase * 0.8));
-            vSpeed = speed;
-          }
-        `}
-        fragmentShader={`
-          uniform vec3 uIndigo;
-          uniform vec3 uAqua;
-          varying float vGlow;
-          varying float vSpeed;
-          void main() {
-            vec2 pt = gl_PointCoord - vec2(0.5);
-            float r = length(pt);
-            float alpha = smoothstep(0.5, 0.04, r) * vGlow * 0.65;
-            vec3 color = mix(uIndigo, uAqua, step(1.0, vSpeed));
-            gl_FragColor = vec4(color * 1.35, alpha);
-          }
-        `}
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        color={aqua}
+        size={vConfig.particles.baseSize}
         transparent
+        opacity={0.35}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
       />
@@ -302,792 +151,12 @@ function PurposefulParticleField({ quality }: { quality: Quality }) {
 }
 
 // ----------------------------------------------------------------------------------
-// LAYER 03: ENVIRONMENTAL MEGASTRUCTURES & COLOSSAL 3D SPATIAL NUMBERS
-// ----------------------------------------------------------------------------------
-function EnvironmentalMegastructures() {
-  const ringRef = useRef<THREE.Group>(null);
-  const aquaColor = useAuroraColor('--accent-aqua');
-  const violetColor = useAuroraColor('--accent-violet');
-
-  const { ringRadius, ringZ, gridWidth, gridLength, gridY } = vConfig.megastructures;
-
-  // Colossal Number Textures
-  const num01 = useMemo(() => makeColossalNumberTexture('01', '#22D3EE'), []);
-  const num02 = useMemo(() => makeColossalNumberTexture('02', '#FFA36B'), []);
-  const num03 = useMemo(() => makeColossalNumberTexture('03', '#38BDF8'), []);
-  const num04 = useMemo(() => makeColossalNumberTexture('04', '#A855F7'), []);
-
-  useEffect(() => () => {
-    num01.dispose();
-    num02.dispose();
-    num03.dispose();
-    num04.dispose();
-  }, [num01, num02, num03, num04]);
-
-  // Massive Structural Grid
-  const gridLines = useMemo(() => {
-    const coords: number[] = [];
-    const step = 3.5;
-    for (let x = -gridWidth * 0.5; x <= gridWidth * 0.5; x += step) {
-      coords.push(x, gridY, 0, x, gridY, -gridLength);
-    }
-    for (let z = 0; z >= -gridLength; z -= step) {
-      coords.push(-gridWidth * 0.5, gridY, z, gridWidth * 0.5, gridY, z);
-    }
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(coords), 3));
-    return geom;
-  }, [gridLength, gridWidth, gridY]);
-
-  useFrame(({ clock }) => {
-    if (ringRef.current) {
-      ringRef.current.rotation.z = clock.elapsedTime * 0.035;
-      ringRef.current.rotation.y = Math.sin(clock.elapsedTime * 0.08) * 0.06;
-    }
-  });
-
-  return (
-    <group>
-      {/* Enormous Distant Translucent Ring */}
-      <group ref={ringRef} position={[0, 0, ringZ]}>
-        <mesh>
-          <torusGeometry args={[ringRadius, 0.06, 12, 120]} />
-          <meshBasicMaterial color={violetColor} transparent opacity={0.22} />
-        </mesh>
-        <mesh rotation={[Math.PI * 0.35, 0, 0]}>
-          <torusGeometry args={[ringRadius * 1.15, 0.035, 8, 120]} />
-          <meshBasicMaterial color={aquaColor} transparent opacity={0.16} />
-        </mesh>
-      </group>
-
-      {/* Massive Technical Grid Floor */}
-      <lineSegments geometry={gridLines}>
-        <lineBasicMaterial color={violetColor} transparent opacity={0.085} depthWrite={false} />
-      </lineSegments>
-
-      {/* Colossal 3D Numerals floating 17m behind projects */}
-      <mesh position={[-4.5, 1.2, vConfig.projects.coords[0].numberZ]}>
-        <planeGeometry args={[14, 14]} />
-        <meshBasicMaterial map={num01} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
-      </mesh>
-
-      <mesh position={[4.5, -0.8, vConfig.projects.coords[1].numberZ]}>
-        <planeGeometry args={[14, 14]} />
-        <meshBasicMaterial map={num02} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
-      </mesh>
-
-      <mesh position={[-4.5, 1.0, vConfig.projects.coords[2].numberZ]}>
-        <planeGeometry args={[14, 14]} />
-        <meshBasicMaterial map={num03} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
-      </mesh>
-
-      <mesh position={[4.2, -0.6, vConfig.projects.coords[3].numberZ]}>
-        <planeGeometry args={[14, 14]} />
-        <meshBasicMaterial map={num04} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
-      </mesh>
-    </group>
-  );
-}
-
-// ----------------------------------------------------------------------------------
-// LAYER 04: THE LIVING ARCHITECTURAL PROJECT SPINE & DATA CONDUIT
-// ----------------------------------------------------------------------------------
-function LivingArchitecturalSpine() {
-  const spineGroup = useRef<THREE.Group>(null);
-  const nodesMesh = useRef<THREE.InstancedMesh>(null);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-
-  const aquaColor = useAuroraColor('--accent-aqua');
-  const limeColor = useAuroraColor('--accent-lime');
-  const indigoColor = useAuroraColor('--accent-indigo');
-
-  const { nodesPerStrand, radius, secondaryRadius, height, strutsCount } = vConfig.backbone;
-  const totalNodes = nodesPerStrand * 2;
-
-  // Primary Strand Nodes with Varying Thickness Profile
-  const nodeData = useMemo(() => {
-    const data: { x: number; y: number; z: number; strand: number; thickness: number; t: number }[] = [];
-    const zStart = -10.0;
-    const zStep = height / nodesPerStrand;
-
-    for (let i = 0; i < nodesPerStrand; i++) {
-      const t = i / nodesPerStrand;
-      const angle = t * Math.PI * 7.5; // Smooth sweeping helix
-      const z = zStart - i * zStep;
-
-      // Organic thickness modulation: expands near project stations
-      const nearP1 = Math.exp(-Math.pow((z - -17) / 4.0, 2));
-      const nearP2 = Math.exp(-Math.pow((z - -31) / 4.0, 2));
-      const nearP3 = Math.exp(-Math.pow((z - -45) / 4.0, 2));
-      const nearP4 = Math.exp(-Math.pow((z - -59) / 4.0, 2));
-      const thickness = 1.0 + (nearP1 + nearP2 + nearP3 + nearP4) * 0.75;
-
-      const r = radius * (0.85 + Math.sin(t * Math.PI * 4) * 0.15);
-
-      // Strand A
-      data.push({
-        x: Math.cos(angle) * r,
-        y: Math.sin(angle) * r * 0.65,
-        z,
-        strand: 0,
-        thickness,
-        t,
-      });
-
-      // Strand B (Opposite Phase)
-      data.push({
-        x: Math.cos(angle + Math.PI) * r,
-        y: Math.sin(angle + Math.PI) * r * 0.65,
-        z,
-        strand: 1,
-        thickness,
-        t,
-      });
-    }
-    return data;
-  }, [height, nodesPerStrand, radius]);
-
-  // Secondary Helical Energy Cables (2 Wrapping Conduits)
-  const secondaryCableGeometry = useMemo(() => {
-    const points: number[] = [];
-    const totalSteps = 160;
-    const zStart = -10.0;
-    const zStep = height / totalSteps;
-
-    for (let i = 0; i < totalSteps - 1; i++) {
-      const t1 = i / totalSteps;
-      const t2 = (i + 1) / totalSteps;
-      const a1 = t1 * Math.PI * 12; // High frequency wrap
-      const a2 = t2 * Math.PI * 12;
-      const z1 = zStart - i * zStep;
-      const z2 = zStart - (i + 1) * zStep;
-
-      // Cable 1
-      points.push(
-        Math.cos(a1) * secondaryRadius,
-        Math.sin(a1) * secondaryRadius * 0.6,
-        z1,
-        Math.cos(a2) * secondaryRadius,
-        Math.sin(a2) * secondaryRadius * 0.6,
-        z2
-      );
-
-      // Cable 2
-      points.push(
-        Math.cos(a1 + Math.PI * 0.65) * (secondaryRadius * 0.85),
-        Math.sin(a1 + Math.PI * 0.65) * (secondaryRadius * 0.55),
-        z1,
-        Math.cos(a2 + Math.PI * 0.65) * (secondaryRadius * 0.85),
-        Math.sin(a2 + Math.PI * 0.65) * (secondaryRadius * 0.55),
-        z2
-      );
-    }
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 3));
-    return geom;
-  }, [height, secondaryRadius]);
-
-  // Architectural Cross Struts
-  const strutGeometry = useMemo(() => {
-    const positions = new Float32Array(strutsCount * 6);
-    const zStart = -10.0;
-    const zStep = height / strutsCount;
-
-    for (let i = 0; i < strutsCount; i++) {
-      const t = i / strutsCount;
-      const angle = t * Math.PI * 7.5;
-      const z = zStart - i * zStep;
-
-      const ax = Math.cos(angle) * radius;
-      const ay = Math.sin(angle) * radius * 0.65;
-      const bx = Math.cos(angle + Math.PI) * radius;
-      const by = Math.sin(angle + Math.PI) * radius * 0.65;
-
-      positions.set([ax, ay, z, bx, by, z], i * 6);
-    }
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    return geom;
-  }, [height, radius, strutsCount]);
-
-  // Umbilical Energy Tendrils to Project Mounts
-  const tendrilGeometry = useMemo(() => {
-    const positions: number[] = [];
-    vConfig.projects.coords.forEach((coord) => {
-      const targetZ = coord.z;
-      const closest = nodeData.reduce((prev, curr) =>
-        Math.abs(curr.z - targetZ) < Math.abs(prev.z - targetZ) ? curr : prev
-      );
-
-      // Multi-segment energy branch
-      const midX = (closest.x + coord.x) * 0.5 + (coord.side === 'left' ? -0.6 : 0.6);
-      const midY = (closest.y + coord.y) * 0.5 + 0.35;
-      const midZ = (closest.z + coord.z) * 0.5;
-
-      positions.push(closest.x, closest.y, closest.z, midX, midY, midZ);
-      positions.push(midX, midY, midZ, coord.x, coord.y, coord.z);
-    });
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-    return geom;
-  }, [nodeData]);
-
-  const nodeGeometry = useMemo(() => new THREE.OctahedronGeometry(vConfig.backbone.nodeSize, 1), []);
-  const nodeMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: aquaColor,
-        emissive: aquaColor,
-        emissiveIntensity: 0.8,
-        roughness: 0.15,
-        metalness: 0.85,
-      }),
-    [aquaColor]
-  );
-
-  useFrame(({ clock }, delta) => {
-    if (!nodesMesh.current || !spineGroup.current) return;
-    const time = clock.elapsedTime;
-    const safeDelta = Math.min(delta, 0.05);
-    const timeline = getTimelineState(experienceState.scrollProgress);
-    const dispersion = timeline.spineDispersion;
-
-    // Organic axial sway
-    spineGroup.current.rotation.z = Math.sin(time * 0.12) * 0.06;
-
-    // When inspecting or active, shift spine slightly to side to heroize the project
-    const activeIdx = timeline.activeProjectIndex;
-    const targetSpineX = activeIdx >= 0 ? (vConfig.projects.coords[activeIdx]?.side === 'left' ? 1.6 : -1.6) : 0;
-    spineGroup.current.position.x = THREE.MathUtils.damp(spineGroup.current.position.x, targetSpineX, 3.5, safeDelta);
-
-    // Traveling Data Conduit Energy Pulse along spine nodes
-    for (let i = 0; i < totalNodes; i++) {
-      const d = nodeData[i];
-      // Wave traveling forward along Z
-      const wave = Math.sin(d.z * vConfig.backbone.pulseFrequency + time * 1.8 + timeline.energyPulsePhase);
-      const isNearProject = Math.abs(-d.z - (vConfig.camera.initialZ - timeline.cameraPos.z)) < 7.0;
-
-      // When dispersion > 0 (transitioning into skills constellation), nodes detach and fly outward
-      const disperseDist = dispersion * (3.8 + (i % 7) * 0.65);
-      const disperseAngle = i * 0.45;
-      const posX = d.x + Math.cos(disperseAngle) * disperseDist;
-      const posY = d.y + Math.sin(disperseAngle) * disperseDist;
-      const posZ = d.z;
-
-      const scale = (0.75 + wave * 0.35 + (isNearProject ? 0.7 : 0)) * d.thickness * (1.0 - dispersion * 0.55);
-
-      dummy.position.set(posX, posY, posZ);
-      dummy.scale.setScalar(scale);
-      dummy.rotation.set(time * 0.3 + i, time * 0.2, i);
-      dummy.updateMatrix();
-      nodesMesh.current.setMatrixAt(i, dummy.matrix);
-
-      // Pulse color: shifts from cyan to lime or magenta when data conduit passes
-      const nodeColor = isNearProject ? limeColor : wave > 0.45 ? aquaColor : indigoColor;
-      nodesMesh.current.setColorAt(i, nodeColor);
-    }
-
-    nodesMesh.current.instanceMatrix.needsUpdate = true;
-    if (nodesMesh.current.instanceColor) nodesMesh.current.instanceColor.needsUpdate = true;
-  });
-
-  return (
-    <group ref={spineGroup}>
-      {/* 112 Instanced Architectural Node Crystals */}
-      <instancedMesh ref={nodesMesh} args={[nodeGeometry, nodeMaterial, totalNodes]} />
-
-      {/* Structural Cross Struts */}
-      <lineSegments geometry={strutGeometry}>
-        <lineBasicMaterial color={aquaColor} transparent opacity={0.32} depthWrite={false} />
-      </lineSegments>
-
-      {/* Secondary Spiraling Energy Conduits */}
-      <lineSegments geometry={secondaryCableGeometry}>
-        <lineBasicMaterial color={indigoColor} transparent opacity={0.48} depthWrite={false} />
-      </lineSegments>
-
-      {/* Umbilical Energy Tendrils to Projects */}
-      <lineSegments geometry={tendrilGeometry}>
-        <lineBasicMaterial color={limeColor} transparent opacity={0.65} depthWrite={false} />
-      </lineSegments>
-
-      {/* Internal Core Conduit Light */}
-      <pointLight position={[0, 0, -28]} color={aquaColor} intensity={1.1} distance={22} />
-      <pointLight position={[0, 0, -52]} color={limeColor} intensity={0.9} distance={20} />
-    </group>
-  );
-}
-
-// ----------------------------------------------------------------------------------
-// LAYER 05: 4 BESPOKE PROCEDURAL 3D PROJECT WORLDS
-// ----------------------------------------------------------------------------------
-
-/**
- * Project 01: AI Incident Intelligence (The Incident Network)
- * Multi-node neural cluster with telemetry lines, anomaly spikes, and investigation wave
- */
-function VisualAIIncident() {
-  const group = useRef<THREE.Group>(null);
-  const coreRef = useRef<THREE.Mesh>(null);
-  const aqua = useAuroraColor('--accent-aqua');
-  const magenta = useAuroraColor('--accent-magenta');
-  const indigo = useAuroraColor('--accent-indigo');
-
-  // 8 Satellite Nodes (Logs, Metrics, Services, Traces, Incidents, Evidence, Root Cause, Remediation)
-  const satellites = useMemo(() => {
-    return [
-      { x: -0.75, y: 0.45, z: 0.15, role: 'logs' },
-      { x: -0.85, y: -0.35, z: -0.1, role: 'metrics' },
-      { x: 0.75, y: 0.55, z: -0.15, role: 'services' },
-      { x: 0.85, y: -0.4, z: 0.12, role: 'traces' },
-      { x: 0.15, y: 0.8, z: 0.22, role: 'incident' },
-      { x: -0.2, y: -0.75, z: 0.18, role: 'evidence' },
-      { x: 0.65, y: 0.1, z: 0.35, role: 'root_cause' },
-      { x: -0.6, y: 0.12, z: -0.3, role: 'remediation' },
-    ];
-  }, []);
-
-  // Neural Connection Links between Core and Satellites
-  const linksGeometry = useMemo(() => {
-    const coords: number[] = [];
-    satellites.forEach((sat, i) => {
-      coords.push(0, 0, 0, sat.x, sat.y, sat.z);
-      // Cross-link to next satellite
-      const next = satellites[(i + 1) % satellites.length];
-      coords.push(sat.x, sat.y, sat.z, next.x, next.y, next.z);
-    });
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(coords), 3));
-    return geom;
-  }, [satellites]);
-
-  useFrame(({ clock }) => {
-    if (!group.current) return;
-    const time = clock.elapsedTime;
-    group.current.rotation.y = time * 0.18;
-    group.current.rotation.x = Math.sin(time * 0.25) * 0.08;
-
-    // Anomaly heart-beat pulse on central investigation node
-    if (coreRef.current) {
-      const pulse = 1.0 + Math.pow(Math.sin(time * 2.8), 6) * 0.45;
-      coreRef.current.scale.setScalar(pulse);
-    }
-  });
-
-  return (
-    <group ref={group}>
-      {/* Central Incident Core Node */}
-      <mesh ref={coreRef} position={[0, 0, 0]}>
-        <icosahedronGeometry args={[0.28, 2]} />
-        <meshStandardMaterial
-          color={magenta}
-          emissive={magenta}
-          emissiveIntensity={1.2}
-          roughness={0.2}
-          metalness={0.8}
-        />
-      </mesh>
-
-      {/* Satellite Observability Nodes */}
-      {satellites.map((sat, i) => (
-        <group key={i} position={[sat.x, sat.y, sat.z]}>
-          <mesh>
-            <octahedronGeometry args={[0.085, 0]} />
-            <meshStandardMaterial
-              color={i % 2 === 0 ? aqua : indigo}
-              emissive={i % 2 === 0 ? aqua : indigo}
-              emissiveIntensity={0.65}
-            />
-          </mesh>
-        </group>
-      ))}
-
-      {/* Dynamic Telemetry Neural Connections */}
-      <lineSegments geometry={linksGeometry}>
-        <lineBasicMaterial color={aqua} transparent opacity={0.65} depthWrite={false} />
-      </lineSegments>
-
-      {/* Outer Telemetry Bounds */}
-      <mesh>
-        <sphereGeometry args={[1.05, 16, 16]} />
-        <meshBasicMaterial color={indigo} wireframe transparent opacity={0.12} />
-      </mesh>
-    </group>
-  );
-}
-
-/**
- * Project 02: SolisIQ (The Solar Energy System)
- * Radiant solar core with corona flares, 3 multi-axis orbital rings, and photovoltaic collectors
- */
-function VisualSolisIQ() {
-  const group = useRef<THREE.Group>(null);
-  const ring1 = useRef<THREE.Group>(null);
-  const ring2 = useRef<THREE.Group>(null);
-  const ring3 = useRef<THREE.Group>(null);
-
-  const tangerine = useAuroraColor('--accent-tangerine');
-  const aqua = useAuroraColor('--accent-aqua');
-  const lime = useAuroraColor('--accent-lime');
-
-  useFrame(({ clock }) => {
-    if (!group.current) return;
-    const time = clock.elapsedTime;
-    if (ring1.current) ring1.current.rotation.z = time * 0.45;
-    if (ring2.current) ring2.current.rotation.x = time * 0.32;
-    if (ring3.current) {
-      ring3.current.rotation.y = time * 0.38;
-      ring3.current.rotation.z = -time * 0.22;
-    }
-  });
-
-  return (
-    <group ref={group}>
-      {/* Radiant Solar Core */}
-      <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[0.34, 24, 24]} />
-        <meshStandardMaterial
-          color={tangerine}
-          emissive={tangerine}
-          emissiveIntensity={1.4}
-          roughness={0.15}
-          metalness={0.3}
-        />
-      </mesh>
-
-      {/* Orbital Ring 1: Primary Photovoltaic Collector Arc */}
-      <group ref={ring1}>
-        <mesh>
-          <torusGeometry args={[0.72, 0.025, 12, 64]} />
-          <meshBasicMaterial color={tangerine} />
-        </mesh>
-        {/* Photovoltaic Solar Panels */}
-        {[0, 1, 2, 3].map((i) => {
-          const a = (i / 4) * Math.PI * 2;
-          return (
-            <mesh key={i} position={[Math.cos(a) * 0.72, Math.sin(a) * 0.72, 0]} rotation={[0, 0, a]}>
-              <boxGeometry args={[0.12, 0.04, 0.04]} />
-              <meshBasicMaterial color={lime} />
-            </mesh>
-          );
-        })}
-      </group>
-
-      {/* Orbital Ring 2: Equatorial Energy Flow */}
-      <group ref={ring2} rotation={[Math.PI * 0.4, 0, 0]}>
-        <mesh>
-          <torusGeometry args={[0.95, 0.018, 8, 64]} />
-          <meshBasicMaterial color={aqua} transparent opacity={0.75} />
-        </mesh>
-      </group>
-
-      {/* Orbital Ring 3: Tilted Outer Corona Arc */}
-      <group ref={ring3} rotation={[0, Math.PI * 0.35, Math.PI * 0.2]}>
-        <mesh>
-          <torusGeometry args={[1.18, 0.012, 6, 64]} />
-          <meshBasicMaterial color={tangerine} transparent opacity={0.5} />
-        </mesh>
-      </group>
-    </group>
-  );
-}
-
-/**
- * Project 03: Instanews (Futuristic Information Stream & RBAC Node)
- * 3 staggered floating article planes with varying Z-depths and dynamic news ribbons
- */
-function VisualInstanews() {
-  const group = useRef<THREE.Group>(null);
-  const p1 = useRef<THREE.Mesh>(null);
-  const p2 = useRef<THREE.Mesh>(null);
-  const p3 = useRef<THREE.Mesh>(null);
-
-  const aqua = useAuroraColor('--accent-aqua');
-  const indigo = useAuroraColor('--accent-indigo');
-
-  useFrame(({ clock }) => {
-    if (!group.current) return;
-    const time = clock.elapsedTime;
-    group.current.rotation.y = Math.sin(time * 0.2) * 0.15;
-    if (p1.current) p1.current.position.y = Math.sin(time * 0.8) * 0.06;
-    if (p2.current) p2.current.position.y = Math.cos(time * 0.75 + 1) * 0.07;
-    if (p3.current) p3.current.position.y = Math.sin(time * 0.9 + 2) * 0.05;
-  });
-
-  return (
-    <group ref={group}>
-      {/* Plane 1: Front Active Article Pane (Z = +0.22) */}
-      <mesh ref={p1} position={[-0.32, 0.15, 0.22]} rotation={[0, 0.12, -0.05]}>
-        <planeGeometry args={[0.95, 0.65]} />
-        <meshStandardMaterial
-          color={indigo}
-          roughness={0.3}
-          metalness={0.7}
-          transparent
-          opacity={0.85}
-        />
-      </mesh>
-
-      {/* Plane 2: Mid Content Layer with RBAC Shield (Z = 0.0) */}
-      <mesh ref={p2} position={[0.25, -0.1, 0.0]} rotation={[0, -0.15, 0.06]}>
-        <planeGeometry args={[0.85, 0.58]} />
-        <meshBasicMaterial color={aqua} wireframe transparent opacity={0.45} />
-      </mesh>
-
-      {/* Plane 3: Deep Cached Content Stream (Z = -0.28) */}
-      <mesh ref={p3} position={[-0.1, -0.35, -0.28]} rotation={[-0.08, 0.05, -0.02]}>
-        <planeGeometry args={[1.1, 0.7]} />
-        <meshBasicMaterial color={indigo} transparent opacity={0.35} />
-      </mesh>
-
-      {/* Glowing RBAC Auth Token Satellite */}
-      <mesh position={[0.65, 0.45, 0.15]}>
-        <octahedronGeometry args={[0.11, 0]} />
-        <meshBasicMaterial color={aqua} />
-      </mesh>
-    </group>
-  );
-}
-
-/**
- * Project 04: ZeroHour (Mechanical Precision Chronograph)
- * Multi-axis precision tick-mark ring, counter-rotating gears, and sweeping countdown second needle
- */
-function VisualZeroHour() {
-  const outerRing = useRef<THREE.Group>(null);
-  const gear1 = useRef<THREE.Group>(null);
-  const gear2 = useRef<THREE.Group>(null);
-  const handRef = useRef<THREE.Group>(null);
-
-  const aqua = useAuroraColor('--accent-aqua');
-  const violet = useAuroraColor('--accent-violet');
-
-  // 60 Subdivided Chronograph Tick Marks
-  const tickGeometry = useMemo(() => {
-    const coords: number[] = [];
-    const count = 60;
-    const rOuter = 0.95;
-    for (let i = 0; i < count; i++) {
-      const a = (i / count) * Math.PI * 2;
-      const rInner = i % 5 === 0 ? 0.82 : 0.89; // Major tick vs minor tick
-      coords.push(Math.cos(a) * rInner, Math.sin(a) * rInner, 0, Math.cos(a) * rOuter, Math.sin(a) * rOuter, 0);
-    }
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(coords), 3));
-    return geom;
-  }, []);
-
-  useFrame(({ clock }) => {
-    const time = clock.elapsedTime;
-    if (outerRing.current) outerRing.current.rotation.z = -time * 0.12;
-    if (gear1.current) gear1.current.rotation.z = time * 0.45;
-    if (gear2.current) gear2.current.rotation.z = -time * 0.45;
-    if (handRef.current) handRef.current.rotation.z = -time * 2.2;
-  });
-
-  return (
-    <group>
-      {/* Outer Precision Tick Mark Chronograph Ring */}
-      <group ref={outerRing}>
-        <lineSegments geometry={tickGeometry}>
-          <lineBasicMaterial color={aqua} />
-        </lineSegments>
-        <mesh>
-          <torusGeometry args={[0.96, 0.02, 8, 64]} />
-          <meshBasicMaterial color={violet} />
-        </mesh>
-      </group>
-
-      {/* Sweeping Precision Hand */}
-      <group ref={handRef}>
-        <mesh position={[0, 0.4, 0.04]}>
-          <boxGeometry args={[0.025, 0.8, 0.015]} />
-          <meshBasicMaterial color={aqua} />
-        </mesh>
-      </group>
-
-      {/* Interlocking Gear 1 */}
-      <group ref={gear1} position={[-0.28, 0.12, 0.02]}>
-        <mesh>
-          <cylinderGeometry args={[0.26, 0.26, 0.03, 16]} />
-          <meshBasicMaterial color={violet} wireframe transparent opacity={0.7} />
-        </mesh>
-      </group>
-
-      {/* Interlocking Gear 2 (Counter-rotating) */}
-      <group ref={gear2} position={[0.24, -0.22, 0.02]}>
-        <mesh>
-          <cylinderGeometry args={[0.22, 0.22, 0.03, 14]} />
-          <meshBasicMaterial color={aqua} wireframe transparent opacity={0.65} />
-        </mesh>
-      </group>
-
-      {/* Center Segmented Time Crystal */}
-      <mesh position={[0, 0, 0.06]}>
-        <octahedronGeometry args={[0.14, 0]} />
-        <meshStandardMaterial color={aqua} emissive={aqua} emissiveIntensity={1.0} />
-      </mesh>
-    </group>
-  );
-}
-
-function ProjectVisualSwitcher({ index }: { index: number }) {
-  if (index === 0) return <VisualAIIncident />;
-  if (index === 1) return <VisualSolisIQ />;
-  if (index === 2) return <VisualInstanews />;
-  return <VisualZeroHour />;
-}
-
-// ----------------------------------------------------------------------------------
-// LAYER 06: PHYSICAL PROJECT ARTIFACTS (NON-FACING 3D COMPOSITION)
-// ----------------------------------------------------------------------------------
-function PhysicalProjectArtifacts() {
-  const coords = vConfig.projects.coords;
-  const labelTextures = useMemo(
-    () =>
-      projectsData.map((project, index) =>
-        makeArtifactLabel(project.name, index, project.category)
-      ),
-    []
-  );
-
-  useEffect(() => () => labelTextures.forEach((t) => t.dispose()), [labelTextures]);
-
-  return (
-    <group>
-      {projectsData.map((project, index) => {
-        const coord = coords[index];
-        return (
-          <PhysicalArtifactSingle
-            key={project.id}
-            project={project}
-            index={index}
-            coord={coord}
-            texture={labelTextures[index]}
-          />
-        );
-      })}
-    </group>
-  );
-}
-
-function PhysicalArtifactSingle({
-  index,
-  coord,
-  texture,
-}: {
-  project: (typeof projectsData)[0];
-  index: number;
-  coord: (typeof vConfig.projects.coords)[number];
-  texture: THREE.CanvasTexture;
-}) {
-  const groupRef = useRef<THREE.Group>(null);
-  const visualMountRef = useRef<THREE.Group>(null);
-  const { slabWidth, slabHeight, slabDepth } = vConfig.projects;
-
-  const aquaColor = useAuroraColor('--accent-aqua');
-  const surfaceColor = useAuroraColor('--surface');
-
-  useFrame(({ clock }, delta) => {
-    if (!groupRef.current) return;
-    const safeDelta = Math.min(delta, 0.05);
-    const timeline = getTimelineState(experienceState.scrollProgress);
-    const visibility = timeline.projectVisibilities[index] || 0;
-    const isActive = timeline.activeProjectIndex === index || experienceState.activeProject === index;
-
-    // Dynamic 3D Composition: Projects sit at natural angles (front vs side),
-    // then gracefully ease forward when actively inspected
-    const baseRotY = coord.rotY;
-    const baseRotX = coord.rotX;
-    const targetRotY = isActive ? baseRotY * 0.25 + experienceState.pointerX * 0.12 : baseRotY;
-    const targetRotX = isActive ? baseRotX * 0.25 - experienceState.pointerY * 0.1 : baseRotX;
-    const targetScale = coord.scale * (0.6 + visibility * 0.75);
-
-    groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, targetRotY, 3.8, safeDelta);
-    groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, targetRotX, 3.8, safeDelta);
-    groupRef.current.scale.setScalar(
-      THREE.MathUtils.damp(groupRef.current.scale.x, targetScale, 4.0, safeDelta)
-    );
-
-    // Subtle physical float
-    groupRef.current.position.y = coord.y + Math.sin(clock.elapsedTime * 0.65 + index) * 0.06;
-
-    // Visual mount expands and rotates slightly
-    if (visualMountRef.current) {
-      visualMountRef.current.scale.setScalar(isActive ? 1.35 : 1.0);
-    }
-  });
-
-  return (
-    <group ref={groupRef} position={[coord.x, coord.y, coord.z]}>
-      {/* Physical Glass Housing Slab */}
-      <RoundedBox args={[slabWidth, slabHeight, slabDepth]} radius={0.09} smoothness={2}>
-        <meshPhysicalMaterial
-          color={surfaceColor}
-          roughness={0.2}
-          metalness={0.15}
-          transmission={0.65}
-          thickness={0.5}
-          transparent
-          opacity={0.88}
-        />
-      </RoundedBox>
-
-      {/* Front HUD Label Overlay */}
-      <mesh position={[0, 0, slabDepth * 0.5 + 0.005]}>
-        <planeGeometry args={[slabWidth * 0.94, slabHeight * 0.94]} />
-        <meshBasicMaterial map={texture} transparent toneMapped={false} />
-      </mesh>
-
-      {/* Tech Glowing Rim Frame */}
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[slabWidth * 1.015, slabHeight * 1.015, slabDepth * 1.08]} />
-        <meshBasicMaterial color={aquaColor} wireframe transparent opacity={0.32} />
-      </mesh>
-
-      {/* HERO BESPOKE 3D VISUAL (Mounted on the Slab) */}
-      <group
-        ref={visualMountRef}
-        position={[coord.side === 'left' ? 1.05 : -1.05, 0.45, 0.15]}
-      >
-        <ProjectVisualSwitcher index={index} />
-      </group>
-    </group>
-  );
-}
-
-// ----------------------------------------------------------------------------------
-// LAYER 08: CURSOR INTERACTION POINT LIGHT
-// ----------------------------------------------------------------------------------
-function CursorInteractionLight() {
-  const lightRef = useRef<THREE.PointLight>(null);
-  const aqua = useAuroraColor('--accent-aqua');
-
-  useFrame(() => {
-    if (!lightRef.current) return;
-    const px = experienceState.pointerX * 5.5;
-    const py = experienceState.pointerY * 3.8;
-    const pz = vConfig.camera.initialZ - experienceState.scrollProgress * vConfig.camera.travelZ - 3.5;
-    lightRef.current.position.set(px, py, pz);
-  });
-
-  return (
-    <pointLight
-      ref={lightRef}
-      color={aqua}
-      intensity={vConfig.depthLayers.layer08_cursorLight.intensity}
-      distance={vConfig.depthLayers.layer08_cursorLight.distance}
-    />
-  );
-}
-
-// ----------------------------------------------------------------------------------
-// HERO 360° PORTRAIT GLASS RING
+// 3. HERO 360° PORTRAIT GLASS LENS & PORTAL DILATION
 // ----------------------------------------------------------------------------------
 function HeroPortraitRing() {
   const ringRef = useRef<THREE.Group>(null);
-  const aqua = useAuroraColor('--accent-aqua');
-  const violet = useAuroraColor('--accent-violet');
+  const aqua = useAuroraColor('--accent-aqua', '#22D3EE');
+  const violet = useAuroraColor('--accent-violet', '#C084FC');
   const [photoTexture, setPhotoTexture] = useState<THREE.Texture | null>(null);
 
   useEffect(() => {
@@ -1101,9 +170,9 @@ function HeroPortraitRing() {
   useFrame(({ clock }, delta) => {
     if (!ringRef.current) return;
     const safeDelta = Math.min(delta, 0.05);
-    const time = clock.elapsedTime;
+    const p = experienceState.scrollProgress;
 
-    // React to drag rotation stored in experienceState
+    // React to drag rotation stored in experienceState with smooth return
     ringRef.current.rotation.y = THREE.MathUtils.damp(
       ringRef.current.rotation.y,
       experienceState.portraitRotationY,
@@ -1117,208 +186,814 @@ function HeroPortraitRing() {
       safeDelta
     );
 
-    // Subtle idle float
-    ringRef.current.position.y = Math.sin(time * vConfig.hero.idleSwaySpeed) * vConfig.hero.idleSwayAmp;
+    // Idle organic float
+    ringRef.current.position.y = Math.sin(clock.elapsedTime * 0.75) * 0.06;
 
-    // Close-Pass 1: As camera descends through ring portal (p: 0.05 -> 0.15),
-    // expand ring geometry like an iris aperture allowing camera to pass through center
-    const p = experienceState.scrollProgress;
-    const portalDilation = p < 0.22 ? THREE.MathUtils.smoothstep(p, 0.05, 0.15) * 2.2 : 0;
-    const targetScale = 1.0 + portalDilation;
-    const currentScale = THREE.MathUtils.damp(ringRef.current.scale.x, targetScale, 4.0, safeDelta);
-    ringRef.current.scale.setScalar(currentScale);
+    // PORTAL DILATION: As camera approaches and dives at t=0.08 -> 0.16,
+    // the ring dilates outwards to create an open portal corridor
+    if (p >= 0.08 && p <= 0.18) {
+      const openT = Math.min(1.0, (p - 0.08) / 0.08);
+      const irisScale = 1.0 + openT * 2.8;
+      ringRef.current.scale.set(irisScale, irisScale, 1.0);
+    } else if (p > 0.18) {
+      ringRef.current.scale.set(3.8, 3.8, 1.0);
+    } else {
+      ringRef.current.scale.set(1.0, 1.0, 1.0);
+    }
   });
 
   return (
     <group ref={ringRef} position={[0, 0, 0]}>
-      {/* Outer Luminous Ring Torus */}
+      {/* Outer Luminous Torus Frame */}
       <mesh>
-        <torusGeometry args={[vConfig.hero.ringRadius, 0.08, 16, 64]} />
-        <meshPhysicalMaterial
-          color={violet}
+        <torusGeometry args={[vConfig.hero.ringRadius, 0.07, 24, 64]} />
+        <meshStandardMaterial
+          color={aqua}
           emissive={aqua}
           emissiveIntensity={0.65}
-          roughness={0.1}
-          metalness={0.9}
+          roughness={0.15}
+          metalness={0.85}
         />
       </mesh>
 
-      {/* Untouched Real Portrait Card centered inside Ring */}
+      {/* Secondary Counter-Rotating Orbital Rim */}
+      <mesh rotation={[Math.PI * 0.25, 0, 0]}>
+        <torusGeometry args={[vConfig.hero.ringRadius * 1.08, 0.02, 16, 48]} />
+        <meshBasicMaterial color={violet} transparent opacity={0.45} />
+      </mesh>
+
+      {/* Untouched Photo Card in Circular Lens */}
       {photoTexture && (
         <mesh position={[0, 0, 0]}>
-          <circleGeometry args={[1.58, 48]} />
+          <circleGeometry args={[vConfig.hero.ringRadius * 0.94, 48]} />
           <meshBasicMaterial map={photoTexture} toneMapped={false} />
         </mesh>
       )}
 
-      {/* Glass Rim Shield */}
-      <mesh position={[0, 0, 0.02]}>
-        <ringGeometry args={[1.56, 1.74, 48]} />
-        <meshBasicMaterial color={aqua} transparent opacity={0.6} />
+      {/* Frosted Glass Protective Bezel */}
+      <mesh position={[0, 0, 0.04]}>
+        <circleGeometry args={[vConfig.hero.ringRadius * 0.96, 48]} />
+        <meshPhysicalMaterial
+          color="#0A0620"
+          roughness={0.12}
+          transmission={0.7}
+          thickness={0.2}
+          transparent
+          opacity={0.35}
+        />
       </mesh>
     </group>
   );
 }
 
 // ----------------------------------------------------------------------------------
-// LAB HONEYCOMB & SKILL CONSTELLATION
+// 4. THE LIVING ARCHITECTURAL INFRASTRUCTURE SPINE (NOT A DNA HELIX)
 // ----------------------------------------------------------------------------------
-function LabHoneycombFloor() {
-  const mesh = useRef<THREE.InstancedMesh>(null);
-  const count = 30;
-  const geometry = useMemo(() => new THREE.CylinderGeometry(0.72, 0.72, 0.02, 6, 1, true), []);
-  const material = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        color: new THREE.Color(cssColor('--accent-aqua')),
-        wireframe: true,
-        transparent: true,
-        opacity: 0.28,
-      }),
-    []
-  );
+/**
+ * Engineered Asymmetric Digital Spine:
+ * - Single curved structural trunk that sweeps asymmetrically through 3D space
+ * - Irregular architectural cross-rib brackets
+ * - 3 twisting optical neural conduit cables
+ * - Luminous junction node crystals
+ * - Umbilical data tendrils directly connecting to the 4 projects
+ * - Traveling energy pulses that bridge transitions
+ */
+function ArchitecturalInfrastructureSpine() {
+  const spineGroup = useRef<THREE.Group>(null);
+  const nodesMesh = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
-  useEffect(() => {
-    if (!mesh.current) return;
-    let idx = 0;
-    for (let r = -2; r <= 3; r++) {
-      for (let c = -2; c <= 2; c++) {
-        if (idx >= count) break;
-        dummy.position.set(c * 1.25 + (r % 2) * 0.62, -1.8, r * 1.08);
-        dummy.updateMatrix();
-        mesh.current.setMatrixAt(idx, dummy.matrix);
-        idx++;
+  const aquaColor = useAuroraColor('--accent-aqua', '#22D3EE');
+  const limeColor = useAuroraColor('--accent-lime', '#C6F432');
+  const indigoColor = useAuroraColor('--accent-indigo', '#7C6CFF');
+
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
+  // Primary Spine Asymmetric 3D Spline Curve
+  const spineSpline = useMemo(() => {
+    // Desktop wide asymmetric sweep vs Mobile narrow vertical corridor
+    const points = isMobile
+      ? [
+          new THREE.Vector3(0, 0, -2),
+          new THREE.Vector3(0.2, -0.1, -8),
+          new THREE.Vector3(-0.4, 0.2, -16.5),
+          new THREE.Vector3(0.3, -0.2, -23.5),
+          new THREE.Vector3(-0.3, 0.1, -30.5),
+          new THREE.Vector3(0.4, -0.2, -37.5),
+          new THREE.Vector3(-0.3, 0.2, -44.5),
+          new THREE.Vector3(0.2, -0.1, -51.5),
+          new THREE.Vector3(-0.2, 0.1, -58.5),
+          new THREE.Vector3(0, -0.4, -68),
+        ]
+      : [
+          new THREE.Vector3(0, 0, -2),
+          new THREE.Vector3(0.6, -0.3, -8),
+          new THREE.Vector3(2.4, -0.4, -17), // P01 is at X=-3.2; spine swoops to X=+2.4 on the RIGHT
+          new THREE.Vector3(0.4, 1.2, -24),  // Arches overhead between P01 and P02
+          new THREE.Vector3(-2.2, 0.6, -31), // P02 is at X=+3.2; spine sweeps to X=-2.2 on the LEFT
+          new THREE.Vector3(0.8, -1.6, -38), // Dives deep low behind
+          new THREE.Vector3(2.0, 1.1, -45),  // P03 is at X=-2.8; spine rises to X=+2.0 on the RIGHT
+          new THREE.Vector3(-0.8, -0.9, -52),// Weaves downward
+          new THREE.Vector3(-1.8, -0.4, -59),// P04 is at X=+2.6; spine frames it from the left
+          new THREE.Vector3(0, -1.8, -68),   // Expands into hex foundation of The Lab
+        ];
+    return new THREE.CatmullRomCurve3(points, false, 'centripetal');
+  }, [isMobile]);
+
+  // Sample points along spine for nodes and geometry
+  const totalNodes = 48;
+  const spineNodes = useMemo(() => {
+    const list: { pos: THREE.Vector3; tangent: THREE.Vector3; t: number }[] = [];
+    for (let i = 0; i < totalNodes; i++) {
+      const t = i / (totalNodes - 1);
+      const pos = spineSpline.getPoint(t);
+      const tangent = spineSpline.getTangent(t);
+      list.push({ pos, tangent, t });
+    }
+    return list;
+  }, [spineSpline, totalNodes]);
+
+  // 3 Multi-Conduit Neural Cables with organic twisting
+  const cablesGeometry = useMemo(() => {
+    const cableSteps = 120;
+    const positions: number[] = [];
+
+    for (let c = 0; c < 3; c++) {
+      const angleOffset = (c * Math.PI * 2) / 3;
+      const cableRadius = isMobile ? 0.35 : 0.65;
+
+      for (let i = 0; i < cableSteps - 1; i++) {
+        const t1 = i / (cableSteps - 1);
+        const t2 = (i + 1) / (cableSteps - 1);
+
+        const p1 = spineSpline.getPoint(t1);
+        const p2 = spineSpline.getPoint(t2);
+
+        const a1 = t1 * Math.PI * 8 + angleOffset;
+        const a2 = t2 * Math.PI * 8 + angleOffset;
+
+        positions.push(
+          p1.x + Math.cos(a1) * cableRadius,
+          p1.y + Math.sin(a1) * cableRadius,
+          p1.z,
+          p2.x + Math.cos(a2) * cableRadius,
+          p2.y + Math.sin(a2) * cableRadius,
+          p2.z
+        );
       }
     }
-    mesh.current.instanceMatrix.needsUpdate = true;
-  }, [dummy]);
 
-  return <instancedMesh ref={mesh} args={[geometry, material, count]} />;
-}
-
-function LabSkillsConstellation() {
-  const count = skillsCategories.reduce((total, cat) => total + cat.skills.length, 0);
-  const [activeSkill, setActiveSkill] = useState('');
-  const aqua = useAuroraColor('--accent-aqua');
-  const violet = useAuroraColor('--accent-violet');
-
-  useEffect(() => {
-    const update = (e: Event) => setActiveSkill((e as CustomEvent<string>).detail);
-    window.addEventListener('aurora-skill-change', update);
-    return () => window.removeEventListener('aurora-skill-change', update);
-  }, []);
-
-  const beamGeometry = useMemo(() => {
-    const positions = new Float32Array(count * 6);
-    let index = 0;
-    for (const category of skillsCategories) {
-      for (let s = 0; s < category.skills.length; s++) {
-        const angle = (index / count) * Math.PI * 2;
-        const radius = 1.7 + (index % 3) * 0.28;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius * 0.62;
-        const z = Math.sin(angle * 2) * 0.35;
-        positions.set([0, 0, 0, x, y, z], index * 6);
-        index++;
-      }
-    }
     const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
     return geom;
-  }, [count]);
+  }, [spineSpline, isMobile]);
+
+  // Asymmetric Structural Rib Brackets
+  const ribsGeometry = useMemo(() => {
+    const ribCount = vConfig.backbone.strutsCount;
+    const positions: number[] = [];
+
+    for (let i = 0; i < ribCount; i++) {
+      const t = i / (ribCount - 1);
+      const pt = spineSpline.getPoint(t);
+      const ribSpan = isMobile ? 0.8 : 1.6 + Math.sin(t * Math.PI * 3) * 0.6;
+      const angle = t * Math.PI * 5;
+
+      const p1 = new THREE.Vector3(
+        pt.x + Math.cos(angle) * ribSpan,
+        pt.y + Math.sin(angle) * ribSpan * 0.7,
+        pt.z
+      );
+      const p2 = new THREE.Vector3(
+        pt.x - Math.cos(angle) * (ribSpan * 0.6),
+        pt.y - Math.sin(angle) * (ribSpan * 0.8),
+        pt.z
+      );
+
+      positions.push(p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);
+    }
+
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    return geom;
+  }, [spineSpline, isMobile]);
+
+  // Umbilical Tendrils connecting Spine directly to each Project
+  const tendrilGeometry = useMemo(() => {
+    const positions: number[] = [];
+    const projectZs = [-17.0, -31.0, -45.0, -59.0];
+
+    projectZs.forEach((pz, idx) => {
+      const coord = vConfig.projects.coords[idx];
+      const targetCoord = isMobile ? coord.mobile : coord.desktop;
+
+      // Find closest spine point
+      let closestPt = spineNodes[0].pos;
+      let minDiff = 999;
+      for (const sn of spineNodes) {
+        const diff = Math.abs(sn.pos.z - pz);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestPt = sn.pos;
+        }
+      }
+
+      // 3-segment umbilical bridge
+      const mid1 = new THREE.Vector3(
+        closestPt.x + (targetCoord.x - closestPt.x) * 0.4,
+        closestPt.y + (targetCoord.y - closestPt.y) * 0.3 + 0.3,
+        closestPt.z + (targetCoord.z - closestPt.z) * 0.4
+      );
+      const mid2 = new THREE.Vector3(
+        closestPt.x + (targetCoord.x - closestPt.x) * 0.8,
+        closestPt.y + (targetCoord.y - closestPt.y) * 0.7 - 0.2,
+        closestPt.z + (targetCoord.z - closestPt.z) * 0.8
+      );
+
+      positions.push(
+        closestPt.x, closestPt.y, closestPt.z, mid1.x, mid1.y, mid1.z,
+        mid1.x, mid1.y, mid1.z, mid2.x, mid2.y, mid2.z,
+        mid2.x, mid2.y, mid2.z, targetCoord.x, targetCoord.y, targetCoord.z
+      );
+    });
+
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    return geom;
+  }, [spineNodes, isMobile]);
+
+  const nodeGeometry = useMemo(() => new THREE.OctahedronGeometry(vConfig.backbone.nodeSize, 1), []);
+  const nodeMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: aquaColor,
+        emissive: aquaColor,
+        emissiveIntensity: 0.85,
+        roughness: 0.15,
+        metalness: 0.85,
+      }),
+    [aquaColor]
+  );
+
+  useFrame(({ clock }) => {
+    if (!nodesMesh.current || !spineGroup.current) return;
+    const time = clock.elapsedTime;
+    const timeline = getTimelineState(experienceState.scrollProgress);
+    const dispersion = timeline.spineDispersion;
+
+    // Organic axial sway
+    spineGroup.current.rotation.z = Math.sin(time * 0.15) * 0.04;
+
+    for (let i = 0; i < totalNodes; i++) {
+      const sn = spineNodes[i];
+      // Wave traveling along the spine
+      const wave = Math.sin(sn.pos.z * vConfig.backbone.pulseFrequency + time * 1.9 + timeline.energyPulsePhase);
+      const isNearActive =
+        timeline.activeProjectIndex >= 0 &&
+        Math.abs(sn.pos.z - vConfig.projects.coords[timeline.activeProjectIndex].desktop.z) < 6.0;
+
+      // Dispersion into The Lab
+      const disperseDist = dispersion * (4.0 + (i % 6) * 0.7);
+      const disperseAngle = i * 0.45;
+      const posX = sn.pos.x + Math.cos(disperseAngle) * disperseDist;
+      const posY = sn.pos.y + Math.sin(disperseAngle) * disperseDist;
+      const posZ = sn.pos.z;
+
+      const scale = (0.75 + wave * 0.35 + (isNearActive ? 0.65 : 0)) * (1.0 - dispersion * 0.6);
+
+      dummy.position.set(posX, posY, posZ);
+      dummy.scale.setScalar(scale);
+      dummy.rotation.set(time * 0.4 + i, time * 0.3, i);
+      dummy.updateMatrix();
+      nodesMesh.current.setMatrixAt(i, dummy.matrix);
+
+      // Node color shifts during energy pulse
+      const nodeColor = isNearActive ? limeColor : wave > 0.45 ? aquaColor : indigoColor;
+      nodesMesh.current.setColorAt(i, nodeColor);
+    }
+
+    nodesMesh.current.instanceMatrix.needsUpdate = true;
+    if (nodesMesh.current.instanceColor) nodesMesh.current.instanceColor.needsUpdate = true;
+  });
 
   return (
-    <group>
-      <LabHoneycombFloor />
-      <lineSegments geometry={beamGeometry}>
-        <lineBasicMaterial
-          color={activeSkill ? aqua : violet}
-          transparent
-          opacity={activeSkill ? 0.8 : 0.32}
-          depthWrite={false}
-        />
+    <group ref={spineGroup}>
+      {/* Junction Node Crystals */}
+      <instancedMesh ref={nodesMesh} args={[nodeGeometry, nodeMaterial, totalNodes]} />
+
+      {/* Asymmetric Structural Rib Brackets */}
+      <lineSegments geometry={ribsGeometry}>
+        <lineBasicMaterial color={aquaColor} transparent opacity={0.35} depthWrite={false} />
+      </lineSegments>
+
+      {/* Twisting Multi-Conduit Neural Cables */}
+      <lineSegments geometry={cablesGeometry}>
+        <lineBasicMaterial color={indigoColor} transparent opacity={0.55} depthWrite={false} />
+      </lineSegments>
+
+      {/* Umbilical Tendrils to Projects */}
+      <lineSegments geometry={tendrilGeometry}>
+        <lineBasicMaterial color={limeColor} transparent opacity={0.7} depthWrite={false} />
       </lineSegments>
     </group>
   );
 }
 
 // ----------------------------------------------------------------------------------
-// CALM SCENES: ABOUT & CONTACT
+// 5. THE 4 BESPOKE 3D PROJECT WORLDS (DISTINCT VISUAL GRAMMARS)
 // ----------------------------------------------------------------------------------
-function CalmSceneVisuals() {
-  const aboutRef = useRef<THREE.Group>(null);
-  const contactRef = useRef<THREE.Group>(null);
-  const aqua = useAuroraColor('--accent-aqua');
-  const magenta = useAuroraColor('--accent-magenta');
 
-  const linePoints = useMemo(
+/**
+ * PROJECT 01: AI INCIDENT INTELLIGENCE
+ * Visual Grammar: Neural Telemetry & Incident Cluster
+ * Real trained ML anomaly wave propagation, telemetry conduits, satellite service nodes
+ */
+function VisualAIIncident({ isActive }: { isActive: boolean }) {
+  const group = useRef<THREE.Group>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
+  const aqua = useAuroraColor('--accent-aqua', '#22D3EE');
+  const magenta = useAuroraColor('--accent-magenta', '#FF5FA8');
+  const indigo = useAuroraColor('--accent-indigo', '#7C6CFF');
+
+  const satellites = useMemo(
     () => [
-      new THREE.Vector3(-2.4, -0.8, 0),
-      new THREE.Vector3(-1.2, -0.2, 0),
-      new THREE.Vector3(0, 0.4, 0),
-      new THREE.Vector3(1.2, 0.8, 0),
-      new THREE.Vector3(2.4, 1.2, 0),
+      { x: -0.9, y: 0.5, z: 0.2, label: 'metrics' },
+      { x: -1.0, y: -0.4, z: -0.2, label: 'logs' },
+      { x: 0.8, y: 0.6, z: -0.3, label: 'traces' },
+      { x: 0.9, y: -0.5, z: 0.2, label: 'services' },
+      { x: 0.2, y: 0.9, z: 0.3, label: 'incident' },
+      { x: -0.3, y: -0.8, z: 0.2, label: 'evidence' },
+      { x: 0.7, y: 0.1, z: 0.4, label: 'root_cause' },
+      { x: -0.7, y: 0.15, z: -0.4, label: 'remediation' },
     ],
     []
   );
-  const lineGeometry = useMemo(() => new THREE.BufferGeometry().setFromPoints(linePoints), [linePoints]);
-  const aboutLine = useMemo(() => {
-    const mat = new THREE.LineBasicMaterial({ color: aqua, transparent: true, opacity: 0.55 });
-    return new THREE.Line(lineGeometry, mat);
-  }, [lineGeometry, aqua]);
 
-  useFrame((_, delta) => {
-    const safeDelta = Math.min(delta, 0.05);
-    const travel = vConfig.camera.travelZ;
-    if (aboutRef.current) {
-      aboutRef.current.position.z = THREE.MathUtils.damp(
-        aboutRef.current.position.z,
-        -travel * experienceState.roomProgress.about,
-        4,
-        safeDelta
-      );
+  const linksGeometry = useMemo(() => {
+    const pts: number[] = [];
+    satellites.forEach((s) => {
+      // Connect to center core
+      pts.push(0, 0, 0, s.x, s.y, s.z);
+    });
+    // Cross connections between adjacent nodes
+    for (let i = 0; i < satellites.length; i++) {
+      const s1 = satellites[i];
+      const s2 = satellites[(i + 1) % satellites.length];
+      pts.push(s1.x, s1.y, s1.z, s2.x, s2.y, s2.z);
     }
-    if (contactRef.current) {
-      contactRef.current.position.z = THREE.MathUtils.damp(
-        contactRef.current.position.z,
-        -travel * experienceState.roomProgress.contact,
-        4,
-        safeDelta
-      );
-      contactRef.current.rotation.z += 0.002;
-    }
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pts), 3));
+    return geom;
+  }, [satellites]);
+
+  useFrame(({ clock }) => {
+    if (!group.current || !coreRef.current) return;
+    const time = clock.elapsedTime;
+
+    // Steady micro-rotation
+    group.current.rotation.y = time * 0.25;
+    group.current.rotation.x = Math.sin(time * 0.35) * 0.1;
+
+    // Core pulsing anomaly wave
+    const anomalyPulse = Math.sin(time * 2.2);
+    const coreScale = isActive ? 1.0 + anomalyPulse * 0.15 : 0.85;
+    coreRef.current.scale.setScalar(coreScale);
   });
 
   return (
-    <>
-      <group ref={aboutRef}>
-        <primitive object={aboutLine} />
-        {linePoints.map((pt, i) => (
-          <mesh key={i} position={[pt.x, pt.y, 0]}>
-            <sphereGeometry args={[0.09, 12, 12]} />
-            <meshBasicMaterial color={i % 2 === 0 ? aqua : magenta} />
+    <group ref={group}>
+      {/* Central Anomaly Detection Engine Core */}
+      <mesh ref={coreRef}>
+        <icosahedronGeometry args={[0.38, 1]} />
+        <meshStandardMaterial
+          color={isActive ? magenta : aqua}
+          emissive={isActive ? magenta : aqua}
+          emissiveIntensity={isActive ? 0.95 : 0.6}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </mesh>
+
+      {/* Core Coordinate Ring */}
+      <mesh rotation={[Math.PI * 0.3, 0, 0]}>
+        <torusGeometry args={[0.62, 0.02, 16, 32]} />
+        <meshBasicMaterial color={aqua} transparent opacity={0.65} />
+      </mesh>
+
+      {/* Network Links */}
+      <lineSegments geometry={linksGeometry}>
+        <lineBasicMaterial color={isActive ? magenta : indigo} transparent opacity={0.5} />
+      </lineSegments>
+
+      {/* Satellite Service & Telemetry Nodes */}
+      {satellites.map((s, idx) => (
+        <mesh key={idx} position={[s.x, s.y, s.z]}>
+          <octahedronGeometry args={[0.12, 0]} />
+          <meshStandardMaterial
+            color={s.label === 'incident' || s.label === 'root_cause' ? magenta : aqua}
+            emissive={s.label === 'incident' ? magenta : aqua}
+            emissiveIntensity={0.8}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+/**
+ * PROJECT 02: SOLISIQ
+ * Visual Grammar: Engineered Solar Energy Machine
+ * Pulsating solar core, 3 precision gimbal rings, 4 photovoltaic collector wings
+ */
+function VisualSolisIQ({ isActive }: { isActive: boolean }) {
+  const group = useRef<THREE.Group>(null);
+  const ring1Ref = useRef<THREE.Mesh>(null);
+  const ring2Ref = useRef<THREE.Mesh>(null);
+  const ring3Ref = useRef<THREE.Mesh>(null);
+
+  const tangerine = useAuroraColor('--accent-tangerine', '#FFA36B');
+  const aqua = useAuroraColor('--accent-aqua', '#22D3EE');
+
+  useFrame(({ clock }) => {
+    if (!group.current) return;
+    const time = clock.elapsedTime;
+
+    group.current.rotation.y = time * 0.18;
+
+    // Counter-rotating precision gimbal rings
+    if (ring1Ref.current) ring1Ref.current.rotation.x = time * 0.85;
+    if (ring2Ref.current) ring2Ref.current.rotation.y = -time * 0.65;
+    if (ring3Ref.current) ring3Ref.current.rotation.z = time * 0.45;
+  });
+
+  return (
+    <group ref={group}>
+      {/* Central Solar Plasma Core */}
+      <mesh>
+        <sphereGeometry args={[0.42, 32, 32]} />
+        <meshStandardMaterial
+          color={tangerine}
+          emissive={tangerine}
+          emissiveIntensity={isActive ? 1.2 : 0.8}
+          roughness={0.1}
+          metalness={0.2}
+        />
+      </mesh>
+
+      {/* 3 Concentric Precision Gimbal Rings */}
+      <mesh ref={ring1Ref}>
+        <torusGeometry args={[0.72, 0.022, 16, 48]} />
+        <meshStandardMaterial color={tangerine} roughness={0.2} metalness={0.9} />
+      </mesh>
+      <mesh ref={ring2Ref}>
+        <torusGeometry args={[0.92, 0.022, 16, 48]} />
+        <meshStandardMaterial color={aqua} roughness={0.2} metalness={0.9} />
+      </mesh>
+      <mesh ref={ring3Ref}>
+        <torusGeometry args={[1.14, 0.022, 16, 48]} />
+        <meshStandardMaterial color={tangerine} roughness={0.2} metalness={0.9} />
+      </mesh>
+
+      {/* 4 Photovoltaic Collector Array Wings */}
+      {[0, Math.PI * 0.5, Math.PI, Math.PI * 1.5].map((angle, idx) => (
+        <group key={idx} rotation={[0, 0, angle]}>
+          <mesh position={[1.4, 0, 0]} rotation={[0, Math.PI * 0.25, 0]}>
+            <boxGeometry args={[0.45, 0.24, 0.02]} />
+            <meshStandardMaterial color="#1E293B" roughness={0.15} metalness={0.8} />
           </mesh>
-        ))}
+          {/* Energy Beam to Core */}
+          <line>
+            <bufferGeometry>
+              <bufferAttribute
+                attach="attributes-position"
+                args={[new Float32Array([0.45, 0, 0, 1.4, 0, 0]), 3]}
+              />
+            </bufferGeometry>
+            <lineBasicMaterial color={aqua} transparent opacity={0.65} />
+          </line>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/**
+ * PROJECT 03: INSTANEWS
+ * Visual Grammar: 3D Information Environment
+ * Floating translucent article planes at staggered depths/angles, data streams, central routing hub
+ */
+function VisualInstanews({ isActive }: { isActive: boolean }) {
+  const group = useRef<THREE.Group>(null);
+  const cyan = useAuroraColor('--accent-aqua', '#38BDF8');
+  const indigo = useAuroraColor('--accent-indigo', '#6366F1');
+
+  // 6 Floating Article Data Planes at staggered depths
+  const planes = useMemo(
+    () => [
+      { x: -0.7, y: 0.45, z: 0.35, rotY: 0.25, rotX: -0.1, w: 0.75, h: 0.45 },
+      { x: 0.8, y: 0.3, z: -0.25, rotY: -0.3, rotX: 0.15, w: 0.85, h: 0.5 },
+      { x: -0.35, y: -0.5, z: 0.2, rotY: 0.15, rotX: 0.1, w: 0.65, h: 0.4 },
+      { x: 0.65, y: -0.4, z: 0.4, rotY: -0.2, rotX: -0.15, w: 0.7, h: 0.42 },
+      { x: 0.1, y: 0.7, z: -0.4, rotY: 0.1, rotX: 0.2, w: 0.8, h: 0.48 },
+      { x: -0.85, y: -0.1, z: -0.3, rotY: 0.35, rotX: -0.05, w: 0.6, h: 0.38 },
+    ],
+    []
+  );
+
+  useFrame(({ clock }) => {
+    if (!group.current) return;
+    const time = clock.elapsedTime;
+    group.current.rotation.y = Math.sin(time * 0.3) * 0.18;
+  });
+
+  return (
+    <group ref={group}>
+      {/* Central Routing Dispatch Hub */}
+      <mesh>
+        <dodecahedronGeometry args={[0.3, 0]} />
+        <meshStandardMaterial
+          color={cyan}
+          emissive={cyan}
+          emissiveIntensity={isActive ? 0.9 : 0.5}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </mesh>
+
+      {/* Floating Translucent Article Surfaces */}
+      {planes.map((p, idx) => (
+        <group key={idx} position={[p.x, p.y, p.z]} rotation={[p.rotX, p.rotY, 0]}>
+          <mesh>
+            <planeGeometry args={[p.w, p.h]} />
+            <meshPhysicalMaterial
+              color="#0A0620"
+              roughness={0.15}
+              transmission={0.8}
+              thickness={0.1}
+              transparent
+              opacity={0.85}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          {/* Glowing Border Edge */}
+          <lineSegments>
+            <edgesGeometry args={[new THREE.PlaneGeometry(p.w, p.h)]} />
+            <lineBasicMaterial color={idx % 2 === 0 ? cyan : indigo} transparent opacity={0.65} />
+          </lineSegments>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/**
+ * PROJECT 04: ZEROHOUR
+ * Visual Grammar: Precision Mechanical Chronometer
+ * Interlocking toothed gear rings, calibrated countdown arcs, ticking balance wheel
+ */
+function VisualZeroHour({ isActive }: { isActive: boolean }) {
+  const group = useRef<THREE.Group>(null);
+  const gear1Ref = useRef<THREE.Group>(null);
+  const gear2Ref = useRef<THREE.Group>(null);
+  const balanceRef = useRef<THREE.Group>(null);
+
+  const violet = useAuroraColor('--accent-violet', '#A855F7');
+  const aqua = useAuroraColor('--accent-aqua', '#22D3EE');
+
+  useFrame(({ clock }) => {
+    if (!group.current) return;
+    const time = clock.elapsedTime;
+
+    // Toothed gear rotation with mechanical gear ratios
+    if (gear1Ref.current) gear1Ref.current.rotation.z = time * 0.5;
+    if (gear2Ref.current) gear2Ref.current.rotation.z = -time * 0.75;
+
+    // Balance wheel rapid escapement oscillation
+    if (balanceRef.current) balanceRef.current.rotation.z = Math.sin(time * 8.0) * 0.45;
+  });
+
+  return (
+    <group ref={group}>
+      {/* Outer Calibrated Dial Ring with Tick Marks */}
+      <mesh>
+        <torusGeometry args={[1.2, 0.03, 16, 64]} />
+        <meshStandardMaterial color={violet} roughness={0.2} metalness={0.85} />
+      </mesh>
+
+      {/* Interlocking Gear 1 (Hours/Minutes) */}
+      <group ref={gear1Ref}>
+        <mesh>
+          <torusGeometry args={[0.85, 0.04, 16, 48]} />
+          <meshStandardMaterial color="#94A3B8" roughness={0.25} metalness={0.8} />
+        </mesh>
+        {/* Gear Teeth */}
+        {Array.from({ length: 16 }).map((_, i) => {
+          const a = (i * Math.PI * 2) / 16;
+          return (
+            <mesh key={i} position={[Math.cos(a) * 0.89, Math.sin(a) * 0.89, 0]} rotation={[0, 0, a]}>
+              <boxGeometry args={[0.06, 0.05, 0.04]} />
+              <meshStandardMaterial color="#94A3B8" roughness={0.25} metalness={0.8} />
+            </mesh>
+          );
+        })}
       </group>
 
-      <group ref={contactRef}>
-        <mesh rotation={[0.45, 0, 0]}>
-          <torusGeometry args={[2.1, 0.025, 10, 64]} />
-          <meshBasicMaterial color={magenta} transparent opacity={0.75} />
+      {/* Interlocking Gear 2 (Seconds) */}
+      <group ref={gear2Ref} position={[0.45, 0.45, -0.05]}>
+        <mesh>
+          <torusGeometry args={[0.55, 0.03, 16, 36]} />
+          <meshStandardMaterial color={aqua} roughness={0.2} metalness={0.85} />
         </mesh>
-        <mesh rotation={[0.45, 0.65, 0]}>
-          <torusGeometry args={[1.65, 0.012, 8, 64]} />
-          <meshBasicMaterial color={aqua} transparent opacity={0.65} />
-        </mesh>
-        <pointLight color={magenta} intensity={0.75} distance={14} />
+        {Array.from({ length: 12 }).map((_, i) => {
+          const a = (i * Math.PI * 2) / 12;
+          return (
+            <mesh key={i} position={[Math.cos(a) * 0.58, Math.sin(a) * 0.58, 0]} rotation={[0, 0, a]}>
+              <boxGeometry args={[0.05, 0.04, 0.03]} />
+              <meshStandardMaterial color={aqua} roughness={0.2} metalness={0.85} />
+            </mesh>
+          );
+        })}
       </group>
-    </>
+
+      {/* Central Rapid Escapement Balance Wheel */}
+      <group ref={balanceRef}>
+        <mesh>
+          <cylinderGeometry args={[0.22, 0.22, 0.04, 24]} />
+          <meshStandardMaterial
+            color={isActive ? aqua : violet}
+            emissive={isActive ? aqua : violet}
+            emissiveIntensity={0.65}
+            roughness={0.2}
+            metalness={0.8}
+          />
+        </mesh>
+        <mesh position={[0, 0.18, 0.03]}>
+          <boxGeometry args={[0.04, 0.24, 0.02]} />
+          <meshBasicMaterial color={aqua} />
+        </mesh>
+      </group>
+    </group>
   );
 }
 
 // ----------------------------------------------------------------------------------
-// CINEMATIC CAMERA RIG (DYNAMIC FOV & CHOREOGRAPHY)
+// 6. PHYSICAL PROJECT ARTIFACTS ORCHESTRATION
+// ----------------------------------------------------------------------------------
+function PhysicalProjectArtifacts() {
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
+  return (
+    <group>
+      {projectsData.map((project, index) => {
+        const coordConf = vConfig.projects.coords[index];
+        const coord = isMobile ? coordConf.mobile : coordConf.desktop;
+
+        return (
+          <SingleProjectArtifact
+            key={project.id}
+            index={index}
+            coord={coord}
+          />
+        );
+      })}
+    </group>
+  );
+}
+
+function SingleProjectArtifact({
+  index,
+  coord,
+}: {
+  index: number;
+  coord: { x: number; y: number; z: number; rotY: number; rotX: number; scale: number };
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+    const safeDelta = Math.min(delta, 0.05);
+    const timeline = getTimelineState(experienceState.scrollProgress);
+    const visibility = timeline.projectVisibilities[index] || 0;
+    const isActive = timeline.activeProjectIndex === index;
+
+    // Smooth appearance scaling
+    const targetScale = coord.scale * (0.4 + visibility * 0.85);
+    groupRef.current.scale.setScalar(
+      THREE.MathUtils.damp(groupRef.current.scale.x, targetScale, 4.0, safeDelta)
+    );
+
+    // Dynamic rotation: settles facing camera during inspection
+    const targetRotY = isActive ? coord.rotY * 0.3 : coord.rotY;
+    const targetRotX = isActive ? coord.rotX * 0.3 : coord.rotX;
+
+    groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, targetRotY, 3.8, safeDelta);
+    groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, targetRotX, 3.8, safeDelta);
+  });
+
+  return (
+    <group ref={groupRef} position={[coord.x, coord.y, coord.z]}>
+      {index === 0 && <VisualAIIncident isActive={false} />}
+      {index === 1 && <VisualSolisIQ isActive={false} />}
+      {index === 2 && <VisualInstanews isActive={false} />}
+      {index === 3 && <VisualZeroHour isActive={false} />}
+    </group>
+  );
+}
+
+// ----------------------------------------------------------------------------------
+// 7. THE LAB (SKILLS HEX GRID ROOM)
+// ----------------------------------------------------------------------------------
+function LabSkillsConstellation() {
+  const groupRef = useRef<THREE.Group>(null);
+  const aqua = useAuroraColor('--accent-aqua', '#22D3EE');
+  const violet = useAuroraColor('--accent-violet', '#C084FC');
+
+  const hexCells = useMemo(() => {
+    const list: { x: number; z: number; category: string }[] = [];
+    let catIdx = 0;
+    for (const cat of skillsCategories) {
+      cat.skills.forEach((_, i) => {
+        const row = Math.floor((catIdx * 4 + i) / 5);
+        const col = (catIdx * 4 + i) % 5;
+        const x = (col - 2) * 1.4 + (row % 2 === 0 ? 0 : 0.7);
+        const z = (row - 2) * 1.2;
+        list.push({ x, z, category: cat.title });
+      });
+      catIdx++;
+    }
+    return list;
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const time = clock.elapsedTime;
+    groupRef.current.rotation.y = Math.sin(time * 0.12) * 0.05;
+  });
+
+  return (
+    <group ref={groupRef} position={[0, -1.8, -68]}>
+      {/* Hex Grid Cells */}
+      {hexCells.map((cell, idx) => (
+        <mesh key={idx} position={[cell.x, 0, cell.z]} rotation={[-Math.PI * 0.5, 0, 0]}>
+          <circleGeometry args={[0.55, 6]} />
+          <meshStandardMaterial
+            color="#0A0620"
+            emissive={idx % 3 === 0 ? aqua : violet}
+            emissiveIntensity={0.25}
+            roughness={0.2}
+            metalness={0.8}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ----------------------------------------------------------------------------------
+// 8. CALM SCENES (ABOUT TRAJECTORY & CONTACT RING)
+// ----------------------------------------------------------------------------------
+function CalmSceneVisuals() {
+  const aqua = useAuroraColor('--accent-aqua', '#22D3EE');
+
+  // About Education Trajectory Nodes
+  const aboutPoints = useMemo(
+    () => [
+      new THREE.Vector3(-1.8, -0.6, -74),
+      new THREE.Vector3(-0.6, 0.2, -75),
+      new THREE.Vector3(0.6, -0.1, -76),
+      new THREE.Vector3(1.8, 0.5, -77),
+    ],
+    []
+  );
+
+  const aboutLine = useMemo(() => {
+    const geom = new THREE.BufferGeometry().setFromPoints(aboutPoints);
+    const mat = new THREE.LineBasicMaterial({ color: aqua, transparent: true, opacity: 0.55 });
+    return new THREE.Line(geom, mat);
+  }, [aboutPoints, aqua]);
+
+  return (
+    <group>
+      {/* About Trajectory Line */}
+      <primitive object={aboutLine} />
+      {aboutPoints.map((pt, i) => (
+        <mesh key={i} position={[pt.x, pt.y, pt.z]}>
+          <sphereGeometry args={[0.1, 16, 16]} />
+          <meshStandardMaterial color={aqua} emissive={aqua} emissiveIntensity={0.8} />
+        </mesh>
+      ))}
+
+      {/* Contact Converging Ring */}
+      <mesh position={[0, 0, -82]} rotation={[0, 0, 0]}>
+        <torusGeometry args={[2.4, 0.05, 16, 64]} />
+        <meshStandardMaterial color={aqua} emissive={aqua} emissiveIntensity={0.7} />
+      </mesh>
+    </group>
+  );
+}
+
+// ----------------------------------------------------------------------------------
+// 9. CINEMATIC CAMERA RIG (DYNAMIC FOV & ROLL BANKING)
 // ----------------------------------------------------------------------------------
 function CameraRig() {
   const camera = useThree((state) => state.camera as THREE.PerspectiveCamera);
@@ -1334,16 +1009,16 @@ function CameraRig() {
     const timeline = getTimelineState(p, velocity);
     const dive = experienceState.detailZoom * vConfig.camera.diveDuration * 3.5;
 
-    // Camera 3D spline position interpolation
+    // Damped camera spline tracking
     camera.position.x = THREE.MathUtils.damp(
       camera.position.x,
-      timeline.cameraPos.x + experienceState.pointerX * 0.18,
+      timeline.cameraPos.x + experienceState.pointerX * 0.16,
       vConfig.camera.damping,
       safeDelta
     );
     camera.position.y = THREE.MathUtils.damp(
       camera.position.y,
-      timeline.cameraPos.y - experienceState.pointerY * 0.14 + Math.sin(clock.elapsedTime * 0.38) * 0.035,
+      timeline.cameraPos.y - experienceState.pointerY * 0.12 + Math.sin(clock.elapsedTime * 0.38) * 0.03,
       vConfig.camera.damping,
       safeDelta
     );
@@ -1354,23 +1029,14 @@ function CameraRig() {
       safeDelta
     );
 
-    // Dynamic Camera Roll (Banking subtly into curved trajectory)
-    currentRoll.current = THREE.MathUtils.damp(
-      currentRoll.current,
-      timeline.cameraRoll,
-      3.5,
-      safeDelta
-    );
+    // Roll banking into turns
+    currentRoll.current = THREE.MathUtils.damp(currentRoll.current, timeline.cameraRoll, 3.5, safeDelta);
     camera.up.set(Math.sin(-currentRoll.current), Math.cos(currentRoll.current), 0);
 
-    // Look at choreographed focus target along the cinematic spline
-    camera.lookAt(
-      timeline.cameraTarget.x,
-      timeline.cameraTarget.y,
-      timeline.cameraTarget.z
-    );
+    // Look at choreographed target along spline
+    camera.lookAt(timeline.cameraTarget.x, timeline.cameraTarget.y, timeline.cameraTarget.z);
 
-    // Dynamic FOV: Base Hermite + Velocity warp
+    // Dynamic FOV
     camera.fov = THREE.MathUtils.damp(camera.fov, timeline.cameraFov, 3.5, safeDelta);
     camera.updateProjectionMatrix();
 
@@ -1381,11 +1047,9 @@ function CameraRig() {
 }
 
 // ----------------------------------------------------------------------------------
-// COMPLETE WORLD SCENE COMPOSITION
+// 10. SCENE GRAPH
 // ----------------------------------------------------------------------------------
 function WorldScene({ quality }: { quality: Quality }) {
-  useTheme();
-
   useEffect(() => {
     document.documentElement.classList.add('webgl-world-ready');
     return () => document.documentElement.classList.remove('webgl-world-ready');
@@ -1395,44 +1059,30 @@ function WorldScene({ quality }: { quality: Quality }) {
     <>
       <StorytellingEnvironment />
       <CameraRig />
-      <CursorInteractionLight />
 
-      {/* Layer 02: Purposeful Particles (Cosmic Dust + Energy Stream) */}
+      {/* Layer 02: Purposeful Subtle Particles */}
       <PurposefulParticleField quality={quality} />
 
-      {/* Layer 03: Distant Megastructures & Colossal 3D Numbers */}
-      <EnvironmentalMegastructures />
+      {/* Hero 360° Portrait Glass Lens */}
+      <HeroPortraitRing />
 
-      {/* Hero 360° Glass Ring */}
-      <group
-        position={[
-          typeof window !== 'undefined' && window.innerWidth > 1024 ? 2.6 : 0,
-          typeof window !== 'undefined' && window.innerWidth > 1024 ? 0.2 : -0.6,
-          0,
-        ]}
-      >
-        <HeroPortraitRing />
-      </group>
+      {/* Layer 04: The Living Architectural Infrastructure Spine */}
+      <ArchitecturalInfrastructureSpine />
 
-      {/* Layer 04: The Living Architectural Spine */}
-      <LivingArchitecturalSpine />
-
-      {/* Layer 05 & 06: Physical Project Artifacts with Bespoke 3D Worlds */}
+      {/* Layer 05: The 4 Bespoke 3D Project Worlds */}
       <PhysicalProjectArtifacts />
 
-      {/* The Lab (Skills Constellation) */}
-      <group position={[0, 0, -vConfig.camera.travelZ * 0.48]}>
-        <LabSkillsConstellation />
-      </group>
+      {/* The Lab (Skills Hex Grid Room) */}
+      <LabSkillsConstellation />
 
-      {/* Calm Scenes (About Timeline & Contact Convergence) */}
+      {/* Calm Scenes (About Trajectory & Contact Ring) */}
       <CalmSceneVisuals />
 
       {/* Postprocessing Bloom on High-tier Desktop Only */}
       {quality === 'high' && window.innerWidth > vConfig.quality.mobileBreakpoint && (
         <EffectComposer multisampling={0}>
-          <Bloom intensity={0.45} luminanceThreshold={1.12} mipmapBlur />
-          <Vignette eskil={false} offset={0.12} darkness={0.25} />
+          <Bloom intensity={0.4} luminanceThreshold={1.15} mipmapBlur />
+          <Vignette eskil={false} offset={0.14} darkness={0.22} />
         </EffectComposer>
       )}
     </>
@@ -1440,13 +1090,16 @@ function WorldScene({ quality }: { quality: Quality }) {
 }
 
 // ----------------------------------------------------------------------------------
-// SCROLL DRIVER & MAIN EXPORT
+// 11. SCROLL DRIVER (NATIVE MOBILE SCROLL & RESPONSIVE DESKTOP LENIS)
 // ----------------------------------------------------------------------------------
 function ScrollDriver() {
   useEffect(() => {
     let lenis: Lenis | null = null;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduced) {
+    const isMobile = window.innerWidth < 768;
+
+    // Use Lenis on desktop only; preserve 100% native instant touch scroll on mobile
+    if (!reduced && !isMobile) {
       lenis = new Lenis({
         duration: vConfig.motion.scrollDuration,
         smoothWheel: true,
@@ -1454,31 +1107,23 @@ function ScrollDriver() {
         wheelMultiplier: 0.9,
       });
       setSmoothScroll((id) =>
-        lenis?.scrollTo(`#${id}`, { offset: -16, duration: vConfig.motion.scrollDuration })
+        lenis?.scrollTo(`#${id}`, { offset: 0, duration: vConfig.motion.scrollDuration })
       );
+    } else {
+      setSmoothScroll((id) => {
+        const el = document.getElementById(id);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      });
     }
-
-    const measure = () => {
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const markerIds = ['home', 'projects', 'skills', 'about', 'contact'] as const;
-      for (const id of markerIds) {
-        const element = document.getElementById(id);
-        if (!element) continue;
-        const center = element.offsetTop + (element.offsetHeight - window.innerHeight) * 0.5;
-        experienceState.roomProgress[id] = clamp01(center / maxScroll);
-      }
-      experienceState.scrollProgress = clamp01(window.scrollY / maxScroll);
-    };
 
     const onScroll = () => {
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       experienceState.scrollProgress = clamp01(window.scrollY / maxScroll);
     };
 
-    measure();
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', measure, { passive: true });
-    window.addEventListener('load', measure, { once: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
 
     const tick = (time: number) => {
       if (document.hidden) return;
@@ -1492,49 +1137,22 @@ function ScrollDriver() {
       lenis?.destroy();
       setSmoothScroll(null);
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', measure);
-      window.removeEventListener('load', measure);
+      window.removeEventListener('resize', onScroll);
     };
   }, []);
 
   return null;
 }
 
+// ----------------------------------------------------------------------------------
+// 12. CANVAS EXPORT
+// ----------------------------------------------------------------------------------
 export default function ExperienceCanvas() {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const device = navigator as Navigator & { deviceMemory?: number };
   const veryWeak = (navigator.hardwareConcurrency || 8) <= 2 || (device.deviceMemory || 8) <= 2;
   const [quality, setQuality] = useState<Quality>(initialQuality);
   const [failed, setFailed] = useState(false);
-  const lowFpsSample = useRef({ start: 0, frames: 0, lastReduction: 0 });
-
-  // Adaptive Quality Monitor: Steps down if FPS drops below threshold
-  useEffect(() => {
-    if (reducedMotion || veryWeak) return;
-    lowFpsSample.current.start = performance.now();
-
-    const tick = () => {
-      const sample = lowFpsSample.current;
-      if (document.hidden) {
-        sample.frames = 0;
-        sample.start = performance.now();
-        return;
-      }
-      sample.frames += 1;
-      const now = performance.now();
-      if (now - sample.start < 1800) return;
-      const fps = (sample.frames * 1000) / (now - sample.start);
-      sample.frames = 0;
-      sample.start = now;
-
-      if (fps < vConfig.quality.fpsThresholdDown && now - sample.lastReduction > 4500) {
-        sample.lastReduction = now;
-        setQuality((curr) => (curr === 'high' ? 'medium' : 'low'));
-      }
-    };
-    gsap.ticker.add(tick);
-    return () => gsap.ticker.remove(tick);
-  }, [reducedMotion, veryWeak]);
 
   useEffect(() => {
     const handleResize = () => {

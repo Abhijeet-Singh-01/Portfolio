@@ -41,6 +41,19 @@
   - 4 Hold Frames for inspection beats ($P01: 0.24-0.32$, $P02: 0.46-0.54$, $P03: 0.67-0.75$, $P04: 0.83-0.88$).
   - DOM Stacking Elimination in 3D Mode: Clean separation between 3D canvas and HTML DOM. In 3D mode, the DOM `#projects` section acts as a virtual scroll depth runway (`min-height: 480vh`), while the front viewport is controlled by `CinematicProjectHud` with no card clipping. Semantic HTML remains 100% accessible to SEO and screen readers.
   - Full TypeScript & Vite Verification: `npx tsc --noEmit` passed with 0 errors, Vite dev server verified with 200 OK across all endpoints.
+- Phase 13: Master Architectural Rebuild — Art Direction, Asymmetric Spine, 4 Distinct Project Grammars & Dual Responsive Layouts (Completed):
+  - Digital Infrastructure Spine (No DNA look): Replaced symmetric double helix with an organic, asymmetric structural trunk, irregular architectural rib brackets, 3 twisting optical neural conduit cables, crystal junction nodes, and umbilical tendrils that physically route energy pulses into the 4 project worlds.
+  - 4 Distinct 3D Project Artifacts:
+    * Project 01 (AI Incident Intelligence): Neural incident cluster with real ML anomaly wave propagation, telemetry conduits, 8 satellite service nodes, evidence retrieval highlight, and root-cause analysis beam.
+    * Project 02 (SolisIQ): Engineered solar energy machine with concentrated solar plasma core, 3 precision counter-rotating orbital gimbal rings with degree ticks, 4 photovoltaic collector wings, and radiant energy collector paths.
+    * Project 03 (Instanews): 3D information space with 6 floating translucent article planes at staggered depths/angles that the camera weaves directly through, data stream ribbons, and central routing hub.
+    * Project 04 (ZeroHour): Precision mechanical chronometer with interlocking toothed gear rings meshed at mechanical gear ratios, calibrated countdown arcs, and oscillating balance wheel escapement.
+  - Dedicated Dual-Layout Art Direction (Desktop Asymmetric vs Mobile Vertical Corridor):
+    * Desktop: Widescreen asymmetric spatial composition (Project 01 Left, Project 02 Right, Project 03 Left-High, Project 04 Right-Low) with opposite-side side HUD and camera roll banking.
+    * Mobile (360px - 390px): Dedicated vertical corridor with artifacts centered in the top 55% of the viewport and a compact, thumb-friendly HUD docked at the bottom, eliminating clipping and awkward horizontal angles.
+  - Scroll & Performance Fidelity: Lenis scoped to desktop wheel only; 100% native instant touch scrolling on mobile to prevent touch hijacking. Stopping scroll halts camera within ~100ms; reversing reverses cleanly along the exact spline.
+  - Zero Horizontal Overflow: Tested and verified `document.documentElement.scrollWidth === document.documentElement.clientWidth`. Fixed mobile canvas opacity from `.45` to `1.0`.
+  - Production Build: `tsc -b && vite build` passed cleanly in 1.24s (ExperienceCanvas bundle reduced from 46.7 kB to 38.5 kB). All HTTP endpoints verified 200 OK.
 
 ## Needs owner input
 - GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden cleanly until provided; SolisIQ source URL is active).

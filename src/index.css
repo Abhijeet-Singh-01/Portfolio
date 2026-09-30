@@ -525,13 +525,8 @@ html.webgl-world-ready #contact .contact-panel {
 .has-experience-cursor a,.has-experience-cursor button,.has-experience-cursor [data-cursor] { cursor:none; }
 
 @media (max-width: 767px) {
-  .experience-canvas { opacity:.45; }
-  .hero-art { max-width:360px; }
-  .hero-portrait-card { width:66%; }
-  .hero-float-code { left:0; top:26%; }
-  .hero-float-ai { right:0; top:36%; }
-  .hero-float-data { left:3%; bottom:18%; }
-  .experience-cursor { display:none; }
+  .experience-canvas { opacity: 1; }
+  .experience-cursor { display: none; }
 }
 @media (max-height: 520px) and (orientation:landscape) {
   .hero-scene { min-height:auto; padding-top:6.5rem; }
