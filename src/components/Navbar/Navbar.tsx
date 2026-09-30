@@ -24,6 +24,10 @@ export const Navbar: React.FC = () => {
   useEffect(()=>{
     if(!mobileMenuOpen) return;
     const drawer=drawerRef.current;
+    const previousOverflow=document.body.style.overflow;
+    document.body.style.overflow='hidden';
+    const desktopQuery=window.matchMedia('(min-width: 768px)');
+    const closeOnDesktop=()=>{if(desktopQuery.matches)setMobileMenuOpen(false);};
     const focusable=()=>Array.from(drawer?.querySelectorAll<HTMLElement>('a,button,[tabindex]:not([tabindex="-1"])')||[]).filter(el=>!el.hasAttribute('disabled'));
     focusable()[0]?.focus();
     const keydown=(event:KeyboardEvent)=>{
@@ -36,30 +40,47 @@ export const Navbar: React.FC = () => {
       }
     };
     document.addEventListener('keydown',keydown);
-    return ()=>document.removeEventListener('keydown',keydown);
+    desktopQuery.addEventListener('change',closeOnDesktop);
+    return ()=>{
+      document.removeEventListener('keydown',keydown);
+      desktopQuery.removeEventListener('change',closeOnDesktop);
+      document.body.style.overflow=previousOverflow;
+    };
   },[mobileMenuOpen]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+    let frame=0;
+    const updateFromScroll = () => {
+      frame=0;
+      const scrolled=window.scrollY > 20;
+      setIsScrolled((current)=>current===scrolled?current:scrolled);
 
       const sections = ['home', 'about', 'skills', 'projects', 'contact'];
       const scrollPosition = window.scrollY + 200;
+      let nextSection='home';
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const sectionEl = document.getElementById(sections[i]);
         if (sectionEl) {
           const top = sectionEl.offsetTop;
           if (scrollPosition >= top) {
-            setActiveSection(sections[i]);
+            nextSection=sections[i];
             break;
           }
         }
       }
+      setActiveSection((current)=>current===nextSection?current:nextSection);
     };
+    const handleScroll = () => { if(!frame)frame=requestAnimationFrame(updateFromScroll); };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
 
   const handleLinkClick = (href: string) => {
@@ -67,7 +88,7 @@ export const Navbar: React.FC = () => {
     const targetId = href.replace('#', '');
     const element = document.getElementById(targetId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     }
   };
 
@@ -113,7 +134,6 @@ export const Navbar: React.FC = () => {
               return (
                 <a
                   key={item.name}
-                  data-magnetic="true"
                   href={item.href}
                   onClick={(e) => {
                     e.preventDefault();
@@ -154,7 +174,7 @@ export const Navbar: React.FC = () => {
             type="button"
             ref={toggleRef}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-10 h-10 rounded-md border border-white/[0.08] bg-[#12141a]/80 flex items-center justify-center text-[#f4f1ea] hover:border-[#d4af37]/40 focus:outline-none transition-colors"
+            className="md:hidden w-11 h-11 rounded-md border border-white/[0.08] bg-[#12141a]/80 flex items-center justify-center text-[#f4f1ea] hover:border-[#d4af37]/40 focus:outline-none transition-colors"
             aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
@@ -172,7 +192,7 @@ export const Navbar: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-label="Portfolio navigation"
-          className="fixed inset-0 z-40 md:hidden bg-[#08090b]/90 backdrop-blur-xl flex flex-col justify-between pt-24 pb-10 px-8 transition-opacity duration-300"
+          className="fixed inset-0 z-40 md:hidden bg-[#08090b]/95 flex flex-col justify-between pt-24 pb-10 px-8 transition-opacity duration-300"
           style={{ animation: 'fadeIn 0.2s ease-out' }}
         >
           <div className="flex flex-col gap-6">

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { AtmosphericBackground } from './components/Background/AtmosphericBackground';
 import { Navbar } from './components/Navbar/Navbar';
 import { Hero } from './components/Hero/Hero';
@@ -7,35 +7,9 @@ import { Skills } from './components/Skills/Skills';
 import { About } from './components/About/About';
 import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
-import { CustomCursor } from './components/common/CustomCursor';
 import { ElevationHud } from './components/common/ElevationHud';
 import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import { experienceConfig } from './config/experienceConfig';
-import Lenis from 'lenis';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { pointerStore } from './lib/pointerStore';
-import { ExperienceIntro } from './components/common/ExperienceIntro';
-
-const NeuralLandscape = lazy(() => import('./components/Background/NeuralLandscape').then((module) => ({ default: module.NeuralLandscape })));
-gsap.registerPlugin(ScrollTrigger);
-
-const ScrollEngine: React.FC<{ reduced: boolean }> = ({ reduced }) => {
-  useEffect(() => {
-    if (reduced) return;
-    const lenis = new Lenis({ duration: experienceConfig.motion.scrollDuration, smoothWheel: true, touchMultiplier: 1.2 });
-    const tick = (time: number) => lenis.raf(time * 1000);
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-    const context=gsap.context(()=>{
-      const timeline=gsap.timeline({scrollTrigger:{trigger:'#home',start:'top top',end:'bottom top',scrub:.8,onUpdate:(self)=>{pointerStore.heroProgress=self.progress;}}});
-      timeline.to('.hero-copy',{y:experienceConfig.motion.heroExitY,opacity:experienceConfig.motion.heroExitOpacity,ease:'none'},0);
-    });
-    return () => { gsap.ticker.remove(tick); lenis.destroy(); context.revert(); pointerStore.heroProgress=0; };
-  }, [reduced]);
-  return null;
-};
 
 export const App: React.FC = () => {
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -67,11 +41,7 @@ export const App: React.FC = () => {
     <div className="relative min-h-screen bg-[var(--ascent-background)] text-[var(--ascent-text)] selection:bg-[#70e5f2]/25 selection:text-white">
       {/* Cinematic Atmospheric Glow & Particle Canvas */}
       <AtmosphericBackground />
-      <Suspense fallback={null}><NeuralLandscape /></Suspense>
-      <CustomCursor />
       <ElevationHud />
-      <ExperienceIntro />
-      <ScrollEngine reduced={prefersReducedMotion} />
 
       {/* Sticky Editorial Navigation */}
       <Navbar />
