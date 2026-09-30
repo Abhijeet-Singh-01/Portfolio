@@ -56,10 +56,10 @@ export const skillsCategories: SkillCategory[] = [
     ],
   },
   {
-    id: 'ai-ml',
+    id: 'ai',
     title: 'AI',
     skills: [
-      { name: 'Generative AI', iconName: 'BrainCircuit', highlight: true },
+      { name: 'Generative AI', iconName: 'Sparkles', highlight: true, level: 'AWS Coursework' },
     ],
   },
 ];

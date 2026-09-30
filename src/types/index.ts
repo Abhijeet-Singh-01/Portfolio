@@ -20,7 +20,7 @@ export interface SkillItem {
   name: string;
   iconName: string;
   highlight?: boolean;
-  level?: 'Learning';
+  level?: string;
 }
 
 export interface SkillCategory {

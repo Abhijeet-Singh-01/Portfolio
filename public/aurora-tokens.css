@@ -1,0 +1,81 @@
+/* Aurora Vivid Design Tokens (Rule 02)
+   Night is default; Light is toggle.
+*/
+:root,
+:root[data-theme='night'] {
+  color-scheme: dark;
+  --bg: #0A0620;
+  --bg-2: #130A3B;
+  --surface: #1A1050;
+  --surface-2: #24186B;
+  --surface-glass: rgba(26, 16, 80, 0.88);
+  --surface-tint: rgba(124, 108, 255, 0.08);
+  --text: #F8F6FF;
+  --text-2: #B9B3E6;
+  --border: rgba(248, 246, 255, 0.14);
+  --accent-indigo: #7C6CFF;
+  --accent-violet: #C084FC;
+  --accent-magenta: #FF5FA8;
+  --accent-tangerine: #FFA36B;
+  --accent-aqua: #22D3EE;
+  --accent-lime: #C6F432;
+  --accent-indigo-ink: #A99EFF;
+  --accent-violet-ink: #D8B4FE;
+  --accent-magenta-ink: #FF8BC1;
+  --accent-tangerine-ink: #FFC09A;
+  --accent-aqua-ink: #67E8F9;
+  --text-on-accent: #FFFFFF;
+  --accent-indigo-glow: rgba(124, 108, 255, 0.22);
+  --accent-violet-glow: rgba(192, 132, 252, 0.20);
+  --accent-magenta-glow: rgba(255, 95, 168, 0.18);
+  --accent-tangerine-glow: rgba(255, 163, 107, 0.17);
+  --accent-aqua-glow: rgba(34, 211, 238, 0.19);
+  --accent-lime-glow: rgba(198, 244, 50, 0.28);
+  --shadow-primary: rgba(124, 108, 255, 0.24);
+  --shadow-soft: rgba(124, 108, 255, 0.16);
+  --focus-ring: #7C6CFF;
+  --gradient-brand: linear-gradient(110deg, #7C6CFF 0%, #C084FC 45%, #FF5FA8 75%, #FFA36B 100%);
+  --gradient-button: linear-gradient(110deg, #7C6CFF 0%, #C084FC 52%, #FF5FA8 100%);
+  --gradient-fresh: linear-gradient(110deg, #22D3EE 0%, #7C6CFF 100%);
+  --gradient-ring: linear-gradient(135deg, #22D3EE 0%, #C6F432 50%, #7C6CFF 100%);
+  --scrim: rgba(10, 6, 32, 0.92);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #FAF8FF;
+  --bg-2: #F1EDFF;
+  --surface: #FFFFFF;
+  --surface-2: #F8F6FF;
+  --surface-glass: rgba(255, 255, 255, 0.88);
+  --surface-tint: rgba(91, 75, 255, 0.05);
+  --text: #14123A;
+  --text-2: #4F4B73;
+  --border: rgba(20, 18, 58, 0.14);
+  --accent-indigo: #5B4BFF;
+  --accent-violet: #8B5CF6;
+  --accent-magenta: #EC4899;
+  --accent-tangerine: #FF7A45;
+  --accent-aqua: #06B6D4;
+  --accent-lime: #65A30D;
+  --accent-indigo-ink: #4338FF;
+  --accent-violet-ink: #6D28D9;
+  --accent-magenta-ink: #BE185D;
+  --accent-tangerine-ink: #C2410C;
+  --accent-aqua-ink: #0E7490;
+  --text-on-accent: #FFFFFF;
+  --accent-indigo-glow: rgba(91, 75, 255, 0.14);
+  --accent-violet-glow: rgba(139, 92, 246, 0.14);
+  --accent-magenta-glow: rgba(236, 72, 153, 0.12);
+  --accent-tangerine-glow: rgba(255, 122, 69, 0.12);
+  --accent-aqua-glow: rgba(6, 182, 212, 0.13);
+  --accent-lime-glow: rgba(101, 163, 13, 0.20);
+  --shadow-primary: rgba(91, 75, 255, 0.15);
+  --shadow-soft: rgba(91, 75, 255, 0.10);
+  --focus-ring: #4338FF;
+  --gradient-brand: linear-gradient(110deg, #5B4BFF 0%, #8B5CF6 48%, #EC4899 78%, #FF7A45 100%);
+  --gradient-button: linear-gradient(110deg, #4338FF 0%, #7C3AED 52%, #DB2777 100%);
+  --gradient-fresh: linear-gradient(110deg, #06B6D4 0%, #5B4BFF 100%);
+  --gradient-ring: linear-gradient(135deg, #06B6D4 0%, #65A30D 50%, #5B4BFF 100%);
+  --scrim: rgba(250, 248, 255, 0.88);
+}
