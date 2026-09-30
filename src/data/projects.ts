@@ -1,4 +1,5 @@
 import type { Project } from '../types';
+import { projectLinks } from './socialLinks';
 
 export const projectsData: Project[] = [
   {
@@ -9,16 +10,7 @@ export const projectsData: Project[] = [
       'AI-powered incident analysis and root-cause investigation platform designed to detect abnormal application behavior, retrieve relevant evidence from logs/incidents, and generate evidence-grounded root-cause analysis and remediation suggestions.',
     category: 'AI Systems & Telemetry',
     accent: 'gold',
-    technologies: [
-      'Python',
-      'FastAPI',
-      'Machine Learning',
-      'RAG',
-      'Vector Search',
-      'Embeddings',
-      'PostgreSQL',
-      'AI/LLM',
-    ],
+    technologies: ['Python', 'FastAPI', 'Machine Learning', 'RAG', 'Vector Search', 'Embeddings', 'PostgreSQL', 'AI/LLM'],
     systemHighlights: [
       'Multi-stage semantic retrieval pipeline pairing dense vector search with deterministic log filtering.',
       'Evidence-grounded hypothesis generation that ties each diagnostic finding directly to timestamped trace logs.',
@@ -38,45 +30,21 @@ export const projectsData: Project[] = [
         'Grounding Verification & LLM Root-Cause Synthesis',
       ],
     },
-    githubUrl: 'https://github.com/abhijeetsingh',
   },
   {
     id: 'solisiq',
     name: 'SolisIQ',
-    tagline: 'Intelligent solar capacity modeling & renewable energy analytics',
+    tagline: 'Smart Solar Usage & Savings Monitoring System',
     description:
-      'Solar usage and savings monitoring platform designed to help users understand energy consumption, estimated savings, solar capacity requirements, and environmental impact.',
-    category: 'CleanTech & Energy Analytics',
+      'AI-powered application that recommends optimal solar panel capacity based on electricity consumption, with a responsive dashboard visualizing energy generation, usage, savings, and environmental impact.',
+    category: 'AI / Sustainability / Web Application',
     accent: 'teal',
-    technologies: [
-      'HTML',
-      'CSS',
-      'JavaScript',
-      'Chart.js',
-      'Python',
-      'Flask',
-      'Database',
-    ],
+    technologies: ['React.js', 'Python (FastAPI)', 'MongoDB', 'JavaScript', 'Chart.js', 'REST APIs'],
     systemHighlights: [
-      'Mathematical irradiance modeling calibrated to regional sunlight exposure and rooftop surface area.',
-      'Interactive time-series dashboards charting real-time solar production against utility grid consumption.',
-      'Carbon offset computational engine quantifying lifetime financial savings and avoided CO₂ emissions.',
+      'FastAPI REST APIs for authentication, solar sizing calculations, and data management.',
+      'Calculates electricity bill reduction, return on investment (ROI), and solar payback period.',
     ],
-    metrics: [
-      { label: 'Analysis Engine', value: 'Solar Yield Algorithm' },
-      { label: 'Visualization', value: 'Interactive Chart.js' },
-      { label: 'Outcome', value: 'ROI & Carbon Metrics' },
-    ],
-    architectureSnippet: {
-      title: 'Energy Analytics Pipeline',
-      flow: [
-        'User Consumption & Roof Data Input',
-        'Yield Estimation Formula & Solar Constants',
-        'Time-Series Generation & Storage',
-        'Comparative Cost & Carbon Analytics Visualization',
-      ],
-    },
-    githubUrl: 'https://github.com/abhijeetsingh',
+    githubUrl: projectLinks.solisiqSource,
   },
   {
     id: 'instanews',
@@ -86,22 +54,15 @@ export const projectsData: Project[] = [
       'Full-stack news platform with authentication, role-based administration, API-driven content, caching, and infinite scrolling.',
     category: 'Full-Stack Web Engineering',
     accent: 'gold',
-    technologies: [
-      'React',
-      'Redux Toolkit',
-      'Node.js',
-      'Express',
-      'MongoDB',
-      'JWT',
-    ],
+    technologies: ['React.js', 'Redux Toolkit', 'Node.js', 'Express.js', 'MongoDB', 'JWT'],
     systemHighlights: [
-      'Granular role-based access control (RBAC) separating reader consumers from authenticated editorial staff.',
-      'Redux Toolkit state slices paired with virtualized DOM scrolling for stutter-free reading experiences.',
-      'API query caching and aggregated MongoDB pipelines for instant category-filtered feeds.',
+      'Granular role-based access control separating reader consumers from authenticated editorial staff.',
+      'Redux Toolkit state slices paired with virtualized DOM scrolling for reading experiences.',
+      'API query caching and aggregated MongoDB pipelines for category-filtered feeds.',
     ],
     metrics: [
       { label: 'Security', value: 'JWT + RBAC Middleware' },
-      { label: 'State Mgmt', value: 'Redux Toolkit Slices' },
+      { label: 'State Management', value: 'Redux Toolkit Slices' },
       { label: 'Rendering', value: 'Virtualized Infinite Scroll' },
     ],
     architectureSnippet: {
@@ -113,44 +74,19 @@ export const projectsData: Project[] = [
         'Virtualized Infinite Scroll Feed UI',
       ],
     },
-    githubUrl: 'https://github.com/abhijeetsingh',
   },
   {
-    id: 'gharpathshala',
-    name: 'GharPathshala',
-    tagline: 'Curriculum-grounded AI tutor with adaptive learning diagnostics',
+    id: 'zerohour',
+    name: 'ZeroHour',
+    tagline: 'Interactive Web Application',
     description:
-      'AI-powered multilingual home-learning platform designed around curriculum-grounded learning, personalized activities, assessment, learning-gap detection, teacher validation, and learner analytics.',
-    category: 'EdTech & Multilingual AI',
+      'Real-time countdown timer showing the remaining days, hours, minutes, and seconds until a selected date and time.',
+    category: 'Web Application',
     accent: 'teal',
-    technologies: [
-      'AI',
-      'RAG',
-      'LLM',
-      'FastAPI',
-      'Machine Learning',
-      'Vector Search',
-      'React',
-    ],
+    technologies: ['HTML', 'CSS', 'JavaScript'],
     systemHighlights: [
-      'Curriculum-locked vector retrieval ensuring generated educational responses never deviate from verified textbooks.',
-      'Cognitive learning-gap diagnosis that infers conceptual misunderstandings from response timing and errors.',
-      'Bilingual and vernacular translation layer enabling natural mother-tongue learning for young students.',
+      'JavaScript date calculations and dynamic DOM updates.',
+      'Automatic completion handling and a responsive user interface.',
     ],
-    metrics: [
-      { label: 'Safeguard', value: 'Curriculum-Grounded RAG' },
-      { label: 'Intelligence', value: 'Gap Diagnostic Classifier' },
-      { label: 'Interface', value: 'Multilingual Interactive UI' },
-    ],
-    architectureSnippet: {
-      title: 'Pedagogical AI Flow',
-      flow: [
-        'Curriculum Corpus Ingestion & Embedding',
-        'Student Query & Level Assessment',
-        'Grounded Context Retrieval & LLM Simplification',
-        'Teacher Validation & Gap Metric Logging',
-      ],
-    },
-    githubUrl: 'https://github.com/abhijeetsingh',
   },
 ];

@@ -13,6 +13,42 @@ Take inspiration from the expedition and digital-landscape mood only. Do not cop
 - Decorative interface labels are allowed when they do not imply personal facts.
 - Preserve existing content and functionality unless a phase explicitly changes its presentation.
 
+## Verified Portfolio Content
+
+- `public/resume.pdf` is the current resume and source of truth for profile content.
+- Use the shared links in `src/data/socialLinks.ts`: `abhijeetsingh01122006@gmail.com`, GitHub `Abhijeet-Singh-01`, LinkedIn `abhijeet-singh-988276330`, LeetCode `1_abhi`, and `/resume.pdf`.
+- Do not publish a phone number in portfolio content or HTML.
+- Featured projects, in order: AI Incident Intelligence, SolisIQ, Instanews, ZeroHour. Only show project links when a real URL is available.
+- SolisIQ source: `https://github.com/Abhijeet-Singh-01/SolisIQ`. No ZeroHour repository or demo URL is verified yet.
+
+### Education
+
+- 2024 - 2028: Bachelor of Technology in Computer Science and Engineering, Pranveer Singh Institute of Technology (PSIT); CGPA 7.54/10; affiliated with Dr. A.P.J. Abdul Kalam Technical University (AKTU).
+- 2024: Class XII (CBSE), Rani Laxmi Bai Memorial School; 70.6%.
+- 2022: Class X (CBSE), Rani Laxmi Bai Memorial School; 74.6%.
+
+### Certifications and achievements
+
+- AWS Planning a Generative AI Project - Amazon Web Services (AWS).
+- AWS Introduction to Generative AI - Art of the Possible - Amazon Web Services (AWS).
+- Solved 250+ DSA problems on LeetCode across arrays, strings, linked lists, stacks, queues, trees, and recursion.
+- Consistent daily coding practice focused on problem-solving and data structure fundamentals.
+
+### Skills
+
+- Languages: C++, Python, C, SQL.
+- Frontend: React.js, HTML, CSS, Tailwind CSS, JavaScript (ES6+).
+- Backend: FastAPI, REST APIs, Firebase Cloud Messaging (Learning).
+- Databases: MongoDB, MySQL.
+- Tools: Git, GitHub, VS Code.
+- Core: Data Structures & Algorithms.
+- AI: Generative AI.
+- Project-specific technologies belong on their project cards, not in the core skills list.
+
+### Career objective
+
+Computer Science undergraduate seeking software development opportunities in backend and full-stack engineering, interested in scalable APIs, database-driven applications, and AI-powered solutions, while strengthening DSA, Generative AI, and modern software development.
+
 ## Stack and Dependencies
 
 - Existing stack: React, TypeScript, Vite, Tailwind CSS, Framer Motion and Lucide icons.

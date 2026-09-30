@@ -1,8 +1,9 @@
 import React from 'react';
-import { educationData, personalBio } from '../../data/education';
-import { GraduationCap, CheckCircle2, MapPin } from 'lucide-react';
+import { achievementData, certificationData, educationData, personalBio } from '../../data/education';
+import { GraduationCap, CheckCircle2, MapPin, Award, ExternalLink } from 'lucide-react';
 import { DeveloperTerminal } from './DeveloperTerminal';
 import profilePhoto from '../../assets/images/profile.webp';
+import { siteLinks } from '../../data/socialLinks';
 
 export const About: React.FC = () => {
   return (
@@ -31,7 +32,7 @@ export const About: React.FC = () => {
           {/* Main Editorial Bio Card */}
           <div className="about-panel p-8 sm:p-10 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
             <h3 className="text-2xl sm:text-3xl font-serif text-[#f4f1ea] mb-4">
-              Building serious software with curious precision.
+              Backend and full-stack engineering, grounded in problem-solving.
             </h3>
 
             <p className="text-base sm:text-lg text-[#cfcac0] leading-relaxed mb-6 font-normal">
@@ -39,16 +40,13 @@ export const About: React.FC = () => {
             </p>
 
             <p className="text-sm sm:text-base text-[#8e95a2] leading-relaxed mb-8">
-              Currently pursuing my B.Tech in Computer Science & Engineering (2024–2028) at Pranveer Singh
-              Institute of Technology (PSIT), AKTU. My journey is rooted in developing deep foundations across
-              core computing principles, modern backend architectures, and intelligent data systems that solve
-              tangible problems.
+              Currently pursuing my B.Tech in Computer Science and Engineering at {personalBio.college} ({personalBio.years}), with a CGPA of {personalBio.cgpa}.
             </p>
 
             {/* What I enjoy */}
             <div className="pt-6 border-t border-white/[0.06]">
               <span className="text-xs font-mono uppercase tracking-widest text-[#edd894] block mb-4">
-                What I Genuinely Enjoy:
+                Current Focus:
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {personalBio.passions.map((item, idx) => (
@@ -119,11 +117,11 @@ export const About: React.FC = () => {
               <div>
                 <h4 className="font-serif text-xl text-[#f4f1ea] font-medium">Abhijeet Singh</h4>
                 <p className="text-xs font-mono text-[#edd894] tracking-wide mt-0.5">
-                  Computer Science Undergrad
+                  {personalBio.role}
                 </p>
                 <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#8e95a2] mt-1">
                   <MapPin className="w-3 h-3 text-[#d4af37]" />
-                  <span>Lucknow, Uttar Pradesh, India</span>
+                  <span>{personalBio.location}</span>
                 </div>
               </div>
             </div>
@@ -139,12 +137,39 @@ export const About: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-[#8e95a2]">Cohort:</span>
-                <span className="text-[#edd894]">2024 — 2028</span>
+                <span className="text-[#edd894]">{personalBio.years}</span>
               </div>
             </div>
           </div>
 
           <DeveloperTerminal />
+
+          <div className="about-panel p-7 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08]">
+            <div className="mb-6 pb-3 border-b border-white/[0.06]">
+              <div className="flex items-center gap-2 mb-4">
+                <Award className="w-4 h-4 text-[#d4af37]" />
+                <h4 className="text-xs font-mono uppercase tracking-widest text-[#f4f1ea] font-medium">Certifications</h4>
+              </div>
+              <ul className="space-y-3 list-none p-0 m-0">
+                {certificationData.map((certification) => <li key={certification} className="text-xs text-[#cfcac0] leading-relaxed">{certification}</li>)}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-xs font-mono uppercase tracking-widest text-[#f4f1ea] font-medium mb-4">Achievements</h4>
+              <ul className="space-y-4 list-none p-0 m-0">
+                {achievementData.map((achievement) => (
+                  <li key={achievement.title} className="text-xs text-[#cfcac0] leading-relaxed">
+                    {achievement.url ? (
+                      <a href={achievement.url} target="_blank" rel="noopener noreferrer" aria-label={siteLinks.leetcode.accessibilityLabel} className="inline-flex items-center gap-1.5 text-[#edd894] hover:text-[#f4f1ea]">
+                        {achievement.title}<ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : <strong className="font-medium text-[#edd894]">{achievement.title}</strong>}
+                    <span className="block text-[#8e95a2] mt-1">{achievement.description}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
           {/* Vertical Education Timeline */}
           <div className="about-panel p-8 rounded-xl bg-[#0c0e14]/70 border border-white/[0.08] backdrop-blur-md">
@@ -194,10 +219,7 @@ export const About: React.FC = () => {
                     </p>
                   )}
 
-                  <p className="text-[10px] font-mono text-[#8e95a2] mt-1 flex items-center gap-1">
-                    <MapPin className="w-2.5 h-2.5" />
-                    {item.location}
-                  </p>
+                  {item.location && <p className="text-[10px] font-mono text-[#8e95a2] mt-1 flex items-center gap-1"><MapPin className="w-2.5 h-2.5" />{item.location}</p>}
 
                   <ul className="mt-3 space-y-1.5">
                     {item.highlights.map((point, pIdx) => (

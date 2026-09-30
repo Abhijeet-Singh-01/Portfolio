@@ -20,6 +20,7 @@ export interface SkillItem {
   name: string;
   iconName: string;
   highlight?: boolean;
+  level?: 'Learning';
 }
 
 export interface SkillCategory {
@@ -33,7 +34,7 @@ export interface EducationItem {
   degree: string;
   institution: string;
   university?: string;
-  location: string;
+  location?: string;
   status?: string;
   highlights: string[];
 }
@@ -44,5 +45,8 @@ export interface SocialLink {
   url: string;
   handle: string;
   iconName: string;
+  accessibilityLabel?: string;
   isPrimary?: boolean;
+  openInNewTab?: boolean;
+  download?: string;
 }

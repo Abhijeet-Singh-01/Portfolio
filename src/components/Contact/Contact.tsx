@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { socialLinks } from '../../data/socialLinks';
-import { Mail, Code2, ArrowUpRight, Copy, Check, Send, Sparkles } from 'lucide-react';
+import { Mail, Code2, ArrowUpRight, Copy, Check, Send, Sparkles, FileText } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../common/BrandIcons';
+import { siteLinks } from '../../data/socialLinks';
 
 const iconMap: Record<string, React.ReactNode> = {
   Mail: <Mail className="w-4 h-4" />,
   Github: <GithubIcon className="w-4 h-4" />,
   Linkedin: <LinkedinIcon className="w-4 h-4" />,
   Code2: <Code2 className="w-4 h-4" />,
+  FileText: <FileText className="w-4 h-4" />,
 };
 
 export const Contact: React.FC = () => {
@@ -15,7 +17,7 @@ export const Contact: React.FC = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
 
-  const emailAddress = 'abhijeetsingh.dev.eng@gmail.com';
+  const emailAddress = siteLinks.email.handle;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(emailAddress);
@@ -51,7 +53,7 @@ export const Contact: React.FC = () => {
         </h2>
 
         <p className="mt-4 text-base sm:text-lg text-[#8e95a2] max-w-2xl font-mono leading-relaxed">
-          I&apos;m open to internships, software engineering opportunities, collaborative projects, and conversations around technology.
+          I&apos;m seeking backend and full-stack software development opportunities.
         </p>
       </div>
 
@@ -72,7 +74,8 @@ export const Contact: React.FC = () => {
 
             <div className="flex flex-wrap items-center gap-3">
               <a
-                href={`mailto:${emailAddress}`}
+                href={siteLinks.email.url}
+                aria-label={siteLinks.email.accessibilityLabel}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#d4af37] hover:bg-[#e0c268] text-[#08090b] font-medium text-xs font-mono uppercase tracking-wider transition-all duration-200 shadow-[0_0_15px_rgba(212,175,55,0.2)]"
               >
                 <Mail className="w-3.5 h-3.5" />
@@ -94,7 +97,7 @@ export const Contact: React.FC = () => {
           {/* Social Profiles Grid */}
           <div className="space-y-3">
             <span className="text-xs font-mono uppercase tracking-widest text-[#8e95a2] block">
-              Professional Profiles
+              Contact, Profiles & Resume
             </span>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
@@ -102,8 +105,10 @@ export const Contact: React.FC = () => {
                 <a
                   key={link.name}
                   href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={link.openInNewTab ? '_blank' : undefined}
+                  rel={link.openInNewTab ? 'noopener noreferrer' : undefined}
+                  download={link.download}
+                  aria-label={link.accessibilityLabel}
                   className="group flex items-center justify-between p-4 rounded-lg bg-[#0e1117]/60 hover:bg-[#131722]/80 border border-white/[0.06] hover:border-[#d4af37]/30 transition-all duration-200"
                 >
                   <div className="flex items-center gap-3">

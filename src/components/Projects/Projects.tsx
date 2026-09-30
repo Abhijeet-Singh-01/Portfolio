@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { projectsData } from '../../data/projects';
 import { ProjectCard } from './ProjectCard';
 import { Sparkles } from 'lucide-react';
+import { siteLinks } from '../../data/socialLinks';
 
 export const Projects: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
@@ -9,8 +10,8 @@ export const Projects: React.FC = () => {
   const filteredProjects = projectsData.filter((project) => {
     if (filter === 'all') return true;
     if (filter === 'ai') return project.technologies.some((t) => ['RAG', 'AI/LLM', 'AI', 'Machine Learning'].includes(t));
-    if (filter === 'web') return project.technologies.some((t) => ['React', 'Node.js', 'Express'].includes(t));
-    if (filter === 'systems') return project.accent === 'teal' || project.id === 'solisiq';
+    if (filter === 'web') return project.technologies.some((t) => ['React.js', 'Node.js', 'Express.js', 'HTML', 'CSS', 'JavaScript'].includes(t));
+    if (filter === 'systems') return project.id === 'solisiq';
     return true;
   });
 
@@ -73,13 +74,14 @@ export const Projects: React.FC = () => {
             <Sparkles className="w-4 h-4 text-[#edd894]" />
           </div>
           <p className="text-xs font-mono text-[#8e95a2]">
-            More open-source experiments, scripts, and algorithmic implementations are available on GitHub.
+            Explore my GitHub profile and code.
           </p>
         </div>
         <a
-          href="https://github.com/abhijeetsingh"
+          href={siteLinks.github.url}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={siteLinks.github.accessibilityLabel}
           className="text-xs font-mono uppercase tracking-wider text-[#cfcac0] hover:text-[#edd894] inline-flex items-center gap-1.5 transition-colors shrink-0"
         >
           <span>Explore GitHub Profile</span>

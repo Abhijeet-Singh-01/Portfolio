@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { siteLinks } from '../../data/socialLinks';
 
 interface NavItem {
   name: string;
@@ -122,7 +123,7 @@ export const Navbar: React.FC = () => {
                 Abhijeet Singh
               </span>
               <span className="text-[10px] tracking-wider text-[#8e95a2] font-mono">
-                Software & AI Eng.
+                CSE Undergraduate
               </span>
             </div>
           </a>
@@ -159,12 +160,12 @@ export const Navbar: React.FC = () => {
           {/* Right Action: Quick Resume / Contact */}
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={siteLinks.resume.url}
+              download={siteLinks.resume.download}
+              aria-label={siteLinks.resume.accessibilityLabel}
               className="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#cfcac0] hover:text-[#edd894] px-3.5 py-1.5 rounded border border-white/[0.08] hover:border-[#d4af37]/40 bg-[#12151c]/60 hover:bg-[#161a23] transition-all duration-200"
             >
-              Resume
+              Download Resume
               <ArrowUpRight className="w-3 h-3 text-[#d4af37]" />
             </a>
           </div>
@@ -226,9 +227,9 @@ export const Navbar: React.FC = () => {
 
           <div className="flex flex-col gap-4 pt-6 border-t border-white/[0.06]">
             <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={siteLinks.resume.url}
+              download={siteLinks.resume.download}
+              aria-label={siteLinks.resume.accessibilityLabel}
               className="w-full py-3 text-center text-xs font-mono uppercase tracking-widest text-[#090a0d] bg-[#d4af37] hover:bg-[#e0c268] font-semibold rounded transition-colors"
             >
               Download Resume

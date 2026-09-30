@@ -122,10 +122,10 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded text-xs font-mono uppercase tracking-wider text-[#f4f1ea] bg-[#141822] hover:bg-[#1a202d] border border-white/[0.09] hover:border-[#d4af37]/40 transition-all duration-200"
-                aria-label={`View ${project.name} GitHub Repository`}
+                aria-label={`View ${project.name} source code on GitHub (opens in new tab)`}
               >
                 <GithubIcon className="w-3.5 h-3.5" />
-                <span>GitHub ↗</span>
+                <span>Source Code ↗</span>
               </a>
             )}
 
@@ -135,7 +135,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded text-xs font-mono uppercase tracking-wider text-[#090a0d] bg-[#d4af37] hover:bg-[#e0c268] font-medium transition-all duration-200 shadow-[0_0_15px_rgba(212,175,55,0.15)]"
-                aria-label={`View ${project.name} Live Demo`}
+                aria-label={`View ${project.name} live demo (opens in new tab)`}
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 <span>Live Demo ↗</span>

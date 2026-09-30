@@ -11,9 +11,6 @@ import {
   TrendingUp,
   Shield,
   Newspaper,
-  BookOpen,
-  GraduationCap,
-  Sparkles,
 } from 'lucide-react';
 
 interface ProjectPreviewGraphicProps {
@@ -32,7 +29,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444] animate-pulse" />
             <span className="text-[#cfcac0] text-[11px] font-medium tracking-wide">
-              INCIDENT TRACE / DEMO
+              INCIDENT TRACE / ANALYSIS
             </span>
           </div>
           <span className="text-[10px] text-[#edd894] px-2 py-0.5 rounded bg-[#d4af37]/10 border border-[#d4af37]/25">
@@ -88,18 +85,18 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
         <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
           <div className="flex items-center gap-2">
             <Sun className="w-4 h-4 text-[#edd894]" />
-            <span className="text-[#cfcac0] text-[11px] font-medium">SOLAR GENERATION MODEL</span>
+            <span className="text-[#cfcac0] text-[11px] font-medium">SOLAR USAGE & SAVINGS</span>
           </div>
           <span className="text-[10px] text-[#2dd4bf] px-2 py-0.5 rounded bg-[#2dd4bf]/10 border border-[#2dd4bf]/25">
-            CLEANTECH TELEMETRY
+            RESPONSIVE DASHBOARD
           </span>
         </div>
 
         {/* Visual Chart Bars Graphic */}
         <div className="my-4 py-2 px-3 rounded bg-[#10131b] border border-white/[0.05]">
           <div className="flex justify-between text-[10px] text-[#8e95a2] mb-3">
-            <span>Daily Irradiance vs Grid Export</span>
-            <span className="text-[#2dd4bf]">Yield estimate</span>
+            <span>Energy generation and usage</span>
+            <span className="text-[#2dd4bf]">Environmental impact</span>
           </div>
           {/* Simulated mini chart */}
           <div className="h-16 flex items-end gap-2 pt-2">
@@ -118,7 +115,7 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
         <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/[0.06]">
           <div className="flex items-center gap-2 text-[10px] text-[#cfcac0]">
             <Zap className="w-3 h-3 text-[#edd894]" />
-            <span>Capacity modeling</span>
+            <span>Capacity recommendation</span>
           </div>
           <div className="flex items-center gap-2 text-[10px] text-[#cfcac0]">
             <TrendingUp className="w-3 h-3 text-[#2dd4bf]" />
@@ -170,42 +167,26 @@ export const ProjectPreviewGraphic: React.FC<ProjectPreviewGraphicProps> = ({ pr
     );
   }
 
-  // GharPathshala
+  // ZeroHour
   return (
     <div className="w-full h-full min-h-[260px] p-5 rounded-lg bg-[#0b0d13]/85 border border-white/[0.06] flex flex-col justify-between font-mono text-xs relative overflow-hidden group">
-      <div className="absolute top-0 right-0 w-36 h-36 bg-[#2dd4bf]/10 rounded-full blur-2xl pointer-events-none" />
-
       <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-[#2dd4bf]" />
-          <span className="text-[#cfcac0] text-[11px] font-medium">CURRICULUM-GROUNDED RAG</span>
+          <Activity className="w-4 h-4 text-[#2dd4bf]" />
+          <span className="text-[#cfcac0] text-[11px] font-medium">ZEROHOUR</span>
         </div>
-        <span className="text-[10px] text-[#2dd4bf] px-2 py-0.5 rounded bg-[#2dd4bf]/10 border border-[#2dd4bf]/25">
-          MULTILINGUAL AI
-        </span>
+        <span className="text-[10px] text-[#2dd4bf] px-2 py-0.5 rounded bg-[#2dd4bf]/10 border border-[#2dd4bf]/25">COUNTDOWN</span>
       </div>
-
-      <div className="my-4 space-y-2">
-        <div className="p-2.5 rounded bg-[#10131b] border border-[#2dd4bf]/25 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-[#2dd4bf]" />
-            <span className="text-[#f4f1ea] text-[11px]">Pedagogical Guardrail Filter</span>
+      <div className="grid grid-cols-4 gap-2 my-5 text-center">
+        {['Days', 'Hours', 'Minutes', 'Seconds'].map((unit) => (
+          <div key={unit} className="p-2 rounded bg-[#10131b] border border-white/[0.06]">
+            <span className="block text-base sm:text-xl text-[#f4f1ea]">{unit[0]}</span>
+            <span className="text-[9px] text-[#8e95a2]">{unit}</span>
           </div>
-          <span className="text-[10px] text-[#2dd4bf]">Strictly NCERT / Syllabus</span>
-        </div>
-
-        <div className="p-2.5 rounded bg-[#10131b] border border-white/[0.05] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="w-3.5 h-3.5 text-[#edd894]" />
-            <span className="text-[#f4f1ea] text-[11px]">Learner Gap Diagnostics</span>
-          </div>
-          <span className="text-[10px] text-[#8e95a2]">Adaptive Calibration</span>
-        </div>
+        ))}
       </div>
-
-      <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] text-[#8e95a2]">
-        <span>FastAPI + Vector Index + React</span>
-        <span className="text-[#2dd4bf]">Multilingual Vernacular</span>
+      <div className="pt-3 border-t border-white/[0.06] text-[10px] text-[#8e95a2]">
+        Date calculations | Dynamic updates | Completion handling
       </div>
     </div>
   );

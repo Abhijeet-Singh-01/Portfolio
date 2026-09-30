@@ -1,109 +1,59 @@
-# Abhijeet Singh — Personal Engineering Portfolio
+﻿# Abhijeet Singh - Portfolio
 
-A cinematic, editorial developer portfolio engineered with **React 19**, **TypeScript**, **Vite**, and **Tailwind CSS**.
+A responsive portfolio built with React, TypeScript, Vite, and Tailwind CSS. The visual theme uses the existing dark palette, static atmospheric gradients, and lightweight CSS artwork.
 
-Inspired by dark luxury editorial typography and atmospheric lighting: charcoal dark backdrop, muted gold & teal ambient illumination, fine particle constellation canvas, and structured systems engineering cards.
+## Verified profile
 
----
+- Computer Science undergraduate at Pranveer Singh Institute of Technology (PSIT), affiliated with Dr. A.P.J. Abdul Kalam Technical University (AKTU)
+- B.Tech in Computer Science and Engineering, 2024-2028; CGPA 7.54/10
+- Lucknow, India
+- Career focus: backend and full-stack engineering, scalable APIs, database-driven applications, AI-powered solutions, DSA, and Generative AI
 
-## ✦ Live Preview & Architecture
+## Projects
 
-- **Role**: Computer Science & Engineering Undergraduate | Software Developer | AI/ML Enthusiast
-- **Institution**: Pranveer Singh Institute of Technology (PSIT), AKTU (2024 — 2028)
-- **Location**: Lucknow, Uttar Pradesh, India
+1. **AI Incident Intelligence** - AI-powered incident analysis and root-cause investigation with evidence retrieval from logs.
+2. **SolisIQ** - Smart solar usage and savings monitoring system. [Source code](https://github.com/Abhijeet-Singh-01/SolisIQ)
+3. **Instanews** - Full-stack news application with authentication, role-based administration, API-driven content, caching, and infinite scrolling.
+4. **ZeroHour** - Interactive countdown web application. No source or live URL is listed because none was provided or found.
 
-### Visual Identity
-- **Palette**: Deep near-black charcoal base (`#08090b`), warm gold accent (`#d4af37`), muted teal accent (`#2dd4bf`), ivory text (`#f4f1ea`), and subtle editorial noise texture.
-- **Typography**: Editorial serif headings (`Newsreader`, `Cormorant Garamond`) paired with modern clean sans (`Plus Jakarta Sans`) and technical monospace (`JetBrains Mono`).
-- **Atmospheric Background**: Dual-glow radial illumination + lightweight HTML5 canvas particle star-field (automatically optimized for performance and respects `prefers-reduced-motion`).
+## Education and certifications
 
----
+- Class X (CBSE), Rani Laxmi Bai Memorial School, 2022 - 74.6%
+- Class XII (CBSE), Rani Laxmi Bai Memorial School, 2024 - 70.6%
+- AWS Planning a Generative AI Project
+- AWS Introduction to Generative AI - Art of the Possible
 
-## ✦ Projects Showcased
+## Skills
 
-1. **AI Incident Intelligence** — Autonomous root-cause investigation & telemetry triage engine. Multi-stage RAG semantic retrieval over log streams, dense vector similarity search, and zero-hallucination evidence grounding.
-2. **SolisIQ** — Intelligent solar capacity modeling & renewable energy analytics platform. Mathematical yield calculations, time-series Chart.js telemetry, and lifetime carbon offset estimation.
-3. **Instanews** — High-throughput full-stack publishing platform with JWT role-based access control (RBAC), Redux Toolkit state slice caching, and virtualized infinite scrolling.
-4. **GharPathshala** — Curriculum-grounded AI tutor with adaptive learning diagnostics, NCERT syllabus guardrails, and multilingual vernacular translation.
+- **Languages:** C++, Python, C, SQL
+- **Frontend:** React.js, HTML, CSS, Tailwind CSS, JavaScript (ES6+)
+- **Backend:** FastAPI, REST APIs, Firebase Cloud Messaging (Learning)
+- **Databases:** MongoDB, MySQL
+- **Tools:** Git, GitHub, VS Code
+- **Core:** Data Structures & Algorithms
+- **AI:** Generative AI
 
----
+Project-specific technologies are listed on their project cards rather than in the core skills list.
 
-## ✦ Project Structure
+## Links
 
-```
-├── public/
-│   ├── favicon.svg          # Minimal gold-bordered AS monogram favicon
-│   ├── og-preview.svg       # 1200x630 social preview card for Open Graph / Twitter
-│   └── resume.pdf           # Placeholder PDF (replace with your official resume)
-├── src/
-│   ├── assets/              # Static media & assets
-│   ├── components/
-│   │   ├── About/           # Bio, engineering pillars, and vertical education timeline
-│   │   ├── Background/      # Atmospheric dual glows, grain overlay, and particle canvas
-│   │   ├── common/          # Reusable SVGs (GithubIcon, LinkedinIcon)
-│   │   ├── Contact/         # 1-click clipboard copy, interactive message form, social links
-│   │   ├── Footer/          # Minimal copyright and back-to-top button
-│   │   ├── Hero/            # Editorial magazine-style heading, status badge, and CTAs
-│   │   ├── Navbar/          # Fixed glassmorphism nav with active section detection & mobile drawer
-│   │   ├── Projects/        # Editorial cards, category filter, and architecture previews
-│   │   └── Skills/          # Categorized technical tiles with subtle glow hover states
-│   ├── data/
-│   │   ├── education.ts     # Academic timeline & personal philosophy data
-│   │   ├── projects.ts      # Structured projects data, system highlights, and metrics
-│   │   ├── skills.ts        # Grouped technical proficiencies across 7 categories
-│   │   └── socialLinks.ts   # Contact handles and URLs
-│   ├── types/               # Clean TypeScript interfaces
-│   ├── App.tsx              # Main application root
-│   ├── index.css            # Tailwind CSS v4 variables & custom animations
-│   └── main.tsx             # React entrypoint
-├── index.html               # Production SEO, Open Graph tags, and Google Fonts
-├── package.json
-├── tsconfig.json
-└── vite.config.ts
-```
+- Email: [abhijeetsingh01122006@gmail.com](mailto:abhijeetsingh01122006@gmail.com?subject=Hello%20Abhijeet)
+- [GitHub](https://github.com/Abhijeet-Singh-01)
+- [LinkedIn](https://www.linkedin.com/in/abhijeet-singh-988276330/)
+- [LeetCode](https://leetcode.com/u/1_abhi/)
+- Resume: `public/resume.pdf`
 
----
+## Run locally
 
-## ✦ Getting Started
-
-### 1. Install Dependencies
 ```bash
 npm install
-```
-
-### 2. Run Locally in Development Mode
-```bash
 npm run dev
 ```
 
-### 3. Build for Production
+## Build and verify
+
 ```bash
 npm run build
-```
-
-### 4. Preview Production Build
-```bash
 npm run preview
-```
-
-### 5. Run Linter
-```bash
 npm run lint
 ```
-
----
-
-## ✦ Customization Guide
-
-- **Resume**: Replace [public/resume.pdf](file:///E:/portfolio.ABHIJEETSSSS/public/resume.pdf) with your actual resume PDF.
-- **Social Links**: Update your URLs and usernames in [src/data/socialLinks.ts](file:///E:/portfolio.ABHIJEETSSSS/src/data/socialLinks.ts).
-- **Projects**: Add or modify projects in [src/data/projects.ts](file:///E:/portfolio.ABHIJEETSSSS/src/data/projects.ts).
-- **Skills**: Adjust skills in [src/data/skills.ts](file:///E:/portfolio.ABHIJEETSSSS/src/data/skills.ts).
-
----
-
-## ✦ Deployment
-
-This project is ready to deploy directly on **Vercel**, **Netlify**, or **GitHub Pages**:
-- Build command: `npm run build`
-- Output directory: `dist`

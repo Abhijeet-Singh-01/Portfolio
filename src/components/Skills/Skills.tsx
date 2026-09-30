@@ -111,10 +111,10 @@ export const Skills: React.FC = () => {
       <div className="mt-12 p-6 rounded-xl border border-white/[0.06] bg-[#0c0f16]/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#8e95a2]">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#d4af37]" />
-          <span>Gold indicators highlight primary core focus areas & applied architectures.</span>
+          <span>Gold indicators mark the highlighted skills listed on my resume.</span>
         </div>
         <div className="text-[#cfcac0]">
-          Algorithmic problem solving in C++ & Python • Continuous system engineering
+          Daily DSA practice • C++ and Python
         </div>
       </div>
     </section>

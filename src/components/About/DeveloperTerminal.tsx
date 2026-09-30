@@ -10,7 +10,7 @@ export const DeveloperTerminal: React.FC = () => {
       <div className="terminal-body">
         <p><span className="terminal-prompt">$ whoami</span><br/><span className="terminal-output">{personalBio.name} · {personalBio.role}</span></p>
         <p><span className="terminal-prompt">$ focus</span><br/><span className="terminal-output">{personalBio.corePillars.map(item=>item.title).join(' / ')}</span></p>
-        <p><span className="terminal-prompt">$ location</span><br/><span className="terminal-output">{personalBio.location}</span><span className="terminal-caret" aria-hidden="true"/></p>
+        <p><span className="terminal-prompt">$ status</span><br/><span className="terminal-output">{personalBio.status}</span><span className="terminal-caret" aria-hidden="true"/></p>
       </div>
     </section>
   );

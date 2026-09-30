@@ -1,9 +1,10 @@
 import React from 'react';
 import { ArrowUp } from 'lucide-react';
+import { socialLinks } from '../../data/socialLinks';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
   return (
@@ -18,6 +19,14 @@ export const Footer: React.FC = () => {
             <span>© 2026 Abhijeet Singh • Built with ♥ and curiosity.</span>
           </div>
         </div>
+
+        <nav aria-label="Contact and profile links" className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[10px] font-mono text-[#8e95a2]">
+          {socialLinks.map((link) => (
+            <a key={link.name} href={link.url} target={link.openInNewTab ? '_blank' : undefined} rel={link.openInNewTab ? 'noopener noreferrer' : undefined} download={link.download} aria-label={link.accessibilityLabel} className="hover:text-[#edd894] transition-colors">
+              {link.name}
+            </a>
+          ))}
+        </nav>
 
         {/* Location & Back To Top */}
         <div className="flex items-center gap-6 text-xs font-mono text-[#8e95a2]">

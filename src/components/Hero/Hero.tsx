@@ -4,13 +4,14 @@ import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { pointerStore } from '../../lib/pointerStore';
 import { experienceConfig as config } from '../../config/experienceConfig';
 import { personalBio } from '../../data/education';
+import { siteLinks } from '../../data/socialLinks';
 
 export const Hero: React.FC = () => {
   const sceneRef = useRef<HTMLDivElement>(null);
   const pointerFrame = useRef(0);
   const pendingPointer = useRef<{ x: number; y: number } | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const heroIntroduction=personalBio.introParagraph.replace("I'm Abhijeet Singh, ", "I'm ");
+  const heroIntroduction = personalBio.heroSummary;
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' });
 
   const moveScene = (event: React.PointerEvent<HTMLElement>) => {
@@ -77,7 +78,7 @@ export const Hero: React.FC = () => {
             <span className="text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-[#c6d7d3]">Available for opportunities</span>
           </div>
 
-          <p className="hero-kicker mb-4 text-[11px] font-mono uppercase tracking-[.24em] text-[#2dd4bf]">Software · Systems · Applied AI</p>
+          <p className="hero-kicker mb-4 text-[11px] font-mono uppercase tracking-[.24em] text-[#2dd4bf]">Backend · Full Stack · AI/ML · DSA</p>
           <h1 className="text-[clamp(2.3rem,10vw,3rem)] sm:text-6xl md:text-7xl lg:text-[5.7rem] font-serif font-normal tracking-tight text-[#f4f1ea] leading-[.98] mb-4">
             Hey, I&apos;m <span className="hero-title-accent">Abhijeet Singh.</span>
           </h1>
@@ -90,15 +91,15 @@ export const Hero: React.FC = () => {
           <div className="flex flex-wrap gap-2.5 mb-8 text-[11px] font-mono text-[#9da6b2]">
             <span className="hero-meta"><MapPin className="w-3.5 h-3.5 text-[#2dd4bf]" />Lucknow, India</span>
             <span className="hero-meta"><Terminal className="w-3.5 h-3.5 text-[#2dd4bf]" />B.Tech CSE · PSIT, AKTU</span>
-            <span className="hero-meta"><Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />2024—2028</span>
+            <span className="hero-meta"><Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />{personalBio.years}</span>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <button type="button" onClick={() => scrollTo('projects')} className="hero-primary group inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-md font-medium text-xs font-mono uppercase tracking-widest">
               <span>View projects</span><ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-md bg-white/[0.035] hover:bg-white/[0.07] text-[#d7d9dc] border border-white/[0.1] hover:border-[#2dd4bf]/30 text-xs font-mono uppercase tracking-widest transition-all">
-              <FileText className="w-4 h-4 text-[#2dd4bf]" />Resume
+            <a href={siteLinks.resume.url} download={siteLinks.resume.download} aria-label={siteLinks.resume.accessibilityLabel} className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-md bg-white/[0.035] hover:bg-white/[0.07] text-[#d7d9dc] border border-white/[0.1] hover:border-[#2dd4bf]/30 text-xs font-mono uppercase tracking-widest transition-all">
+              <FileText className="w-4 h-4 text-[#2dd4bf]" />Download Resume
             </a>
             <button type="button" onClick={() => scrollTo('contact')} className="px-4 py-3 text-xs font-mono uppercase tracking-widest text-[#929ba7] hover:text-white transition-colors">Get in touch ↗</button>
           </div>

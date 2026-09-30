@@ -34,9 +34,11 @@ export const SkillTile: React.FC<SkillTileProps> = ({ skill, accent = 'gold', se
         <SkillIcon name={skill.iconName} className="w-4 h-4" />
       </div>
 
-      <span className="text-xs font-mono text-[#cfcac0] group-hover:text-[#f4f1ea] transition-colors tracking-tight">
+      <span className="min-w-0 flex-1 text-xs font-mono text-[#cfcac0] group-hover:text-[#f4f1ea] transition-colors tracking-tight">
         {skill.name}
       </span>
+
+      {skill.level && <span className="shrink-0 text-[9px] font-mono text-[#8e95a2]">{skill.level}</span>}
 
       {skill.highlight && (
         <span
