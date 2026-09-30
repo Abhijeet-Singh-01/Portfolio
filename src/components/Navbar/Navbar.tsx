@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Moon, Sun, ArrowUpRight } from 'lucide-react';
+import { X, Moon, Sun, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 import { applyAuroraTheme, type AuroraTheme } from '../../lib/theme';
 import { scrollToRoom } from '../../lib/experienceStore';
+import { sound } from '../../lib/sound';
 
 interface NavDestination {
   id: string;
@@ -21,6 +22,7 @@ const destinations: NavDestination[] = [
 
 export const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [soundOn, setSoundOn] = useState(() => sound.isEnabled());
   const [theme, setTheme] = useState<AuroraTheme>(() =>
     typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light' ? 'light' : 'night'
   );
@@ -184,7 +186,7 @@ export const Navbar: React.FC = () => {
 
           {/* Overlay Footer: Theme Toggle & Social Links */}
           <div className="pt-6 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={toggleTheme}
@@ -193,6 +195,16 @@ export const Navbar: React.FC = () => {
               >
                 {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-accent-indigo" /> : <Sun className="w-3.5 h-3.5 text-accent-tangerine" />}
                 <span>{theme === 'light' ? 'NIGHT MODE' : 'LIGHT MODE'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSoundOn(sound.toggle())}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/25 bg-surface/60 text-xs font-mono uppercase tracking-widest text-text hover:border-accent-aqua/50 transition-all focus-visible:ring-2 focus-visible:ring-accent-aqua"
+                aria-label="Toggle sound effects (default OFF)"
+              >
+                {soundOn ? <Volume2 className="w-3.5 h-3.5 text-accent-lime" /> : <VolumeX className="w-3.5 h-3.5 text-text-2" />}
+                <span>{soundOn ? 'AUDIO ON' : 'AUDIO OFF'}</span>
               </button>
 
               <a
