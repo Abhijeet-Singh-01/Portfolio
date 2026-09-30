@@ -428,37 +428,7 @@ html.webgl-world-ready .hero-ring-container {
 /* In 3D World mode, the Projects section serves as the virtual scroll depth runway.
    The front viewport is driven by the 3D artifacts, the living spine, and CinematicProjectHud.
    The DOM cards remain in the document for SEO and assistive technologies. */
-html.webgl-world-ready #projects {
-  min-height: 480vh;
-  position: relative;
-  pointer-events: none;
-}
-
-html.webgl-world-ready #projects .project-card,
-html.webgl-world-ready #projects .space-y-12,
-html.webgl-world-ready #projects > div:first-child,
-html.webgl-world-ready #projects > div:last-child {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-}
-
-/* Atmospheric translucent styling for subsequent scenes over the 3D world */
-html.webgl-world-ready #skills,
-html.webgl-world-ready #about,
-html.webgl-world-ready #contact {
-  position: relative;
-  z-index: 20;
-}
-
-html.webgl-world-ready #skills .skill-category,
-html.webgl-world-ready #about .about-panel,
-html.webgl-world-ready #contact .contact-panel {
-  background: var(--surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-color: rgba(248, 246, 255, 0.12);
-}
+/* 3D World Mode is managed discretely by CinematicStage and ExperienceCanvas. */
 
 .skip-link { position:fixed; z-index:120; top:8px; left:8px; translate:0 -160%; padding:.7rem 1rem; border-radius:6px; background:var(--surface); color:var(--text); border:1px solid var(--border); }
 .skip-link:focus { translate:0 0; }

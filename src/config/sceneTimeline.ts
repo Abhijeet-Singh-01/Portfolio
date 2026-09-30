@@ -218,17 +218,17 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   // 3. Project 01 Mobile Approach
   {
     t: 0.20,
-    pos: [0, 0.2, -10.0],
-    target: [0, 0.65, -16.5],
+    pos: [0, 0.35, -10.5],
+    target: [0, 1.15, -16.5],
     fov: 54,
     roll: 0.0,
     lighting: vConfig.lighting.project1,
   },
-  // 4. Project 01 Mobile Hold (Framed in top 55% of portrait viewport)
+  // 4. Project 01 Mobile Hold (Framed in top 50% of portrait viewport)
   {
     t: 0.28,
-    pos: [0, 0.1, -11.8],
-    target: [0, 0.65, -16.5],
+    pos: [0, 0.25, -12.0],
+    target: [0, 1.15, -16.5],
     fov: 50,
     roll: 0.0,
     lighting: vConfig.lighting.project1,
@@ -236,8 +236,8 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   // 5. Mobile Transition 1 -> 2
   {
     t: 0.37,
-    pos: [0, 0.3, -21.0],
-    target: [0, 0.3, -29.0],
+    pos: [0, 0.4, -21.0],
+    target: [0, 0.4, -29.0],
     fov: 56,
     roll: 0.0,
     lighting: vConfig.lighting.project1,
@@ -245,17 +245,17 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   // 6. Project 02 Mobile Approach
   {
     t: 0.42,
-    pos: [0, 0.2, -24.0],
-    target: [0, 0.65, -30.5],
+    pos: [0, 0.35, -24.5],
+    target: [0, 1.15, -30.5],
     fov: 54,
     roll: 0.0,
     lighting: vConfig.lighting.project2,
   },
-  // 7. Project 02 Mobile Hold
+  // 7. Project 02 Mobile Hold (Solar engine in top 50% of portrait viewport)
   {
     t: 0.50,
-    pos: [0, 0.1, -25.8],
-    target: [0, 0.65, -30.5],
+    pos: [0, 0.25, -26.0],
+    target: [0, 1.15, -30.5],
     fov: 50,
     roll: 0.0,
     lighting: vConfig.lighting.project2,
@@ -263,8 +263,8 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   // 8. Mobile Transition 2 -> 3
   {
     t: 0.59,
-    pos: [0, 0.3, -35.0],
-    target: [0, 0.3, -43.0],
+    pos: [0, 0.4, -35.0],
+    target: [0, 0.4, -43.0],
     fov: 56,
     roll: 0.0,
     lighting: vConfig.lighting.project2,
@@ -272,8 +272,8 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   // 9. Project 03 Mobile Hold
   {
     t: 0.70,
-    pos: [0, 0.1, -39.8],
-    target: [0, 0.65, -44.5],
+    pos: [0, 0.25, -40.0],
+    target: [0, 1.15, -44.5],
     fov: 50,
     roll: 0.0,
     lighting: vConfig.lighting.project3,
@@ -281,8 +281,8 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   // 10. Mobile Transition 3 -> 4
   {
     t: 0.79,
-    pos: [0, 0.2, -49.0],
-    target: [0, 0.2, -57.0],
+    pos: [0, 0.35, -49.0],
+    target: [0, 0.35, -57.0],
     fov: 56,
     roll: 0.0,
     lighting: vConfig.lighting.project3,
@@ -290,8 +290,8 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   // 11. Project 04 Mobile Hold
   {
     t: 0.86,
-    pos: [0, 0.1, -53.8],
-    target: [0, 0.65, -58.5],
+    pos: [0, 0.25, -54.0],
+    target: [0, 1.15, -58.5],
     fov: 50,
     roll: 0.0,
     lighting: vConfig.lighting.project4,

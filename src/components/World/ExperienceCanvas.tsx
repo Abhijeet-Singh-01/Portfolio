@@ -630,7 +630,7 @@ function VisualSolisIQ({ isActive }: { isActive: boolean }) {
     <group ref={group}>
       {/* Central Solar Plasma Core */}
       <mesh>
-        <sphereGeometry args={[0.42, 32, 32]} />
+        <sphereGeometry args={[0.22, 32, 32]} />
         <meshStandardMaterial
           color={tangerine}
           emissive={tangerine}
@@ -642,23 +642,23 @@ function VisualSolisIQ({ isActive }: { isActive: boolean }) {
 
       {/* 3 Concentric Precision Gimbal Rings */}
       <mesh ref={ring1Ref}>
-        <torusGeometry args={[0.72, 0.022, 16, 48]} />
+        <torusGeometry args={[0.38, 0.015, 16, 40]} />
         <meshStandardMaterial color={tangerine} roughness={0.2} metalness={0.9} />
       </mesh>
       <mesh ref={ring2Ref}>
-        <torusGeometry args={[0.92, 0.022, 16, 48]} />
+        <torusGeometry args={[0.52, 0.015, 16, 40]} />
         <meshStandardMaterial color={aqua} roughness={0.2} metalness={0.9} />
       </mesh>
       <mesh ref={ring3Ref}>
-        <torusGeometry args={[1.14, 0.022, 16, 48]} />
+        <torusGeometry args={[0.66, 0.015, 16, 40]} />
         <meshStandardMaterial color={tangerine} roughness={0.2} metalness={0.9} />
       </mesh>
 
       {/* 4 Photovoltaic Collector Array Wings */}
       {[0, Math.PI * 0.5, Math.PI, Math.PI * 1.5].map((angle, idx) => (
         <group key={idx} rotation={[0, 0, angle]}>
-          <mesh position={[1.4, 0, 0]} rotation={[0, Math.PI * 0.25, 0]}>
-            <boxGeometry args={[0.45, 0.24, 0.02]} />
+          <mesh position={[0.82, 0, 0]} rotation={[0, Math.PI * 0.25, 0]}>
+            <boxGeometry args={[0.26, 0.14, 0.015]} />
             <meshStandardMaterial color="#1E293B" roughness={0.15} metalness={0.8} />
           </mesh>
           {/* Energy Beam to Core */}
@@ -666,7 +666,7 @@ function VisualSolisIQ({ isActive }: { isActive: boolean }) {
             <bufferGeometry>
               <bufferAttribute
                 attach="attributes-position"
-                args={[new Float32Array([0.45, 0, 0, 1.4, 0, 0]), 3]}
+                args={[new Float32Array([0.24, 0, 0, 0.82, 0, 0]), 3]}
               />
             </bufferGeometry>
             <lineBasicMaterial color={aqua} transparent opacity={0.65} />
@@ -1106,13 +1106,25 @@ function ScrollDriver() {
         syncTouch: false,
         wheelMultiplier: 0.9,
       });
-      setSmoothScroll((id) =>
-        lenis?.scrollTo(`#${id}`, { offset: 0, duration: vConfig.motion.scrollDuration })
-      );
+      setSmoothScroll((id) => {
+        const roomProg = experienceState.roomProgress[id];
+        if (roomProg !== undefined) {
+          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          lenis?.scrollTo(roomProg * maxScroll, { duration: vConfig.motion.scrollDuration });
+        } else {
+          lenis?.scrollTo(`#${id}`, { offset: 0, duration: vConfig.motion.scrollDuration });
+        }
+      });
     } else {
       setSmoothScroll((id) => {
-        const el = document.getElementById(id);
-        el?.scrollIntoView({ behavior: 'smooth' });
+        const roomProg = experienceState.roomProgress[id];
+        if (roomProg !== undefined) {
+          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          window.scrollTo({ top: roomProg * maxScroll, behavior: 'smooth' });
+        } else {
+          const el = document.getElementById(id);
+          el?.scrollIntoView({ behavior: 'smooth' });
+        }
       });
     }
 

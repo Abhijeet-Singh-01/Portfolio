@@ -95,25 +95,25 @@ export const visualConfig = {
       // Project 01: AI Incident Intelligence
       {
         desktop: { x: -3.2, y: 0.35, z: -17.0, rotY: -0.25, rotX: 0.05, scale: 1.15, side: 'left' as const },
-        mobile: { x: 0, y: 0.65, z: -16.5, rotY: 0.0, rotX: 0.04, scale: 0.95, side: 'center' as const },
+        mobile: { x: 0, y: 1.15, z: -16.5, rotY: 0.0, rotX: 0.04, scale: 0.82, side: 'center' as const },
         numberZ: -34.0,
       },
       // Project 02: SolisIQ
       {
         desktop: { x: 3.2, y: -0.25, z: -31.0, rotY: 0.30, rotX: -0.06, scale: 1.18, side: 'right' as const },
-        mobile: { x: 0, y: 0.65, z: -30.5, rotY: 0.0, rotX: -0.04, scale: 0.95, side: 'center' as const },
+        mobile: { x: 0, y: 1.15, z: -30.5, rotY: 0.0, rotX: -0.04, scale: 0.82, side: 'center' as const },
         numberZ: -48.0,
       },
       // Project 03: Instanews
       {
         desktop: { x: -2.8, y: 0.8, z: -45.0, rotY: -0.32, rotX: 0.06, scale: 1.15, side: 'left' as const },
-        mobile: { x: 0, y: 0.65, z: -44.5, rotY: 0.0, rotX: 0.04, scale: 0.95, side: 'center' as const },
+        mobile: { x: 0, y: 1.15, z: -44.5, rotY: 0.0, rotX: 0.04, scale: 0.82, side: 'center' as const },
         numberZ: -62.0,
       },
       // Project 04: ZeroHour
       {
         desktop: { x: 2.6, y: -0.3, z: -59.0, rotY: 0.25, rotX: 0.10, scale: 1.2, side: 'right' as const },
-        mobile: { x: 0, y: 0.65, z: -58.5, rotY: 0.0, rotX: 0.06, scale: 0.95, side: 'center' as const },
+        mobile: { x: 0, y: 1.15, z: -58.5, rotY: 0.0, rotX: 0.06, scale: 0.82, side: 'center' as const },
         numberZ: -76.0,
       },
     ],

@@ -10,7 +10,7 @@ import { Footer } from './components/Footer/Footer';
 import { ElevationHud } from './components/common/ElevationHud';
 import { usePrefersReducedMotion } from './hooks/usePrefersReducedMotion';
 import { IntroLoader, ExperienceCursor } from './components/World/ExperienceOverlays';
-import { CinematicProjectHud } from './components/World/CinematicProjectHud';
+import { CinematicStage } from './components/World/CinematicStage';
 import { experienceConfig } from './config/experienceConfig';
 
 const ExperienceCanvas = lazy(() => import('./components/World/ExperienceCanvas'));
@@ -73,37 +73,54 @@ export const App: React.FC = () => {
     return () => observer.disconnect();
   }, [prefersReducedMotion]);
 
+  const is3DActive = sceneReady && !liteMode;
+
   return (
     <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] selection:bg-accent-aqua/25 selection:text-text">
       <a className="skip-link" href="#main-content">Skip to content</a>
       {/* Cinematic Atmospheric Glow & Particle Canvas */}
       <AtmosphericBackground />
-      {sceneReady && !liteMode && (
-        <ExperienceBoundary>
-          <Suspense fallback={null}>
-            <ExperienceCanvas />
-            <CinematicProjectHud />
-          </Suspense>
-        </ExperienceBoundary>
+
+      {/* 3D Stage & Canvas */}
+      {is3DActive ? (
+        <>
+          <ExperienceBoundary>
+            <Suspense fallback={null}>
+              <ExperienceCanvas />
+              <CinematicStage />
+            </Suspense>
+          </ExperienceBoundary>
+          {/* Virtual Scroll Runway for 3D Camera Timeline */}
+          <div className="h-[650vh] pointer-events-none" aria-hidden="true" />
+          {/* Semantic HTML for Screen Readers and SEO Crawlers */}
+          <main id="main-content" className="sr-only">
+            <Hero />
+            <Projects />
+            <Skills />
+            <About />
+            <Contact />
+          </main>
+        </>
+      ) : (
+        <>
+          {/* 2D Lite Mode / WebGL Fallback Presentation */}
+          <main id="main-content" className="relative z-10">
+            <Hero />
+            <Projects />
+            <Skills />
+            <About />
+            <Contact />
+          </main>
+          <Footer />
+        </>
       )}
+
       <IntroLoader />
       <ExperienceCursor />
       <ElevationHud />
 
-      {/* Sticky Editorial Navigation */}
+      {/* Navigation Layer */}
       <Navbar />
-
-      {/* Main Content Sections */}
-      <main id="main-content" className="relative z-10">
-        <Hero />
-        <Projects />
-        <Skills />
-        <About />
-        <Contact />
-      </main>
-
-      {/* Minimal Footer */}
-      <Footer />
     </div>
   );
 };

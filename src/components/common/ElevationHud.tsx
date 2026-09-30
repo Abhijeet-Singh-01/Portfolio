@@ -24,10 +24,20 @@ export const ElevationHud: React.FC = () => {
       const progress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
       const percent = Math.round(progress * 100);
 
-      const currentCheckpoint = [...checkpoints].reverse().find(({ id }) => {
-        const section = document.getElementById(id);
-        return section && section.getBoundingClientRect().top <= window.innerHeight * 0.48;
-      }) ?? checkpoints[0];
+      let currentCheckpoint = checkpoints[0];
+      const is3DMode = Boolean(document.querySelector('main.sr-only'));
+      if (is3DMode) {
+        if (progress >= 0.98) currentCheckpoint = checkpoints[4];
+        else if (progress >= 0.95) currentCheckpoint = checkpoints[3];
+        else if (progress >= 0.92) currentCheckpoint = checkpoints[2];
+        else if (progress >= 0.16) currentCheckpoint = checkpoints[1];
+        else currentCheckpoint = checkpoints[0];
+      } else {
+        currentCheckpoint = [...checkpoints].reverse().find(({ id }) => {
+          const section = document.getElementById(id);
+          return section && section.getBoundingClientRect().top <= window.innerHeight * 0.48;
+        }) ?? checkpoints[0];
+      }
 
       if (lineRef.current) {
         lineRef.current.style.transform = `scaleX(${progress})`;

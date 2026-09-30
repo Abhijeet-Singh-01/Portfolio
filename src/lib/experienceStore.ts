@@ -4,7 +4,13 @@ export type ExperienceTheme = 'light' | 'night';
 export const experienceState = {
   scrollProgress: 0,
   theme: 'night' as ExperienceTheme,
-  roomProgress: { home: 0, projects: 0.24, skills: 0.48, about: 0.72, contact: 0.96 },
+  roomProgress: {
+    home: 0.00,
+    projects: 0.25,
+    skills: 0.935,
+    about: 0.965,
+    contact: 0.995,
+  } as Record<string, number>,
   pointerX: 0,
   pointerY: 0,
   portraitRotationX: 0,

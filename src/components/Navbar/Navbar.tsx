@@ -88,7 +88,7 @@ export const Navbar: React.FC = () => {
   return (
     <>
       {/* Top Header Bar */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex items-center justify-between pointer-events-none">
+      <header className="fixed top-0 left-0 right-0 z-[1000] py-4 px-6 md:px-12 flex items-center justify-between pointer-events-none">
         {/* Top-Left: "AS" Logo Mark */}
         <a
           href="#home"
@@ -96,11 +96,11 @@ export const Navbar: React.FC = () => {
             e.preventDefault();
             handleNavigate('home');
           }}
-          className="pointer-events-auto group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo rounded-lg"
+          className="pointer-events-auto group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo rounded-lg"
           aria-label="Abhijeet Singh Portfolio Home"
         >
-          <div className="w-10 h-10 rounded-lg border border-border/20 bg-surface/80 backdrop-blur-md flex items-center justify-center transition-all duration-300 group-hover:border-accent-aqua/60 group-hover:shadow-[0_0_16px_var(--accent-aqua-glow)]">
-            <span className="font-display font-bold text-xs tracking-widest text-text group-hover:text-accent-aqua-ink transition-colors">
+          <div className="w-9 h-9 rounded-lg border border-border/25 bg-surface/85 backdrop-blur-md flex items-center justify-center transition-all duration-300 group-hover:border-accent-aqua/60 group-hover:shadow-[0_0_16px_var(--accent-aqua-glow)]">
+            <span className="font-display font-black text-xs tracking-widest text-text group-hover:text-accent-aqua-ink transition-colors">
               AS
             </span>
           </div>
@@ -109,27 +109,17 @@ export const Navbar: React.FC = () => {
           </span>
         </a>
 
-        {/* Top-Right: Glass Pill "MENU ------ CONTACT" */}
-        <div className="pointer-events-auto flex items-center rounded-full border border-border/25 bg-surface-glass backdrop-blur-xl p-1 shadow-lg shadow-black/25">
-          <button
-            type="button"
-            ref={menuButtonRef}
-            onClick={() => setMenuOpen(true)}
-            className="px-4 py-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text hover:text-accent-aqua-ink transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua"
-            aria-label="Open navigation menu"
-            aria-expanded={menuOpen}
-          >
-            MENU
-          </button>
-          <span className="h-3 w-[1px] bg-border/40 mx-1" aria-hidden="true" />
-          <button
-            type="button"
-            onClick={() => handleNavigate('contact')}
-            className="px-4 py-2 text-[11px] font-mono uppercase tracking-[0.2em] text-text-2 hover:text-text transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua"
-          >
-            CONTACT
-          </button>
-        </div>
+        {/* Top-Right: Minimal Compact MENU Button */}
+        <button
+          type="button"
+          ref={menuButtonRef}
+          onClick={() => setMenuOpen(true)}
+          className="pointer-events-auto px-4 py-2 rounded-full border border-border/25 bg-surface/85 backdrop-blur-xl text-xs font-mono uppercase tracking-[0.2em] text-text hover:text-accent-aqua-ink hover:border-accent-aqua/40 transition-colors shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua cursor-pointer"
+          aria-label="Open navigation menu"
+          aria-expanded={menuOpen}
+        >
+          MENU
+        </button>
       </header>
 
       {/* Full-Screen Menu Overlay */}
@@ -139,7 +129,7 @@ export const Navbar: React.FC = () => {
           role="dialog"
           aria-modal="true"
           aria-label="Portfolio navigation overlay"
-          className="fixed inset-0 z-50 bg-bg/95 backdrop-blur-2xl flex flex-col justify-between p-8 sm:p-14 animate-fade-in text-text"
+          className="fixed inset-0 z-[1100] bg-bg/95 backdrop-blur-2xl flex flex-col justify-between p-8 sm:p-14 animate-fade-in text-text"
         >
           {/* Overlay Top Bar */}
           <div className="flex items-center justify-between">

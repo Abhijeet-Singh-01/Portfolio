@@ -4,15 +4,15 @@
 :root,
 :root[data-theme='night'] {
   color-scheme: dark;
-  --bg: #0A0620;
-  --bg-2: #130A3B;
-  --surface: #1A1050;
-  --surface-2: #24186B;
-  --surface-glass: rgba(26, 16, 80, 0.88);
-  --surface-tint: rgba(124, 108, 255, 0.08);
-  --text: #F8F6FF;
-  --text-2: #B9B3E6;
-  --border: rgba(248, 246, 255, 0.14);
+  --bg: #05060A;
+  --bg-2: #0B1020;
+  --surface: #0E1326;
+  --surface-2: #141B33;
+  --surface-glass: rgba(11, 16, 32, 0.82);
+  --surface-tint: rgba(124, 108, 255, 0.05);
+  --text: #F5F7FF;
+  --text-2: #8D94AA;
+  --border: rgba(245, 247, 255, 0.10);
   --accent-indigo: #7C6CFF;
   --accent-violet: #C084FC;
   --accent-magenta: #FF5FA8;

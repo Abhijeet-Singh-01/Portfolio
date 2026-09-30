@@ -54,6 +54,17 @@
   - Scroll & Performance Fidelity: Lenis scoped to desktop wheel only; 100% native instant touch scrolling on mobile to prevent touch hijacking. Stopping scroll halts camera within ~100ms; reversing reverses cleanly along the exact spline.
   - Zero Horizontal Overflow: Tested and verified `document.documentElement.scrollWidth === document.documentElement.clientWidth`. Fixed mobile canvas opacity from `.45` to `1.0`.
   - Production Build: `tsc -b && vite build` passed cleanly in 1.24s (ExperienceCanvas bundle reduced from 46.7 kB to 38.5 kB). All HTTP endpoints verified 200 OK.
+- Phase 14: Mobile Master Art Direction, Discrete CinematicStage, Solar Resizing & Near-Black Palette (Completed):
+  - Solved Cross-Scene Collisions: Replaced DOM-rendered stacking with `CinematicStage.tsx`, which governs mutual exclusivity across all 8 narrative beats (Hero -> P01 -> P02 -> P03 -> P04 -> Skills -> About -> Contact). In 3D mode, the canvas and stage have zero DOM collision, while semantic HTML is cleanly mirrored for SEO and screen readers.
+  - Dedicated Mobile Composition (360px - 390px):
+    * Upper 50% viewport reserved entirely for 3D artifacts (Y = 1.15 in mobile camera coordinate frame).
+    * Bottom dock (`w-full max-w-sm mx-auto p-4 rounded-2xl bg-surface/95 border border-white/15 backdrop-blur-2xl shadow-2xl`) cleanly positions metadata and action buttons without obstructing the 3D geometry.
+  - Eliminated Giant White Panels: Skills scene redesigned into a dark cinematic HUD (`01 LANGUAGES`, `02 FRONTEND`, `03 BACKEND`, `04 DATABASES`, `05 TOOLS`, `06 CORE CS & AI`) with high-contrast text and subtle glowing accents.
+  - SolisIQ Solar Machine Resized: Reduced outer wings from 1.4+ to 0.82 and core from 0.42 to 0.22, preventing the solar structure from overpowering the mobile viewport.
+  - Near-Black High-Contrast Palette: Base `#05060A`, secondary `#0B1020`, surface `#0E1326`, text `#F5F7FF`, muted `#8D94AA`, subtle borders `rgba(245, 247, 255, 0.10)`.
+  - Minimal Navigation: Replaced floating glass pill with `AS` monogram logo on top-left and compact `MENU` pill on top-right (`z-[1000]`), full-screen overlay at `z-[1100]`.
+  - Virtual Runway Navigation Sync: Updated `experienceStore.roomProgress` and `ExperienceCanvas.tsx` `ScrollDriver` so nav clicks smoothly scroll to the exact 3D camera beat (`home: 0.00`, `projects: 0.25`, `skills: 0.935`, `about: 0.965`, `contact: 0.995`).
+  - Production Build & Verification: `tsc -b && vite build` passes in ~1.3s with 0 errors. Oxlint passes with 0 errors. HTTP 200 OK verified for preview server and `/resume.pdf`.
 
 ## Needs owner input
 - GitHub repo URLs for AI Incident Intelligence, Instanews, ZeroHour (buttons hidden cleanly until provided; SolisIQ source URL is active).
