@@ -16,23 +16,23 @@ export const Projects: React.FC = () => {
   });
 
   return (
-    <section id="projects" className="py-24 sm:py-32 px-6 md:px-10 max-w-7xl mx-auto">
+    <section id="projects" className="py-24 sm:py-32 px-6 md:px-12 max-w-7xl mx-auto">
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-6 border-b border-white/[0.06]">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-6 border-b border-border/15">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#d4af37]" />
-            <span className="text-xs font-mono uppercase tracking-widest text-[#d4af37]">
-              04 / Peak Challenges · Engineered Works
+            <span className="w-2 h-2 rounded-full bg-accent-aqua animate-pulse" />
+            <span className="text-xs font-mono uppercase tracking-[0.25em] text-accent-aqua-ink font-semibold">
+              02 / WORK · SELECTED PROJECTS
             </span>
           </div>
 
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif text-[#f4f1ea] tracking-tight">
-            Selected Projects
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-display font-extrabold uppercase text-text tracking-tight leading-none">
+            FEATURED WORK
           </h2>
 
-          <p className="mt-3 text-base text-[#8e95a2] font-mono">
-            Things I&apos;ve built, explored, and engineered.
+          <p className="mt-3 text-sm sm:text-base text-text-2 font-mono">
+            Full-stack engineering, AI/ML pipelines, and telemetry systems.
           </p>
         </div>
 
@@ -41,17 +41,17 @@ export const Projects: React.FC = () => {
           {[
             { id: 'all', label: 'All Projects' },
             { id: 'ai', label: 'AI & RAG Systems' },
-            { id: 'web', label: 'Full-Stack Apps' },
-            { id: 'systems', label: 'CleanTech & Analytics' },
+            { id: 'web', label: 'Full-Stack' },
+            { id: 'systems', label: 'CleanTech' },
           ].map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => setFilter(item.id)}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-full text-xs font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                 filter === item.id
-                  ? 'bg-[#d4af37]/15 text-[#edd894] border border-[#d4af37]/40 shadow-[0_0_12px_rgba(212,175,55,0.1)]'
-                  : 'bg-[#11141c]/60 text-[#8e95a2] border border-white/[0.06] hover:text-[#f4f1ea] hover:border-white/[0.12]'
+                  ? 'bg-accent-aqua/15 text-accent-aqua-ink border border-accent-aqua/40 shadow-[0_0_12px_var(--accent-aqua-glow)] font-semibold'
+                  : 'bg-surface/60 text-text-2 border border-border/15 hover:text-text hover:border-accent-aqua/30'
               }`}
             >
               {item.label}
@@ -60,21 +60,21 @@ export const Projects: React.FC = () => {
         </div>
       </div>
 
-      {/* Projects List */}
-      <div className="space-y-10 sm:space-y-12">
+      {/* Projects Glass Slabs */}
+      <div className="space-y-12 sm:space-y-16">
         {filteredProjects.map((project, index) => (
           <ProjectCard key={project.id} project={project} index={index} />
         ))}
       </div>
 
-      {/* Engineering Note / Repository Link */}
-      <div className="mt-14 p-6 rounded-xl border border-white/[0.06] bg-[#0c0e14]/50 backdrop-blur-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Repository Note */}
+      <div className="mt-14 p-6 rounded-2xl border border-border/15 bg-surface-glass backdrop-blur-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#d4af37]/10 border border-[#d4af37]/25 flex items-center justify-center shrink-0">
-            <Sparkles className="w-4 h-4 text-[#edd894]" />
+          <div className="w-9 h-9 rounded-lg bg-accent-aqua/10 border border-accent-aqua/30 flex items-center justify-center shrink-0">
+            <Sparkles className="w-4 h-4 text-accent-aqua-ink" />
           </div>
-          <p className="text-xs font-mono text-[#8e95a2]">
-            Explore my GitHub profile and code.
+          <p className="text-xs font-mono text-text-2">
+            Verified projects from resume. Source code links shown where publicly available.
           </p>
         </div>
         <a
@@ -82,10 +82,10 @@ export const Projects: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={siteLinks.github.accessibilityLabel}
-          className="text-xs font-mono uppercase tracking-wider text-[#cfcac0] hover:text-[#edd894] inline-flex items-center gap-1.5 transition-colors shrink-0"
+          className="text-xs font-mono uppercase tracking-wider text-text hover:text-accent-aqua-ink inline-flex items-center gap-2 transition-colors shrink-0 px-4 py-2 rounded-full border border-border/20 bg-surface/60 hover:border-accent-aqua/40"
         >
-          <span>Explore GitHub Profile</span>
-          <span className="text-[#d4af37]">↗</span>
+          <span>GitHub Profile</span>
+          <span className="text-accent-aqua-ink">↗</span>
         </a>
       </div>
     </section>
