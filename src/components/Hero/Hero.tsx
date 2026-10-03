@@ -11,6 +11,23 @@ export const Hero: React.FC = () => {
     }
   };
 
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    const rx = (-y * 8).toFixed(2);
+    const ry = (x * 8).toFixed(2);
+    e.currentTarget.style.setProperty('--hero-rx', `${rx}deg`);
+    e.currentTarget.style.setProperty('--hero-ry', `${ry}deg`);
+  };
+
+  const handlePointerLeave = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.style.setProperty('--hero-rx', '0deg');
+    e.currentTarget.style.setProperty('--hero-ry', '0deg');
+  };
+
   return (
     <section
       id="home"
@@ -107,26 +124,41 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Real Untouched Profile Photo (5 cols) */}
+        {/* Right Column: Real Untouched Profile Photo with 3D Depth Layers (5 cols) */}
         <div className="lg:col-span-5 flex justify-center order-1 lg:order-2">
-          <div className="relative group w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72">
-            {/* Subtle decorative glow ring */}
-            <div
-              className="absolute -inset-2 rounded-full bg-gradient-to-tr from-[var(--accent-primary)]/20 to-[var(--accent-secondary)]/20 blur-md pointer-events-none"
-              aria-hidden="true"
-            />
-
-            {/* Photo container */}
-            <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-[var(--border)] shadow-xl bg-[var(--surface-2)]">
-              <img
-                src={profilePhoto}
-                alt="Portrait of Abhijeet Singh"
-                width={800}
-                height={800}
-                loading="eager"
-                fetchPriority="high"
-                className="w-full h-full object-cover select-none"
+          <div
+            className="hero-3d-scene cursor-default select-none"
+            onPointerMove={handlePointerMove}
+            onPointerLeave={handlePointerLeave}
+          >
+            <div className="hero-3d-wrap relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72">
+              {/* Layer 1: Back depth layer (ambient orbital ring & glow) */}
+              <div
+                className="hero-depth-back absolute -inset-3 rounded-full border border-[var(--accent-secondary)]/25 bg-gradient-to-tr from-[var(--accent-primary)]/15 to-[var(--accent-secondary)]/15 blur-sm pointer-events-none"
+                aria-hidden="true"
               />
+
+              {/* Layer 2: Mid depth layer (real untouched profile photo) */}
+              <div className="hero-depth-mid relative w-full h-full rounded-full overflow-hidden border-2 border-[var(--border)] shadow-xl bg-[var(--surface-2)]">
+                <img
+                  src={profilePhoto}
+                  alt="Portrait of Abhijeet Singh"
+                  width={800}
+                  height={800}
+                  loading="eager"
+                  fetchPriority="high"
+                  className="w-full h-full object-cover select-none"
+                />
+              </div>
+
+              {/* Layer 3: Front depth layer (floating accent badge) */}
+              <div
+                className="hero-depth-front absolute -bottom-2 -right-2 px-3 py-1 rounded-full bg-[var(--surface)]/90 backdrop-blur-md border border-[var(--border)] shadow-lg flex items-center gap-1.5 pointer-events-none"
+                aria-hidden="true"
+              >
+                <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)]" />
+                <span className="text-[11px] font-mono font-medium text-[var(--text)]">CS @ PSIT</span>
+              </div>
             </div>
           </div>
         </div>

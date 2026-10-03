@@ -25,7 +25,7 @@ export const App: React.FC = () => {
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
     );
 
     const elements = document.querySelectorAll('.reveal-item');
@@ -35,10 +35,18 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-200">
+    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors duration-200 overflow-x-hidden">
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
+
+      {/* Restrained 3D Ambient Depth Layer (CSS/SVG only, 0 JS overhead) */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+        <div className="ambient-shape ambient-shape-1" />
+        <div className="ambient-shape ambient-shape-2" />
+        <div className="ambient-shape ambient-shape-3" />
+        <div className="ambient-grid" />
+      </div>
 
       {/* Header & Navigation */}
       <Navbar />

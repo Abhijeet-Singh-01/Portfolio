@@ -11,8 +11,34 @@ interface ProjectCardProps {
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
   const formattedIndex = String(index + 1).padStart(2, '0');
 
+  const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType === 'touch') return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    const rx = (-y * 7).toFixed(2);
+    const ry = (x * 7).toFixed(2);
+    const gx = `${Math.round((x + 0.5) * 100)}%`;
+    const gy = `${Math.round((y + 0.5) * 100)}%`;
+
+    e.currentTarget.style.setProperty('--card-rx', `${rx}deg`);
+    e.currentTarget.style.setProperty('--card-ry', `${ry}deg`);
+    e.currentTarget.style.setProperty('--card-gx', gx);
+    e.currentTarget.style.setProperty('--card-gy', gy);
+  };
+
+  const handlePointerLeave = (e: React.PointerEvent<HTMLElement>) => {
+    e.currentTarget.style.setProperty('--card-rx', '0deg');
+    e.currentTarget.style.setProperty('--card-ry', '0deg');
+  };
+
   return (
-    <article className="card-base p-6 sm:p-8 flex flex-col justify-between reveal-item">
+    <article
+      className="card-base card-3d p-6 sm:p-8 flex flex-col justify-between reveal-item"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
       <div>
         {/* Header: Number & Category */}
         <div className="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-[var(--border-subtle)]">
