@@ -186,6 +186,28 @@
   .card-3d:hover::after {
     opacity: 1;
   }
+
+  /* Cinematic Project Visual 3D Perspective Tilt */
+  .project-visual-3d {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    transform: perspective(1200px) rotateX(var(--pvis-rx, 0deg)) rotateY(var(--pvis-ry, 0deg));
+    transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  .project-visual-3d::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(400px circle at var(--pvis-gx, 50%) var(--pvis-gy, 50%), rgba(255, 255, 255, 0.08), transparent 70%);
+    transition: opacity 250ms ease;
+  }
+  .project-visual-3d:hover::after {
+    opacity: 1;
+  }
 }
 
 /* Buttons with Micro-Interactions */
@@ -305,8 +327,10 @@
     transform: none !important;
     transition: none !important;
   }
-  .card-3d {
+  .card-3d,
+  .project-visual-3d {
     transform: none !important;
+    transition: none !important;
   }
 }
 

@@ -14,26 +14,34 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Section Header */}
-      <div className="mb-12 sm:mb-16">
+    <section id="contact" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
+      {/* Cinematic Closing Eyebrow */}
+      <div className="mb-6">
         <span className="section-eyebrow">
-          04 // Contact
+          04 // CONTACT &amp; CONNECT
         </span>
-        <h2 className="section-title">
-          Let's build something worth shipping.
-        </h2>
-        <p className="section-subtitle">
-          Open to software developer roles, backend engineering, full-stack opportunities, and technical discussions.
-        </p>
       </div>
 
+      {/* Massive Editorial Headline */}
+      <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[var(--text)] mb-8 uppercase leading-[1.02] max-w-4xl">
+        LET'S BUILD <br />
+        SOMETHING <br />
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-secondary)] to-[var(--accent-primary)]">
+          WORTH SHIPPING.
+        </span>
+      </h2>
+
+      <p className="text-base sm:text-lg text-[var(--text-2)] max-w-2xl leading-relaxed mb-12">
+        Currently seeking software development opportunities in backend and full-stack engineering.
+        Interested in scalable APIs, database-driven applications, and AI-powered solutions.
+      </p>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Direct Email Card (7 cols) */}
+        {/* Direct Email Card (7 cols) */}
         <div className="lg:col-span-7">
           <div className="card-base p-6 sm:p-10 reveal-item">
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--accent-secondary)] block mb-2">
-              Direct Contact
+              Direct Channel
             </span>
 
             <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text)] mb-3">
@@ -41,7 +49,7 @@ export const Contact: React.FC = () => {
             </h3>
 
             <p className="text-sm sm:text-base text-[var(--text-2)] leading-relaxed mb-6">
-              Whether you have an internship opportunity, a project to collaborate on, or just want to discuss backend architecture or AI, my inbox is always open.
+              Whether you have an internship or full-time opportunity, a software project to discuss, or want to connect on AI &amp; backend engineering.
             </p>
 
             <div className="p-4 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -87,11 +95,11 @@ export const Contact: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Channels & Profiles (5 cols) */}
+        {/* Channels & Profiles (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
           <div className="card-base p-6 sm:p-8 reveal-item">
             <h3 className="text-sm font-mono font-semibold uppercase tracking-wider text-[var(--text)] mb-4 pb-3 border-b border-[var(--border-subtle)]">
-              Profiles &amp; Documents
+              Verified Profiles
             </h3>
 
             <div className="flex flex-col gap-2.5">
@@ -160,7 +168,7 @@ export const Contact: React.FC = () => {
                   <Download className="w-5 h-5 text-[var(--text)] group-hover:text-[var(--accent-primary)] transition-colors" />
                   <div>
                     <span className="text-sm font-semibold text-[var(--text)] block">Resume (PDF)</span>
-                    <span className="text-xs text-[var(--text-2)] font-mono">Updated October 2026</span>
+                    <span className="text-xs text-[var(--text-2)] font-mono">Download official resume</span>
                   </div>
                 </div>
                 <span className="text-xs font-mono text-[var(--accent-primary)] group-hover:underline">Download</span>

@@ -5,17 +5,17 @@ import { siteLinks } from '../../data/socialLinks';
 
 export const Skills: React.FC = () => {
   return (
-    <section id="skills" className="py-20 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Section Header */}
-      <div className="mb-12 sm:mb-16">
+    <section id="skills" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
+      {/* Section Header with Large Editorial Scale */}
+      <div className="mb-14 sm:mb-20">
         <span className="section-eyebrow">
-          02 // Skills
+          02 // SKILLS &amp; CAPABILITIES
         </span>
-        <h2 className="section-title">
-          Technical Arsenal
+        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--text)] mb-4 uppercase leading-[1.05]">
+          Technical Arsenal.
         </h2>
         <p className="section-subtitle">
-          Core technologies, frameworks, and tools applied across backend systems, web applications, and problem-solving.
+          Verified technologies, languages, and tools applied across scalable backend systems, database engineering, and algorithmic problem-solving.
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export const Skills: React.FC = () => {
         ))}
       </div>
 
-      {/* Additional Key Highlights: Certifications & Problem Solving */}
+      {/* Restrained Achievements */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* LeetCode DSA Highlight */}
         <a
@@ -75,7 +75,7 @@ export const Skills: React.FC = () => {
               <span className="text-xs text-[var(--accent-secondary)]">↗</span>
             </div>
             <p className="text-xs text-[var(--text-2)] leading-relaxed">
-              Consistent daily practice strengthening Data Structures &amp; Algorithms (arrays, trees, graphs, dynamic programming).
+              Consistent daily practice strengthening Data Structures &amp; Algorithms across arrays, strings, linked lists, trees, and recursion.
             </p>
           </div>
         </a>
@@ -90,7 +90,7 @@ export const Skills: React.FC = () => {
               2 AWS Generative AI Certifications
             </h4>
             <p className="text-xs text-[var(--text-2)] leading-relaxed">
-              Official AWS coursework in Generative AI project planning and foundation model fundamentals.
+              Official AWS coursework credentials in Generative AI project planning and foundational machine learning concepts.
             </p>
           </div>
         </div>

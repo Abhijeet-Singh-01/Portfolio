@@ -6,6 +6,7 @@ import { Skills } from './components/Skills/Skills';
 import { About } from './components/About/About';
 import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
+import { CinematicCursor } from './components/common/CinematicCursor';
 
 export const App: React.FC = () => {
   // Single-trigger IntersectionObserver for subtle scroll reveals (respects prefers-reduced-motion)
@@ -39,6 +40,9 @@ export const App: React.FC = () => {
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
+
+      {/* Desktop Lightweight Cinematic Cursor */}
+      <CinematicCursor />
 
       {/* Restrained 3D Ambient Depth Layer (CSS/SVG only, 0 JS overhead) */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">

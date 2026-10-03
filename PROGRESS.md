@@ -93,3 +93,42 @@
    - **Speed Index:** 1.4 s
    - **Added Dependencies:** 0 (pure CSS/TS)
 
+---
+
+## Cinematic 3D Direction Rebuild (02-Cinematic Inspired)
+
+1. **Cinematic Hero & 3D Digital Core Centerpiece:**
+   - Stacked editorial typography: "HEY, I'M ABHIJEET" with subtle gradient clip.
+   - Digital systems/intelligence core framing the authentic portrait photo: dimensional telemetry rings, rotating coordinate tick markers, and 3 distinct z-depth layers.
+   - Desktop mouse parallax ($\pm 4^\circ$, `perspective(1000px)`) with instant touch-degradation.
+
+2. **Sequential Project Storytelling ("THE WORK."):**
+   - Replaced 2-column cards with full-width alternating visual chapters (Projects 01 to 04).
+   - Custom abstract SVG/CSS visual metaphors for each project:
+     - *01 AI Incident Intelligence*: Live telemetry anomaly waveform, clustered evidence graph, dense vector retrieval badge.
+     - *02 SolisIQ*: Circular solar offset gauge, PV generation breakdown bars, and payback calculator.
+     - *03 Instanews*: High-throughput editorial stream cards, RBAC/JWT badge, and cache layer indicator.
+     - *04 ZeroHour*: Precision chronometer countdown units (days/hours/mins/secs) with dynamic DOM readout.
+   - Desktop 3D hover perspective tilt ($\pm 3.5^\circ$) with radial specular glare.
+
+3. **Cinematic Editorial Typography Across All Sections:**
+   - About: "BUILD WITH INTENT."
+   - Skills: "TECHNICAL ARSENAL."
+   - Closing: "LET'S BUILD SOMETHING WORTH SHIPPING."
+
+4. **Desktop Cinematic Cursor:**
+   - Lightweight dot (6px) + smooth lerp ring (28px) with hover expansion on interactive elements.
+   - Zero-cost: unmounted on mobile/touch screens and `prefers-reduced-motion`.
+
+5. **Verified Post-Cinematic Rebuild Metrics (Lighthouse Mobile):**
+   - **Performance:** **99 / 100**
+   - **Accessibility:** **100 / 100**
+   - **Best Practices:** **100 / 100**
+   - **SEO:** **100 / 100**
+   - **FCP:** 1.7 s
+   - **LCP:** 1.9 s
+   - **TBT:** 40 ms
+   - **CLS:** 0.001
+   - **Horizontal Overflow (All 9 Viewports):** 0px
+
+

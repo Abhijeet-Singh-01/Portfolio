@@ -5,26 +5,26 @@ import { siteLinks } from '../../data/socialLinks';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="py-20 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Section Header */}
-      <div className="mb-12 sm:mb-16">
+    <section id="about" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
+      {/* Section Header with Large Editorial Typography */}
+      <div className="mb-14 sm:mb-20">
         <span className="section-eyebrow">
-          03 // About &amp; Background
+          03 // ABOUT &amp; BACKGROUND
         </span>
-        <h2 className="section-title">
-          Education &amp; Foundations
+        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--text)] mb-4 uppercase leading-[1.05]">
+          Build With Intent.
         </h2>
         <p className="section-subtitle">
-          Academic trajectory, certifications, and core focus areas.
+          Academic foundation, engineering discipline, and focused trajectory across full-stack systems, backend engineering, and AI/ML.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Professional Summary & Focus (6 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        {/* Left Column: Architectural Intent & Certifications (6 cols) */}
         <div className="lg:col-span-6 space-y-6">
           <div className="card-base p-6 sm:p-8 reveal-item">
-            <h3 className="text-xl sm:text-2xl font-bold text-[var(--text)] mb-4 tracking-tight">
-              Engineering with curiosity and algorithmic discipline.
+            <h3 className="text-xl sm:text-2xl font-bold text-[var(--text)] mb-4 tracking-tight leading-snug">
+              Engineering scalable software through algorithmic discipline.
             </h3>
 
             <p className="text-sm sm:text-base text-[var(--text-2)] leading-relaxed mb-6">
@@ -33,14 +33,14 @@ export const About: React.FC = () => {
 
             <div className="pt-6 border-t border-[var(--border-subtle)] space-y-3">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--accent-secondary)] block">
-                What I Focus On
+                Engineering Focus
               </span>
               <ul className="space-y-2.5 list-none p-0 m-0">
                 {[
-                  'Scalable backend architectures and RESTful API development',
+                  'Scalable backend systems and RESTful API architecture',
                   'Database-driven full-stack engineering with modern React & Python',
-                  'AI/ML integration: anomaly detection, embeddings, and RAG pipelines',
-                  'Algorithmic problem solving and Data Structures practice',
+                  'AI/ML integration: anomaly detection, vector search, and RAG pipelines',
+                  'Strengthening Data Structures & Algorithms with consistent practice',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[var(--text-2)]">
                     <CheckCircle className="w-4 h-4 text-[var(--accent-secondary)] shrink-0 mt-0.5" aria-hidden="true" />
@@ -100,7 +100,7 @@ export const About: React.FC = () => {
                       {item.period}
                     </span>
                     {item.status && (
-                      <span className="chip text-[10px] py-0 px-2">
+                      <span className="chip text-[10px] py-0 px-2 font-mono">
                         {item.status}
                       </span>
                     )}

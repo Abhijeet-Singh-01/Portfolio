@@ -1,41 +1,44 @@
 import React from 'react';
 import { projectsData } from '../../data/projects';
-import { ProjectCard } from './ProjectCard';
+import { ProjectChapter } from './ProjectChapter';
 import { siteLinks } from '../../data/socialLinks';
 import { ExternalLink } from 'lucide-react';
 import { GithubIcon } from '../common/BrandIcons';
 
 export const Projects: React.FC = () => {
   return (
-    <section id="projects" className="py-20 sm:py-28 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Section Header */}
-      <div className="mb-12 sm:mb-16">
+    <section id="projects" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
+      {/* Cinematic Section Header */}
+      <div className="mb-14 sm:mb-20">
         <span className="section-eyebrow">
-          01 // Projects
+          01 // SELECTED WORK
         </span>
-        <h2 className="section-title">
-          Featured Work
+        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--text)] mb-4 uppercase leading-[1.05]">
+          The Work.
         </h2>
         <p className="section-subtitle">
-          Real projects focused on full-stack architecture, backend APIs, and AI/ML engineering.
+          Engineered systems spanning AI incident triage, solar analytics, high-throughput media delivery, and real-time state machines.
         </p>
       </div>
 
-      {/* Projects Grid: 1 col mobile, 2 cols desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+      {/* Sequential Cinematic Project Chapters */}
+      <div className="space-y-6 sm:space-y-10">
         {projectsData.map((project, index) => (
-          <ProjectCard key={project.id} project={project} index={index} />
+          <ProjectChapter key={project.id} project={project} index={index} />
         ))}
       </div>
 
-      {/* GitHub Repository Footer Note */}
-      <div className="mt-12 p-5 sm:p-6 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* GitHub Repository Banner */}
+      <div className="mt-16 p-6 sm:p-8 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
         <div>
-          <h4 className="text-sm font-semibold text-[var(--text)] mb-1">
-            Explore more repositories
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--accent-secondary)] block mb-1">
+            OPEN SOURCE CODEBASE
+          </span>
+          <h4 className="text-base sm:text-lg font-bold text-[var(--text)] mb-1">
+            Explore additional repositories &amp; algorithms
           </h4>
-          <p className="text-xs sm:text-sm text-[var(--text-2)]">
-            Explore additional coursework, algorithms, and experiments on my GitHub profile.
+          <p className="text-xs sm:text-sm text-[var(--text-2)] max-w-xl">
+            View course laboratories, data structures implementations, and experiments on my GitHub profile.
           </p>
         </div>
 
