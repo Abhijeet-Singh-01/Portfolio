@@ -130,36 +130,43 @@
   opacity: 0.28;
 }
 
-/* Hero 3D Digital Core System (7 Layered Spatial Depth) */
+/* Hero 3D Physical Portrait Card System */
 .hero-3d-scene {
-  perspective: 1100px;
+  perspective: 1200px;
 }
 .hero-3d-wrap {
   transform-style: preserve-3d;
   transform: rotateX(var(--hero-rx, 0deg)) rotateY(var(--hero-ry, 0deg));
-  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
-.hero-layer-glow {
-  transform: translateZ(-40px) scale(1.14);
+.hero-plane-glow {
+  transform: translateZ(-35px) scale(1.1);
 }
-.hero-layer-orbital {
-  transform: translateZ(-18px) scale(1.06);
+.hero-plane-wire {
+  transform: translateZ(-15px);
 }
-.hero-layer-telemetry {
-  transform: translateZ(12px);
+.hero-portrait-card {
+  transform: translateZ(32px);
+  transition: box-shadow 300ms ease;
 }
-.hero-layer-crosshairs {
-  transform: translateZ(26px);
-}
-.hero-layer-lens {
-  transform: translateZ(40px);
-}
-.hero-layer-photo {
+.hero-portrait-badge {
   transform: translateZ(52px);
 }
-.hero-layer-badge {
-  transform: translateZ(66px);
+
+/* Subtle Scroll Indicator Pulse */
+@keyframes scrollPulse {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+.scroll-indicator-pulse {
+  animation: scrollPulse 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 /* Hero Staggered Editorial Entrance */
@@ -174,6 +181,15 @@
   }
 }
 
+@keyframes heroFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .hero-in-1 { animation: heroEntrance 500ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both; }
 .hero-in-2 { animation: heroEntrance 500ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both; }
 .hero-in-3 { animation: heroEntrance 500ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both; }
@@ -181,7 +197,7 @@
 .hero-in-5 { animation: heroEntrance 500ms cubic-bezier(0.16, 1, 0.3, 1) 320ms both; }
 .hero-in-6 { animation: heroEntrance 500ms cubic-bezier(0.16, 1, 0.3, 1) 400ms both; }
 .hero-in-7 { animation: heroEntrance 500ms cubic-bezier(0.16, 1, 0.3, 1) 480ms both; }
-.hero-in-core { animation: heroEntrance 600ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
+.hero-in-core { animation: heroFade 500ms ease-out 100ms both; }
 
 /* Cinematic Project Stage & Choreography */
 .project-chapter-stage {
@@ -388,13 +404,10 @@
     transform: none !important;
     transition: none !important;
   }
-  .hero-layer-glow,
-  .hero-layer-orbital,
-  .hero-layer-telemetry,
-  .hero-layer-crosshairs,
-  .hero-layer-lens,
-  .hero-layer-photo,
-  .hero-layer-badge {
+  .hero-plane-glow,
+  .hero-plane-wire,
+  .hero-portrait-card,
+  .hero-portrait-badge {
     transform: none !important;
   }
 }
@@ -420,7 +433,8 @@
   .hero-in-5,
   .hero-in-6,
   .hero-in-7,
-  .hero-in-core {
+  .hero-in-core,
+  .scroll-indicator-pulse {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
