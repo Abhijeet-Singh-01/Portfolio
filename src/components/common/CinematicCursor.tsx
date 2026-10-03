@@ -22,44 +22,15 @@ export const CinematicCursor: React.FC = () => {
     let isClicking = false;
     let animationFrameId: number | null = null;
     let isVisible = false;
+    let isRunning = false;
 
-    const onPointerMove = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') return;
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-
-      if (!isVisible) {
-        isVisible = true;
-        if (dotRef.current) dotRef.current.style.opacity = '1';
-        if (ringRef.current) ringRef.current.style.opacity = '1';
-      }
-
-      // Check if target or parent is interactive
-      const target = e.target as HTMLElement | null;
-      const interactive = target?.closest('a, button, [role="button"], input, .interactive-target, .project-visual');
-      isHovering = !!interactive;
-    };
-
-    const onPointerDown = () => {
-      isClicking = true;
-    };
-
-    const onPointerUp = () => {
-      isClicking = false;
-    };
-
-    const onMouseLeave = () => {
-      isVisible = false;
-      if (dotRef.current) dotRef.current.style.opacity = '0';
-      if (ringRef.current) ringRef.current.style.opacity = '0';
-    };
-
-    // Smooth lerp loop for the ring only (dot is instant)
+    // Smooth lerp loop for the ring only (stops automatically when idle)
     const tick = () => {
-      // Lerp ring toward mouse
       const ease = 0.22;
-      ringX += (mouseX - ringX) * ease;
-      ringY += (mouseY - ringY) * ease;
+      const dx = mouseX - ringX;
+      const dy = mouseY - ringY;
+      ringX += dx * ease;
+      ringY += dy * ease;
 
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%) scale(${isClicking ? 0.7 : 1})`;
@@ -70,14 +41,64 @@ export const CinematicCursor: React.FC = () => {
         ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%) scale(${ringScale})`;
       }
 
-      animationFrameId = requestAnimationFrame(tick);
+      // Check if settled (within 0.15px of target)
+      const isSettled = Math.abs(dx) < 0.15 && Math.abs(dy) < 0.15;
+
+      if (!isSettled || isClicking) {
+        animationFrameId = requestAnimationFrame(tick);
+      } else {
+        isRunning = false;
+        animationFrameId = null;
+      }
+    };
+
+    const wakeUp = () => {
+      if (!isRunning) {
+        isRunning = true;
+        animationFrameId = requestAnimationFrame(tick);
+      }
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      if (!isVisible) {
+        isVisible = true;
+        ringX = mouseX;
+        ringY = mouseY;
+        if (dotRef.current) dotRef.current.style.opacity = '1';
+        if (ringRef.current) ringRef.current.style.opacity = '1';
+      }
+
+      const target = e.target as HTMLElement | null;
+      const interactive = target?.closest('a, button, [role="button"], input, .project-visual');
+      isHovering = !!interactive;
+
+      wakeUp();
+    };
+
+    const onPointerDown = () => {
+      isClicking = true;
+      wakeUp();
+    };
+
+    const onPointerUp = () => {
+      isClicking = false;
+      wakeUp();
+    };
+
+    const onMouseLeave = () => {
+      isVisible = false;
+      if (dotRef.current) dotRef.current.style.opacity = '0';
+      if (ringRef.current) ringRef.current.style.opacity = '0';
     };
 
     window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('pointerdown', onPointerDown, { passive: true });
     window.addEventListener('pointerup', onPointerUp, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave, { passive: true });
-    animationFrameId = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener('pointermove', onPointerMove);

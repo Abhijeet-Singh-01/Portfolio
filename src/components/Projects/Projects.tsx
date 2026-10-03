@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { projectsData } from '../../data/projects';
 import { ProjectChapter } from './ProjectChapter';
 import { siteLinks } from '../../data/socialLinks';
@@ -6,30 +6,84 @@ import { ExternalLink } from 'lucide-react';
 import { GithubIcon } from '../common/BrandIcons';
 
 export const Projects: React.FC = () => {
+  const [activeProjectId, setActiveProjectId] = useState<string>(projectsData[0].id);
+
+  // Multi-threshold IntersectionObserver for cinematic scroll choreography
+  // Tracks active project chapter without continuous scroll listeners or RAF loops
+  useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+
+    // If reduced-motion is requested, keep all chapters equally active
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('data-project-id');
+            if (id) {
+              setActiveProjectId(id);
+            }
+          }
+        });
+      },
+      {
+        threshold: [0.25, 0.5, 0.75],
+        rootMargin: '-18% 0px -32% 0px',
+      }
+    );
+
+    const chapterElements = document.querySelectorAll('.project-chapter');
+    chapterElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section id="projects" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Cinematic Section Header */}
-      <div className="mb-14 sm:mb-20">
-        <span className="section-eyebrow">
-          01 // SELECTED WORK
-        </span>
-        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[var(--text)] mb-4 uppercase leading-[1.05]">
-          The Work.
+      {/* Cinematic Pause: THE WORK. */}
+      <div className="min-h-[50vh] sm:min-h-[60vh] flex flex-col justify-center mb-16 sm:mb-24 border-b border-[var(--border)] pb-12 sm:pb-16 reveal-item">
+        <div className="flex items-center gap-3 mb-6">
+          <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent-secondary)] animate-pulse" aria-hidden="true" />
+          <span className="text-xs sm:text-sm font-mono tracking-widest text-[var(--accent-secondary)] uppercase">
+            // 01 · CURATED ARCHITECTURES &amp; SYSTEMS
+          </span>
+        </div>
+
+        <h2 className="text-6xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-[var(--text)] uppercase leading-[0.9] select-none">
+          THE <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--text)] via-[var(--text)] to-[var(--accent-secondary)]">
+            WORK.
+          </span>
         </h2>
-        <p className="section-subtitle">
-          Engineered systems spanning AI incident triage, solar analytics, high-throughput media delivery, and real-time state machines.
+
+        <p className="mt-8 text-base sm:text-xl text-[var(--text-2)] max-w-2xl leading-relaxed">
+          Four production and research implementations spanning AI incident triage, solar analytics, high-throughput media publishing, and real-time state calculation.
         </p>
+
+        {/* Live Active Chapter Tracker Badge */}
+        <div className="mt-8 inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-[var(--surface-2)] border border-[var(--border)] text-xs font-mono text-[var(--text-2)]">
+          <span className="text-[var(--accent-secondary)] font-semibold">STAGE:</span>
+          <span>{projectsData.find((p) => p.id === activeProjectId)?.name}</span>
+        </div>
       </div>
 
       {/* Sequential Cinematic Project Chapters */}
-      <div className="space-y-6 sm:space-y-10">
+      <div className="space-y-6 sm:space-y-12">
         {projectsData.map((project, index) => (
-          <ProjectChapter key={project.id} project={project} index={index} />
+          <ProjectChapter
+            key={project.id}
+            project={project}
+            index={index}
+            isActive={activeProjectId === project.id}
+          />
         ))}
       </div>
 
       {/* GitHub Repository Banner */}
-      <div className="mt-16 p-6 sm:p-8 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+      <div className="mt-20 p-6 sm:p-8 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
         <div>
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--accent-secondary)] block mb-1">
             OPEN SOURCE CODEBASE

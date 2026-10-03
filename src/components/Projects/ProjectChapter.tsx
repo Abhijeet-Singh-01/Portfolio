@@ -7,9 +7,10 @@ import { GithubIcon } from '../common/BrandIcons';
 interface ProjectChapterProps {
   project: Project;
   index: number;
+  isActive: boolean;
 }
 
-export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index }) => {
+export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index, isActive }) => {
   const visualRef = useRef<HTMLDivElement>(null);
   const formattedIndex = String(index + 1).padStart(2, '0');
   const isEven = index % 2 === 1;
@@ -42,7 +43,13 @@ export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index }
   };
 
   return (
-    <article className="project-chapter relative py-12 sm:py-16 lg:py-20 border-b border-[var(--border-subtle)] last:border-b-0 reveal-item">
+    <article
+      id={`project-chapter-${project.id}`}
+      data-project-id={project.id}
+      className={`project-chapter project-chapter-stage relative py-12 sm:py-20 lg:py-28 border-b border-[var(--border-subtle)] last:border-b-0 ${
+        isActive ? 'chapter-active' : 'chapter-subordinate'
+      }`}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
         {/* Text & Metadata Column */}
         <div
@@ -52,7 +59,12 @@ export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index }
         >
           {/* Project Large Number & Category */}
           <div className="flex items-baseline justify-between w-full mb-3">
-            <span className="font-mono text-5xl sm:text-6xl font-black text-[var(--accent-secondary)]/25 tracking-tighter select-none">
+            <span
+              aria-hidden="true"
+              className={`font-mono text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter select-none transition-colors duration-500 ${
+                isActive ? 'text-[var(--accent-secondary)]' : 'text-[var(--text-2)]/70'
+              }`}
+            >
               {formattedIndex}
             </span>
 
@@ -148,7 +160,7 @@ export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index }
             ref={visualRef}
             className="project-visual-3d transition-transform duration-300 ease-out will-change-transform"
           >
-            <ProjectVisual projectId={project.id} projectName={project.name} />
+            <ProjectVisual projectId={project.id} projectName={project.name} isActive={isActive} />
           </div>
         </div>
       </div>

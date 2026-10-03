@@ -39,28 +39,37 @@ export const Hero: React.FC = () => {
   return (
     <section
       id="home"
-      className="relative min-h-[92vh] flex items-center justify-center pt-24 pb-16 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
+      className="relative min-h-[94vh] flex items-center justify-center pt-24 pb-16 px-4 sm:px-6 max-w-6xl mx-auto overflow-hidden"
     >
       <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         {/* Left Column: Editorial Headline, Role & Actions (7 cols) */}
         <div className="lg:col-span-7 flex flex-col items-start order-2 lg:order-1">
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-2)] text-xs font-mono text-[var(--text-2)] mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-2)] text-xs font-mono text-[var(--text-2)] mb-5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
             <span>Available for opportunities</span>
           </div>
 
           {/* Large Cinematic Editorial Headline */}
-          <div className="mb-4">
+          <div className="mb-3">
             <span className="text-xs font-mono tracking-widest text-[var(--accent-secondary)] uppercase block mb-2">
-              // SOFTWARE · INTELLIGENCE · SYSTEMS
+              // PSIT '28 · LUCKNOW, IN
             </span>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[var(--text)] uppercase leading-[1.02]">
-              Hey, I'm <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--text)] via-[var(--text)] to-[var(--text-2)]">
-                Abhijeet.
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-[var(--text)] uppercase leading-[0.98]">
+              HEY, I'M <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--text)] via-[var(--text)] to-[var(--accent-secondary)]">
+                ABHIJEET.
               </span>
             </h1>
+          </div>
+
+          {/* Developer Discipline Ethos */}
+          <div className="flex items-center gap-2 mb-3 text-xs font-mono tracking-widest text-[var(--accent-primary)] font-semibold" aria-hidden="true">
+            <span>BUILD.</span>
+            <span>·</span>
+            <span>LEARN.</span>
+            <span>·</span>
+            <span>SHIP.</span>
           </div>
 
           {/* Supporting Role & Positioning */}
@@ -149,26 +158,27 @@ export const Hero: React.FC = () => {
           <div className="hero-3d-scene cursor-default select-none">
             <div
               ref={coreRef}
-              className="hero-3d-wrap relative w-52 h-52 sm:w-64 sm:h-64 lg:w-76 lg:h-76 flex items-center justify-center"
+              className="hero-3d-wrap relative w-56 h-56 sm:w-68 sm:h-68 lg:w-80 lg:h-80 flex items-center justify-center"
             >
-              {/* Layer 1: Back depth layer (dimensional system core with SVG telemetry ring) */}
+              {/* Layer 1: Back depth layer (dimensional obsidian core with radial specular highlights) */}
               <div
-                className="hero-depth-back absolute -inset-6 rounded-full border border-[var(--accent-secondary)]/20 bg-gradient-to-tr from-[var(--accent-primary)]/15 via-transparent to-[var(--accent-secondary)]/15 blur-sm pointer-events-none"
+                className="hero-depth-back absolute -inset-8 rounded-full border border-[var(--accent-secondary)]/25 bg-[radial-gradient(circle_at_30%_30%,rgba(99,102,241,0.25)_0%,rgba(14,13,34,0.95)_60%,rgba(11,11,26,0.98)_100%)] shadow-[0_0_60px_rgba(99,102,241,0.18)] pointer-events-none"
                 aria-hidden="true"
               />
 
-              {/* Telemetry Coordinate Tick Markers */}
+              {/* Rotating Telemetry Ring */}
               <svg
-                className="hero-depth-back absolute -inset-5 w-[calc(100%+40px)] h-[calc(100%+40px)] pointer-events-none opacity-40 animate-[spin_60s_linear_infinite]"
+                className="hero-depth-back absolute -inset-6 w-[calc(100%+48px)] h-[calc(100%+48px)] pointer-events-none opacity-40 animate-[spin_80s_linear_infinite]"
                 viewBox="0 0 200 200"
                 aria-hidden="true"
               >
-                <circle cx="100" cy="100" r="92" stroke="var(--border)" strokeWidth="1" strokeDasharray="4 8" fill="none" />
-                <circle cx="100" cy="100" r="84" stroke="var(--accent-secondary)" strokeWidth="1" strokeDasharray="1 12" fill="none" />
-                <path d="M 100 2 L 100 8 M 100 192 L 100 198 M 2 100 L 8 100 M 192 100 L 198 100" stroke="var(--accent-secondary)" strokeWidth="1.5" />
+                <circle cx="100" cy="100" r="94" stroke="var(--border)" strokeWidth="1" strokeDasharray="3 6" fill="none" />
+                <circle cx="100" cy="100" r="86" stroke="var(--accent-secondary)" strokeWidth="1.2" strokeDasharray="1 10" fill="none" />
+                <circle cx="100" cy="100" r="78" stroke="var(--accent-primary)" strokeWidth="0.8" strokeDasharray="6 14" fill="none" opacity="0.6" />
+                <path d="M 100 2 L 100 9 M 100 191 L 100 198 M 2 100 L 9 100 M 191 100 L 198 100" stroke="var(--accent-secondary)" strokeWidth="1.5" />
               </svg>
 
-              {/* Layer 2: Mid depth layer (Real Untouched Authentic Photo) */}
+              {/* Layer 2: Mid depth layer (Real Untouched Authentic Portrait Photo) */}
               <div className="hero-depth-mid relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden border-2 border-[var(--border)] shadow-2xl bg-[var(--surface-2)]">
                 <img
                   src={profilePhoto}
@@ -183,7 +193,7 @@ export const Hero: React.FC = () => {
 
               {/* Layer 3: Front depth layer (Floating Technical Identifier Badge) */}
               <div
-                className="hero-depth-front absolute -bottom-2 -right-1 sm:bottom-0 sm:right-0 px-3.5 py-1.5 rounded-full bg-[var(--surface)]/95 backdrop-blur-md border border-[var(--border)] shadow-xl flex items-center gap-2 pointer-events-none"
+                className="hero-depth-front absolute -bottom-2 -right-1 sm:bottom-1 sm:right-1 px-3.5 py-1.5 rounded-full bg-[var(--surface)]/95 backdrop-blur-md border border-[var(--border)] shadow-xl flex items-center gap-2 pointer-events-none"
                 aria-hidden="true"
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />

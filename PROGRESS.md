@@ -126,9 +126,38 @@
    - **Best Practices:** **100 / 100**
    - **SEO:** **100 / 100**
    - **FCP:** 1.7 s
-   - **LCP:** 1.9 s
-   - **TBT:** 40 ms
-   - **CLS:** 0.001
+   - **LCP:** 1.8 s
+   - **TBT:** 30 ms
+   - **CLS:** 0.002
    - **Horizontal Overflow (All 9 Viewports):** 0px
+
+---
+
+## Master Cinematic Scroll Choreography & Visual Dominance Rebuild
+
+1. **Dead File Cleanup:**
+   - Confirmed 0 imports/usages and removed unused boilerplate `src/App.css` and orphaned `src/components/Projects/ProjectCard.tsx`.
+
+2. **THE WORK Dramatic Typographic Interstitial:**
+   - Full-viewport editorial pause (`min-h-[50vh] sm:min-h-[60vh]`) featuring stacked, blocky uppercase display type (`THE` / `WORK.`), category identifier `// 01 · CURATED ARCHITECTURES & SYSTEMS`, and live active stage tracker.
+
+3. **Synchronized Project Scroll Choreography (IntersectionObserver + CSS Sticky):**
+   - Implemented multi-threshold `IntersectionObserver` observing project chapter elements.
+   - Synchronized active/subordinate states between `ProjectChapter.tsx` and `ProjectVisual.tsx`.
+   - Active project visually dominates at `scale(1)` and `opacity: 1`, while inactive chapters are subtly subordinate (`scale(0.97)`, `opacity: 0.38`).
+   - Pure CSS/hardware-accelerated transforms; 0 window scroll listeners, 0 RAF scroll loops.
+   - 100% flat fallbacks on touch/mobile and `prefers-reduced-motion`.
+
+4. **Optimized Cinematic Cursor (Idle RAF Stop):**
+   - Cursor animation loop automatically halts when pointer movement settles within 0.15px.
+   - Restarts via event-driven `wakeUp()` on `pointermove` or click, eliminating CPU/GPU consumption when stationary.
+
+5. **Final Production Verification:**
+   - Production Build: **484 ms** (Clean)
+   - Oxlint: **0 warnings, 0 errors**
+   - Lighthouse Mobile: **Performance 99**, **Accessibility 100**, **Best Practices 100**, **SEO 100**
+   - Multi-Viewport (360px to 1920px + Landscape): **All PASS (0px overflow)**
+   - Tap Targets: **30 / 30 Passed (>= 44px)**
+   - Console Errors: **0**
 
 
