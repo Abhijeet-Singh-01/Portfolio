@@ -1,81 +1,64 @@
-/* Aurora Vivid Design Tokens (Rule 02)
-   Night is default; Light is toggle.
+/* Aurora Design Tokens: Centralized CSS Variables
+   Dark (default): deep indigo-black (#0B0B1A)
+   Light (toggle): clean off-white (#FAF9FF)
+   Primary Accent: Violet/Indigo (#6366F1 / #4F46E5)
+   Secondary Accent: Teal (#14B8A6 / #0D9488)
 */
 :root,
 :root[data-theme='night'] {
   color-scheme: dark;
-  --bg: #05060A;
-  --bg-2: #0B1020;
-  --surface: #0E1326;
-  --surface-2: #141B33;
-  --surface-glass: rgba(11, 16, 32, 0.82);
-  --surface-tint: rgba(124, 108, 255, 0.05);
-  --text: #F5F7FF;
-  --text-2: #8D94AA;
-  --border: rgba(245, 247, 255, 0.10);
-  --accent-indigo: #7C6CFF;
-  --accent-violet: #C084FC;
-  --accent-magenta: #FF5FA8;
-  --accent-tangerine: #FFA36B;
-  --accent-aqua: #22D3EE;
-  --accent-lime: #C6F432;
-  --accent-indigo-ink: #A99EFF;
-  --accent-violet-ink: #D8B4FE;
-  --accent-magenta-ink: #FF8BC1;
-  --accent-tangerine-ink: #FFC09A;
-  --accent-aqua-ink: #67E8F9;
+  --bg: #0B0B1A;
+  --bg-2: #121226;
+  --surface: #16162D;
+  --surface-2: #1E1E3A;
+  --surface-glass: rgba(22, 22, 45, 0.88);
+  --surface-tint: rgba(99, 102, 241, 0.06);
+  --text: #F6F7FB;
+  --text-2: #A2A7BC;
+  --border: rgba(246, 247, 251, 0.12);
+  --border-subtle: rgba(246, 247, 251, 0.06);
+  --border-focus: #6366F1;
+  --accent-primary: #6366F1;
+  --accent-primary-hover: #4F46E5;
+  --accent-primary-glow: rgba(99, 102, 241, 0.20);
+  --accent-secondary: #14B8A6;
+  --accent-secondary-hover: #0D9488;
+  --accent-secondary-glow: rgba(20, 184, 166, 0.20);
   --text-on-accent: #FFFFFF;
-  --accent-indigo-glow: rgba(124, 108, 255, 0.22);
-  --accent-violet-glow: rgba(192, 132, 252, 0.20);
-  --accent-magenta-glow: rgba(255, 95, 168, 0.18);
-  --accent-tangerine-glow: rgba(255, 163, 107, 0.17);
-  --accent-aqua-glow: rgba(34, 211, 238, 0.19);
-  --accent-lime-glow: rgba(198, 244, 50, 0.28);
-  --shadow-primary: rgba(124, 108, 255, 0.24);
-  --shadow-soft: rgba(124, 108, 255, 0.16);
-  --focus-ring: #7C6CFF;
-  --gradient-brand: linear-gradient(110deg, #7C6CFF 0%, #C084FC 45%, #FF5FA8 75%, #FFA36B 100%);
-  --gradient-button: linear-gradient(110deg, #7C6CFF 0%, #C084FC 52%, #FF5FA8 100%);
-  --gradient-fresh: linear-gradient(110deg, #22D3EE 0%, #7C6CFF 100%);
-  --gradient-ring: linear-gradient(135deg, #22D3EE 0%, #C6F432 50%, #7C6CFF 100%);
-  --scrim: rgba(10, 6, 32, 0.92);
+  --focus-ring: #6366F1;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --gradient-accent: linear-gradient(135deg, #6366F1 0%, #14B8A6 100%);
+  --gradient-button: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(22, 22, 45, 0.95) 0%, rgba(18, 18, 38, 0.95) 100%);
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
-  --bg: #FAF8FF;
-  --bg-2: #F1EDFF;
+  --bg: #FAF9FF;
+  --bg-2: #F2F0FA;
   --surface: #FFFFFF;
-  --surface-2: #F8F6FF;
-  --surface-glass: rgba(255, 255, 255, 0.88);
-  --surface-tint: rgba(91, 75, 255, 0.05);
-  --text: #14123A;
-  --text-2: #4F4B73;
-  --border: rgba(20, 18, 58, 0.14);
-  --accent-indigo: #5B4BFF;
-  --accent-violet: #8B5CF6;
-  --accent-magenta: #EC4899;
-  --accent-tangerine: #FF7A45;
-  --accent-aqua: #06B6D4;
-  --accent-lime: #65A30D;
-  --accent-indigo-ink: #4338FF;
-  --accent-violet-ink: #6D28D9;
-  --accent-magenta-ink: #BE185D;
-  --accent-tangerine-ink: #C2410C;
-  --accent-aqua-ink: #0E7490;
+  --surface-2: #F5F3FC;
+  --surface-glass: rgba(255, 255, 255, 0.92);
+  --surface-tint: rgba(79, 70, 229, 0.04);
+  --text: #121124;
+  --text-2: #52506B;
+  --border: rgba(18, 17, 36, 0.12);
+  --border-subtle: rgba(18, 17, 36, 0.06);
+  --border-focus: #4F46E5;
+  --accent-primary: #4F46E5;
+  --accent-primary-hover: #4338CA;
+  --accent-primary-glow: rgba(79, 70, 229, 0.15);
+  --accent-secondary: #0D9488;
+  --accent-secondary-hover: #0F766E;
+  --accent-secondary-glow: rgba(13, 148, 136, 0.15);
   --text-on-accent: #FFFFFF;
-  --accent-indigo-glow: rgba(91, 75, 255, 0.14);
-  --accent-violet-glow: rgba(139, 92, 246, 0.14);
-  --accent-magenta-glow: rgba(236, 72, 153, 0.12);
-  --accent-tangerine-glow: rgba(255, 122, 69, 0.12);
-  --accent-aqua-glow: rgba(6, 182, 212, 0.13);
-  --accent-lime-glow: rgba(101, 163, 13, 0.20);
-  --shadow-primary: rgba(91, 75, 255, 0.15);
-  --shadow-soft: rgba(91, 75, 255, 0.10);
-  --focus-ring: #4338FF;
-  --gradient-brand: linear-gradient(110deg, #5B4BFF 0%, #8B5CF6 48%, #EC4899 78%, #FF7A45 100%);
-  --gradient-button: linear-gradient(110deg, #4338FF 0%, #7C3AED 52%, #DB2777 100%);
-  --gradient-fresh: linear-gradient(110deg, #06B6D4 0%, #5B4BFF 100%);
-  --gradient-ring: linear-gradient(135deg, #06B6D4 0%, #65A30D 50%, #5B4BFF 100%);
-  --scrim: rgba(250, 248, 255, 0.88);
+  --focus-ring: #4F46E5;
+  --shadow-sm: 0 2px 8px rgba(18, 17, 36, 0.06);
+  --shadow-md: 0 8px 24px rgba(18, 17, 36, 0.08);
+  --shadow-lg: 0 16px 40px rgba(18, 17, 36, 0.12);
+  --gradient-accent: linear-gradient(135deg, #4F46E5 0%, #0D9488 100%);
+  --gradient-button: linear-gradient(135deg, #4F46E5 0%, #4338CA 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 243, 252, 0.98) 100%);
 }

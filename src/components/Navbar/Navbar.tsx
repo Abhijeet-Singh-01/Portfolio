@@ -1,76 +1,98 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Moon, Sun, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
-import { siteLinks } from '../../data/socialLinks';
-import { applyAuroraTheme, type AuroraTheme } from '../../lib/theme';
-import { scrollToRoom, experienceState } from '../../lib/experienceStore';
-import { sound } from '../../lib/sound';
+import { Menu, X, Sun, Moon } from 'lucide-react';
+import { applyAuroraTheme, getInitialTheme, type AuroraTheme } from '../../lib/theme';
 
-interface NavDestination {
+interface NavItem {
   id: string;
-  num: string;
-  name: string;
-  sub: string;
+  label: string;
 }
 
-const destinations: NavDestination[] = [
-  { id: 'home', num: '01', name: 'HERO', sub: 'Base Camp & Identity' },
-  { id: 'projects', num: '02', name: 'WORK', sub: 'Selected Engineering Projects' },
-  { id: 'skills', num: '03', name: 'LAB', sub: 'Technical Arsenal & Hex Grid' },
-  { id: 'about', num: '04', name: 'ABOUT', sub: 'Trajectory, Education & Terminal' },
-  { id: 'contact', num: '05', name: 'CONTACT', sub: 'Let’s Build Something' },
+const navItems: NavItem[] = [
+  { id: 'projects', label: 'Projects' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'about', label: 'About' },
+  { id: 'contact', label: 'Contact' },
 ];
 
 export const Navbar: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [soundOn, setSoundOn] = useState(() => sound.isEnabled());
-  const [isLite, setIsLite] = useState(false);
-  const [theme, setTheme] = useState<AuroraTheme>(() =>
-    typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light' ? 'light' : 'night'
-  );
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('home');
+  const [theme, setTheme] = useState<AuroraTheme>(getInitialTheme);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
 
-  // Esc key & focus trap for menu overlay
+  // Active section indicator via IntersectionObserver
   useEffect(() => {
-    if (!menuOpen) return;
-    const overlay = overlayRef.current;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    const sectionIds = ['home', 'projects', 'skills', 'about', 'contact'];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
 
-    const focusables = overlay?.querySelectorAll<HTMLElement>(
-      'a, button, [tabindex]:not([tabindex="-1"])'
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -60% 0px', threshold: 0 }
     );
-    focusables?.[0]?.focus();
+
+    sections.forEach((sec) => observer.observe(sec));
+    return () => observer.disconnect();
+  }, []);
+
+  // Sync theme changes
+  useEffect(() => {
+    const handleThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent<AuroraTheme>;
+      if (customEvent.detail) setTheme(customEvent.detail);
+    };
+    window.addEventListener('aurora-theme-change', handleThemeChange);
+    return () => window.removeEventListener('aurora-theme-change', handleThemeChange);
+  }, []);
+
+  // Handle Escape key and focus trapping for mobile menu
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setMenuOpen(false);
+        setMobileMenuOpen(false);
         menuButtonRef.current?.focus();
       }
-      if (e.key === 'Tab' && focusables && focusables.length > 0) {
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
+
+      if (e.key === 'Tab' && mobileNavRef.current) {
+        const focusableElements = mobileNavRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === firstElement) {
           e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
           e.preventDefault();
-          first.focus();
+          firstElement.focus();
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
+      document.body.style.overflow = originalOverflow;
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = previousOverflow;
     };
-  }, [menuOpen]);
-
-  const handleNavigate = (id: string) => {
-    setMenuOpen(false);
-    scrollToRoom(id);
-  };
+  }, [mobileMenuOpen]);
 
   const toggleTheme = () => {
     const nextTheme: AuroraTheme = theme === 'night' ? 'light' : 'night';
@@ -78,190 +100,152 @@ export const Navbar: React.FC = () => {
     setTheme(nextTheme);
   };
 
-  const toggleLiteMode = () => {
-    const nextLite = !isLite;
-    setIsLite(nextLite);
-    experienceState.liteMode = nextLite;
-    window.dispatchEvent(new CustomEvent('aurora-lite-mode-change', { detail: nextLite }));
+  const handleNavClick = (id: string) => {
+    setMobileMenuOpen(false);
+    const target = document.getElementById(id);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
-    <>
-      {/* Top Header Bar */}
-      <header className="fixed top-0 left-0 right-0 z-[1000] py-4 px-6 md:px-12 flex items-center justify-between pointer-events-none">
-        {/* Top-Left: "AS" Logo Mark */}
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--surface-glass)] backdrop-blur-md border-b border-[var(--border)] transition-colors duration-200">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        {/* Logo: AS */}
         <a
           href="#home"
           onClick={(e) => {
             e.preventDefault();
-            handleNavigate('home');
+            handleNavClick('home');
           }}
-          className="pointer-events-auto group flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-indigo rounded-lg"
-          aria-label="Abhijeet Singh Portfolio Home"
+          className="flex items-center gap-2 group min-h-[44px] min-w-[44px] items-center py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] rounded-lg"
+          aria-label="AS - Abhijeet Singh Home"
         >
-          <div className="w-9 h-9 rounded-lg border border-border/25 bg-surface/85 backdrop-blur-md flex items-center justify-center transition-all duration-300 group-hover:border-accent-aqua/60 group-hover:shadow-[0_0_16px_var(--accent-aqua-glow)]">
-            <span className="font-display font-black text-xs tracking-widest text-text group-hover:text-accent-aqua-ink transition-colors">
-              AS
-            </span>
-          </div>
-          <span className="hidden sm:block text-[11px] font-mono tracking-widest uppercase text-text-2 group-hover:text-text transition-colors">
-            ABHIJEET SINGH
+          <span className="w-8 h-8 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center font-mono font-bold text-xs text-[var(--accent-secondary)] group-hover:border-[var(--accent-secondary)] transition-colors">
+            AS
+          </span>
+          <span className="font-semibold text-sm tracking-tight text-[var(--text)] group-hover:text-[var(--accent-secondary)] transition-colors hidden xs:inline">
+            Abhijeet Singh
           </span>
         </a>
 
-        {/* Top-Right: Minimal Compact MENU Button */}
-        <button
-          type="button"
-          ref={menuButtonRef}
-          onClick={() => setMenuOpen(true)}
-          className="pointer-events-auto px-4 py-2 rounded-full border border-border/25 bg-surface/85 backdrop-blur-xl text-xs font-mono uppercase tracking-[0.2em] text-text hover:text-accent-aqua-ink hover:border-accent-aqua/40 transition-colors shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua cursor-pointer"
-          aria-label="Open navigation menu"
-          aria-expanded={menuOpen}
-        >
-          MENU
-        </button>
-      </header>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-1" aria-label="Main Navigation">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick(item.id);
+                }}
+                className={`min-h-[44px] px-3.5 flex items-center text-sm font-medium rounded-md transition-colors ${
+                  isActive
+                    ? 'text-[var(--text)] bg-[var(--surface-2)] font-semibold'
+                    : 'text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-tint)]'
+                }`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
 
-      {/* Full-Screen Menu Overlay */}
-      {menuOpen && (
+          <div className="w-[1px] h-5 bg-[var(--border)] mx-2" aria-hidden="true" />
+
+          {/* Theme Toggle Button */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="min-h-[44px] min-w-[44px] p-2.5 rounded-md text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer"
+            aria-label={`Switch to ${theme === 'night' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'night' ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4 text-[var(--accent-primary)]" />
+            )}
+          </button>
+        </nav>
+
+        {/* Mobile Actions: Theme Toggle + Hamburger Button */}
+        <div className="flex md:hidden items-center gap-1">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="min-h-[44px] min-w-[44px] p-2.5 rounded-md text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer"
+            aria-label={`Switch to ${theme === 'night' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'night' ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4 text-[var(--accent-primary)]" />
+            )}
+          </button>
+
+          <button
+            ref={menuButtonRef}
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="min-h-[44px] min-w-[44px] p-2.5 rounded-md text-[var(--text)] hover:bg-[var(--surface-2)] transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
         <div
-          ref={overlayRef}
+          id="mobile-navigation"
+          ref={mobileNavRef}
+          className="md:hidden fixed inset-x-0 top-16 bg-[var(--surface)] border-b border-[var(--border)] shadow-lg px-6 py-6 transition-all duration-200"
           role="dialog"
           aria-modal="true"
-          aria-label="Portfolio navigation overlay"
-          className="fixed inset-0 z-[1100] bg-bg/95 backdrop-blur-2xl flex flex-col justify-between p-8 sm:p-14 animate-fade-in text-text"
+          aria-label="Mobile Navigation"
         >
-          {/* Overlay Top Bar */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg border border-accent-aqua/40 bg-surface/80 flex items-center justify-center shadow-[0_0_15px_var(--accent-aqua-glow)]">
-                <span className="font-display font-bold text-xs tracking-wider text-accent-aqua-ink">
-                  AS
-                </span>
-              </div>
-              <span className="text-xs font-mono uppercase tracking-widest text-text-2">
-                NAVIGATION
-              </span>
+          <nav className="flex flex-col gap-2">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.id);
+                  }}
+                  className={`min-h-[44px] px-4 py-3 rounded-lg flex items-center justify-between text-base font-medium transition-colors ${
+                    isActive
+                      ? 'text-[var(--text)] bg-[var(--surface-2)] font-semibold'
+                      : 'text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" />
+                  )}
+                </a>
+              );
+            })}
+
+            <div className="pt-4 mt-2 border-t border-[var(--border)] flex items-center justify-between">
+              <a
+                href="/resume.pdf"
+                download="Abhijeet-Singh-Resume.pdf"
+                onClick={() => setMobileMenuOpen(false)}
+                className="btn-secondary w-full text-center justify-center"
+              >
+                Download Resume (PDF)
+              </a>
             </div>
-
-            <button
-              type="button"
-              onClick={() => setMenuOpen(false)}
-              className="w-11 h-11 rounded-full border border-border/30 bg-surface/80 flex items-center justify-center text-text hover:text-accent-magenta hover:border-accent-magenta/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-magenta transition-all"
-              aria-label="Close navigation menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Destinations Grid */}
-          <nav className="my-auto py-8">
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 list-none p-0 m-0 max-w-4xl mx-auto">
-              {destinations.map((dest) => (
-                <li key={dest.id}>
-                  <button
-                    type="button"
-                    onClick={() => handleNavigate(dest.id)}
-                    className="w-full text-left group p-5 sm:p-6 rounded-xl border border-border/15 bg-surface/40 hover:bg-surface/80 hover:border-accent-aqua/50 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-aqua"
-                  >
-                    <div className="flex items-baseline justify-between mb-2">
-                      <span className="text-xs font-mono text-accent-aqua-ink tracking-widest">
-                        {dest.num} //
-                      </span>
-                      <ArrowUpRight className="w-4 h-4 text-text-2 group-hover:text-accent-aqua-ink group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-                    </div>
-                    <span className="block font-display font-bold text-2xl sm:text-3xl tracking-tight text-text group-hover:text-accent-aqua-ink transition-colors">
-                      {dest.name}
-                    </span>
-                    <span className="block text-xs font-mono text-text-2 mt-1">
-                      {dest.sub}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
           </nav>
-
-          {/* Overlay Footer: Theme Toggle & Social Links */}
-          <div className="pt-6 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/25 bg-surface/60 text-xs font-mono uppercase tracking-widest text-text hover:border-accent-aqua/50 transition-all focus-visible:ring-2 focus-visible:ring-accent-aqua"
-                aria-label={`Switch to ${theme === 'light' ? 'Night' : 'Light'} theme`}
-              >
-                {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-accent-indigo" /> : <Sun className="w-3.5 h-3.5 text-accent-tangerine" />}
-                <span>{theme === 'light' ? 'NIGHT MODE' : 'LIGHT MODE'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setSoundOn(sound.toggle())}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/25 bg-surface/60 text-xs font-mono uppercase tracking-widest text-text hover:border-accent-aqua/50 transition-all focus-visible:ring-2 focus-visible:ring-accent-aqua"
-                aria-label="Toggle sound effects (default OFF)"
-              >
-                {soundOn ? <Volume2 className="w-3.5 h-3.5 text-accent-lime" /> : <VolumeX className="w-3.5 h-3.5 text-text-2" />}
-                <span>{soundOn ? 'AUDIO ON' : 'AUDIO OFF'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={toggleLiteMode}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/25 bg-surface/60 text-xs font-mono uppercase tracking-widest text-text hover:border-accent-aqua/50 transition-all focus-visible:ring-2 focus-visible:ring-accent-aqua"
-                aria-label="Toggle 3D world or 2D Lite mode"
-              >
-                <span>{isLite ? '3D WORLD' : 'LITE MODE'}</span>
-              </button>
-
-              <a
-                href={siteLinks.resume.url}
-                download={siteLinks.resume.download}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent-indigo/20 border border-accent-indigo/40 text-xs font-mono uppercase tracking-widest text-accent-indigo-ink hover:bg-accent-indigo/30 transition-all"
-              >
-                RESUME (PDF)
-              </a>
-            </div>
-
-            <div className="flex items-center gap-5 text-xs font-mono uppercase tracking-wider text-text-2">
-              <a
-                href={siteLinks.github.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent-aqua-ink transition-colors"
-                aria-label={siteLinks.github.accessibilityLabel}
-              >
-                GITHUB
-              </a>
-              <a
-                href={siteLinks.linkedin.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent-aqua-ink transition-colors"
-                aria-label={siteLinks.linkedin.accessibilityLabel}
-              >
-                LINKEDIN
-              </a>
-              <a
-                href={siteLinks.leetcode.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent-aqua-ink transition-colors"
-                aria-label={siteLinks.leetcode.accessibilityLabel}
-              >
-                LEETCODE
-              </a>
-              <a
-                href={siteLinks.email.url}
-                className="hover:text-accent-aqua-ink transition-colors"
-                aria-label={siteLinks.email.accessibilityLabel}
-              >
-                EMAIL
-              </a>
-            </div>
-          </div>
         </div>
       )}
-    </>
+    </header>
   );
 };

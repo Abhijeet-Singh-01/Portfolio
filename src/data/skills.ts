@@ -19,7 +19,7 @@ export const skillsCategories: SkillCategory[] = [
       { name: 'HTML', iconName: 'Layout' },
       { name: 'CSS', iconName: 'Sparkles' },
       { name: 'Tailwind CSS', iconName: 'Palette' },
-      { name: 'JavaScript (ES6+)', iconName: 'FileCode' },
+      { name: 'JavaScript', iconName: 'FileCode', highlight: true },
     ],
   },
   {
@@ -27,8 +27,7 @@ export const skillsCategories: SkillCategory[] = [
     title: 'Backend',
     skills: [
       { name: 'FastAPI', iconName: 'Zap', highlight: true },
-      { name: 'REST APIs', iconName: 'Route' },
-      { name: 'Firebase Cloud Messaging', iconName: 'Cloud', level: 'Learning' },
+      { name: 'REST APIs', iconName: 'Route', highlight: true },
     ],
   },
   {
@@ -53,13 +52,6 @@ export const skillsCategories: SkillCategory[] = [
     title: 'Core',
     skills: [
       { name: 'Data Structures & Algorithms', iconName: 'GitFork', highlight: true },
-    ],
-  },
-  {
-    id: 'ai',
-    title: 'AI',
-    skills: [
-      { name: 'Generative AI', iconName: 'Sparkles', highlight: true, level: 'AWS Coursework' },
     ],
   },
 ];

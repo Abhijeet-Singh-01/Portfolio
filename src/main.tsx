@@ -1,57 +1,63 @@
-import { Component, type ErrorInfo, type ReactNode, StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { careerObjective, personalBio } from './data/education.ts'
-import { sameAsLinks, siteLinks } from './data/socialLinks.ts'
-import { experienceState } from './lib/experienceStore.ts'
+import { Component, type ErrorInfo, type ReactNode, StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
 
-experienceState.theme = document.documentElement.dataset.theme === 'night' ? 'night' : 'light'
-
-const personSchema = document.createElement('script')
-personSchema.type = 'application/ld+json'
-personSchema.textContent = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: personalBio.name,
-  jobTitle: personalBio.role,
-  description: careerObjective,
-  email: siteLinks.email.handle,
-  url: document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href,
-  sameAs: sameAsLinks,
-})
-document.head.append(personSchema)
-
-class RootErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
-  state = { hasError: false, error: null as Error | null }
+class RootErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  state = { hasError: false, error: null as Error | null };
 
   static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error }
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('RootErrorBoundary caught an error:', error, info)
+    console.error('RootErrorBoundary caught an error:', error, info);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: '2rem', color: '#F8F6FF', background: '#0A0620', fontFamily: 'monospace', minHeight: '100vh' }}>
-          <h1 style={{ color: '#FF5FA8', fontSize: '1.5rem' }}>Portfolio Runtime Error</h1>
-          <p style={{ color: '#B9B3E6' }}>{this.state.error?.message || 'An unexpected error occurred.'}</p>
-          <pre style={{ background: '#130A3B', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '0.85rem' }}>
-            {this.state.error?.stack}
-          </pre>
+        <div
+          style={{
+            padding: '2rem',
+            color: '#F6F7FB',
+            background: '#0B0B1A',
+            fontFamily: 'monospace',
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <h1 style={{ color: '#6366F1', fontSize: '1.5rem', marginBottom: '1rem' }}>
+            Portfolio Runtime Notice
+          </h1>
+          <p style={{ color: '#A0A5BA', maxWidth: '30rem', marginBottom: '1.5rem' }}>
+            {this.state.error?.message || 'An unexpected rendering issue occurred.'}
+          </p>
           <button
             onClick={() => window.location.reload()}
-            style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: '#7C6CFF', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            style={{
+              padding: '0.625rem 1.25rem',
+              background: '#6366F1',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '9999px',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
           >
             Reload Page
           </button>
         </div>
-      )
+      );
     }
-    return this.props.children
+    return this.props.children;
   }
 }
 
@@ -60,5 +66,5 @@ createRoot(document.getElementById('root')!).render(
     <RootErrorBoundary>
       <App />
     </RootErrorBoundary>
-  </StrictMode>,
-)
+  </StrictMode>
+);

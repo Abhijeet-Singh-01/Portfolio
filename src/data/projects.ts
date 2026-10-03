@@ -5,12 +5,12 @@ export const projectsData: Project[] = [
   {
     id: 'ai-incident-intelligence',
     name: 'AI Incident Intelligence',
-    tagline: 'Autonomous root-cause investigation & telemetry triage engine',
+    tagline: 'Autonomous root-cause investigation & telemetry triage platform',
     description:
-      'AI-powered incident analysis and root-cause investigation platform designed to detect abnormal application behavior, retrieve relevant evidence from logs/incidents, and generate evidence-grounded root-cause analysis and remediation suggestions.',
-    category: 'AI Systems & Telemetry',
+      'AI-powered platform that detects abnormal application behavior, investigates incidents, retrieves relevant evidence, and generates evidence-grounded root-cause analysis and remediation suggestions.',
+    category: 'AI / ML / Backend',
     accent: 'gold',
-    technologies: ['Python', 'FastAPI', 'Machine Learning', 'RAG', 'Vector Search', 'Embeddings', 'PostgreSQL', 'AI/LLM'],
+    technologies: ['Python', 'FastAPI', 'ML', 'RAG', 'Embeddings', 'Vector Search', 'PostgreSQL'],
     systemHighlights: [
       'Multi-stage semantic retrieval pipeline pairing dense vector search with deterministic log filtering.',
       'Evidence-grounded hypothesis generation that ties each diagnostic finding directly to timestamped trace logs.',
@@ -36,10 +36,10 @@ export const projectsData: Project[] = [
     name: 'SolisIQ',
     tagline: 'Smart Solar Usage & Savings Monitoring System',
     description:
-      'AI-powered application that recommends optimal solar panel capacity based on electricity consumption, with a responsive dashboard visualizing energy generation, usage, savings, and environmental impact.',
-    category: 'AI / Sustainability / Web Application',
+      'Solar usage and savings monitoring system that recommends solar panel capacity and provides savings, ROI, and payback information through a dashboard.',
+    category: 'AI / Sustainability / Web App',
     accent: 'teal',
-    technologies: ['React.js', 'Python (FastAPI)', 'MongoDB', 'JavaScript', 'Chart.js', 'REST APIs'],
+    technologies: ['React.js', 'FastAPI', 'MongoDB', 'JavaScript', 'Chart.js', 'REST APIs'],
     systemHighlights: [
       'FastAPI REST APIs for authentication, solar sizing calculations, and data management.',
       'Calculates electricity bill reduction, return on investment (ROI), and solar payback period.',
@@ -51,10 +51,10 @@ export const projectsData: Project[] = [
     name: 'Instanews',
     tagline: 'High-throughput full-stack publishing platform with RBAC & caching',
     description:
-      'Full-stack news platform with authentication, role-based administration, API-driven content, caching, and infinite scrolling.',
-    category: 'Full-Stack Web Engineering',
+      'Full-stack news platform with authentication, role-based administration, caching, and infinite scrolling.',
+    category: 'Full-Stack Web App',
     accent: 'gold',
-    technologies: ['React.js', 'Redux Toolkit', 'Node.js', 'Express.js', 'MongoDB', 'JWT'],
+    technologies: ['React', 'Redux Toolkit', 'Node.js', 'Express', 'MongoDB', 'JWT'],
     systemHighlights: [
       'Granular role-based access control separating reader consumers from authenticated editorial staff.',
       'Redux Toolkit state slices paired with virtualized DOM scrolling for reading experiences.',
@@ -69,7 +69,7 @@ export const projectsData: Project[] = [
       title: 'Feed Ingestion & Delivery',
       flow: [
         'Secure Client Authentication (JWT)',
-        'Cached Express.js API Layer',
+        'Cached Express API Layer',
         'MongoDB Aggregation Pipeline',
         'Virtualized Infinite Scroll Feed UI',
       ],
@@ -78,9 +78,9 @@ export const projectsData: Project[] = [
   {
     id: 'zerohour',
     name: 'ZeroHour',
-    tagline: 'Interactive Web Application',
+    tagline: 'Interactive Countdown Web Application',
     description:
-      'Real-time countdown timer showing the remaining days, hours, minutes, and seconds until a selected date and time.',
+      'Real-time countdown timer web application showing remaining days, hours, minutes, and seconds until a chosen date and time.',
     category: 'Web Application',
     accent: 'teal',
     technologies: ['HTML', 'CSS', 'JavaScript'],
