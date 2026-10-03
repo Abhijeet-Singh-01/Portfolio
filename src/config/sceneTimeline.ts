@@ -23,7 +23,7 @@ export interface TimelineState {
   cameraRoll: number;
   activeBeat: number; // 0: Hero, 1: P01, 2: P02, 3: P03, 4: P04, 5: Skills, 6: About, 7: Contact
   activeProjectIndex: number; // 0, 1, 2, 3, or -1
-  projectVisibilities: number[]; // [p0, p1, p2, p3] 0.0 to 1.0 opacity/scale
+  projectVisibilities: number[]; // [p0, p1, p2, p3] 0.0 to 1.0
   hudOpacity: number[]; // Opacity for each beat's HUD overlay
   spineDispersion: number; // 0.0 (intact) -> 1.0 (fragmented into constellation)
   energyPulsePhase: number;
@@ -33,14 +33,14 @@ export interface TimelineState {
 
 // 8 Narrative Beats with explicit Hold / Inspection windows
 export const BEATS = [
-  { id: 'hero', start: 0.0, end: 0.12, name: 'Hero' },
-  { id: 'project-1', start: 0.18, end: 0.36, name: 'AI Incident Intelligence', projectIndex: 0, holdStart: 0.23, holdEnd: 0.32 },
-  { id: 'project-2', start: 0.40, end: 0.58, name: 'SolisIQ', projectIndex: 1, holdStart: 0.45, holdEnd: 0.54 },
-  { id: 'project-3', start: 0.62, end: 0.78, name: 'Instanews', projectIndex: 2, holdStart: 0.66, holdEnd: 0.75 },
-  { id: 'project-4', start: 0.81, end: 0.91, name: 'ZeroHour', projectIndex: 3, holdStart: 0.84, holdEnd: 0.90 },
-  { id: 'skills', start: 0.92, end: 0.95, name: 'The Lab' },
-  { id: 'about', start: 0.95, end: 0.98, name: 'About' },
-  { id: 'contact', start: 0.98, end: 1.0, name: 'Contact' },
+  { id: 'hero', start: 0.0, end: 0.14, name: 'Hero' },
+  { id: 'project-1', start: 0.16, end: 0.37, name: 'AI Incident Intelligence', projectIndex: 0, holdStart: 0.23, holdEnd: 0.32 },
+  { id: 'project-2', start: 0.38, end: 0.59, name: 'SolisIQ', projectIndex: 1, holdStart: 0.45, holdEnd: 0.54 },
+  { id: 'project-3', start: 0.60, end: 0.81, name: 'Instanews', projectIndex: 2, holdStart: 0.67, holdEnd: 0.76 },
+  { id: 'project-4', start: 0.82, end: 0.93, name: 'ZeroHour', projectIndex: 3, holdStart: 0.85, holdEnd: 0.90 },
+  { id: 'skills', start: 0.92, end: 0.955, name: 'The Lab' },
+  { id: 'about', start: 0.955, end: 0.985, name: 'About' },
+  { id: 'contact', start: 0.985, end: 1.0, name: 'Contact' },
 ] as const;
 
 interface Keyframe {
@@ -53,41 +53,41 @@ interface Keyframe {
 }
 
 // ----------------------------------------------------------------------------------
-// DESKTOP KEYFRAMES (Asymmetric Spatial Choreography & Horizon Banking)
+// DESKTOP KEYFRAMES (Asymmetric Spatial Choreography & Clear Screen Half Staging)
 // ----------------------------------------------------------------------------------
 const DESKTOP_KEYFRAMES: Keyframe[] = [
-  // 1. Hero Establishing (Wide, centered on portrait ring)
+  // 1. Hero Establishing (Centered on portrait ring)
   {
     t: 0.0,
-    pos: [0, 0, 8.5],
+    pos: [0, 0, 7.5],
     target: [0, 0, 0],
-    fov: 50,
+    fov: 48,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
   // 2. Portal Dive: Swooping straight through the expanded hero glass ring
   {
-    t: 0.14,
+    t: 0.12,
     pos: [0.0, 0.0, 0.4],
     target: [0, 0, -10.0],
-    fov: 56,
-    roll: 0.02,
+    fov: 54,
+    roll: 0.0,
     lighting: vConfig.lighting.default,
   },
   // 3. Project 01 Fast Approach (Banking into turn towards left installation)
   {
-    t: 0.20,
-    pos: [1.8, 0.45, -10.5],
-    target: [-3.2, 0.35, -17.0],
-    fov: 48,
-    roll: -0.05,
+    t: 0.18,
+    pos: [1.2, 0.35, -10.5],
+    target: [-0.6, 0.2, -17.0],
+    fov: 46,
+    roll: -0.04,
     lighting: vConfig.lighting.project1,
   },
-  // 4. Project 01 Inspection & Anomaly Hold (Slow micro-orbit around neural cluster)
+  // 4. Project 01 Inspection & Anomaly Hold (Artifact framed cleanly on LEFT half)
   {
-    t: 0.28,
-    pos: [1.2, 0.22, -12.8],
-    target: [-3.2, 0.35, -17.0],
+    t: 0.27,
+    pos: [0.6, 0.2, -12.5],
+    target: [-0.6, 0.2, -17.0],
     fov: 42,
     roll: -0.02,
     lighting: vConfig.lighting.project1,
@@ -95,26 +95,26 @@ const DESKTOP_KEYFRAMES: Keyframe[] = [
   // 5. Spine Energy Transition 1 -> 2 (Pull-back to show energy pulse rush through spine)
   {
     t: 0.37,
-    pos: [-0.5, 1.6, -21.0],
-    target: [0, -0.2, -30.0],
-    fov: 58,
-    roll: 0.04,
+    pos: [0.0, 0.5, -23.5],
+    target: [0, 0, -31.0],
+    fov: 54,
+    roll: 0.03,
     lighting: vConfig.lighting.project1,
   },
   // 6. Project 02 Solar Machine Approach (Banking to frame right installation)
   {
     t: 0.42,
-    pos: [-2.0, -0.35, -24.5],
-    target: [3.2, -0.25, -31.0],
-    fov: 50,
-    roll: 0.06,
+    pos: [-1.2, -0.2, -25.0],
+    target: [0.6, 0.0, -31.0],
+    fov: 46,
+    roll: 0.04,
     lighting: vConfig.lighting.project2,
   },
-  // 7. Project 02 Solar Core Inspection Hold (Slow orbit inspecting orbital rings)
+  // 7. Project 02 Solar Core Inspection Hold (Artifact framed cleanly on RIGHT half)
   {
-    t: 0.50,
-    pos: [-1.35, -0.18, -26.8],
-    target: [3.2, -0.25, -31.0],
+    t: 0.49,
+    pos: [-0.6, 0.0, -26.5],
+    target: [0.6, 0.0, -31.0],
     fov: 42,
     roll: 0.02,
     lighting: vConfig.lighting.project2,
@@ -122,72 +122,72 @@ const DESKTOP_KEYFRAMES: Keyframe[] = [
   // 8. Spine Energy Transition 2 -> 3 (Camera weaves through information corridor)
   {
     t: 0.59,
-    pos: [0.6, 0.35, -37.0],
-    target: [0, 0, -44.0],
-    fov: 58,
-    roll: -0.05,
+    pos: [0.0, 0.5, -37.5],
+    target: [0, 0, -45.0],
+    fov: 54,
+    roll: -0.03,
     lighting: vConfig.lighting.project2,
   },
-  // 9. Project 03 Close Fly-Through (Weaving directly between floating article planes)
+  // 9. Project 03 Instanews Hold (Artifact framed cleanly on LEFT half)
   {
-    t: 0.70,
-    pos: [1.0, 0.2, -41.5],
-    target: [-2.8, 0.8, -45.0],
-    fov: 44,
-    roll: -0.03,
+    t: 0.71,
+    pos: [0.6, 0.2, -40.5],
+    target: [-0.6, 0.2, -45.0],
+    fov: 42,
+    roll: -0.02,
     lighting: vConfig.lighting.project3,
   },
-  // 10. Spine Energy Transition 3 -> 4 (Downward dive toward precision chronometer)
+  // 10. Spine Energy Transition 3 -> 4 (Dive toward precision chronometer)
   {
-    t: 0.79,
-    pos: [-1.6, -0.25, -51.5],
-    target: [0, 0, -58.0],
-    fov: 56,
-    roll: 0.04,
+    t: 0.81,
+    pos: [0.0, 0.5, -51.5],
+    target: [0, 0, -59.0],
+    fov: 54,
+    roll: 0.03,
     lighting: vConfig.lighting.project3,
   },
-  // 11. Project 04 Precision Chronometer Lock & Hold
+  // 11. Project 04 Precision Chronometer Lock & Hold (Artifact framed on RIGHT half)
   {
-    t: 0.86,
-    pos: [-1.15, -0.15, -55.2],
-    target: [2.6, -0.3, -59.0],
+    t: 0.87,
+    pos: [-0.6, 0.0, -54.5],
+    target: [0.6, 0.0, -59.0],
     fov: 42,
     roll: 0.01,
     lighting: vConfig.lighting.project4,
   },
-  // 12. Spinal Collapse & Fragment Scattering into The Lab
+  // 12. Spinal Collapse & Transition into The Lab
   {
     t: 0.92,
-    pos: [0, 2.0, -60.0],
-    target: [0, -0.8, -67.0],
-    fov: 54,
+    pos: [0, 1.8, -61.0],
+    target: [0, -0.6, -68.0],
+    fov: 52,
     roll: 0.0,
     lighting: vConfig.lighting.project4,
   },
   // 13. The Lab (Skills Hex Grid Room)
   {
     t: 0.94,
-    pos: [0, 1.2, -64.0],
-    target: [0, -0.4, -70.0],
-    fov: 50,
+    pos: [0, 1.4, -64.0],
+    target: [0, -0.6, -70.0],
+    fov: 48,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
   // 14. Human Calm Foundations (About)
   {
     t: 0.965,
-    pos: [0, 0.35, -72.0],
-    target: [0, 0.1, -78.0],
-    fov: 48,
+    pos: [0, 0.2, -72.0],
+    target: [0, 0.0, -78.0],
+    fov: 46,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
   // 15. Final Calm Convergence (Contact)
   {
     t: 1.0,
-    pos: [0, 0, -79.5],
+    pos: [0, 0, -79.0],
     target: [0, 0, -84.0],
-    fov: 46,
+    fov: 44,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
@@ -197,120 +197,120 @@ const DESKTOP_KEYFRAMES: Keyframe[] = [
 // MOBILE KEYFRAMES (Dedicated Narrow Vertical Corridor & Top-Half Artifact Framing)
 // ----------------------------------------------------------------------------------
 const MOBILE_KEYFRAMES: Keyframe[] = [
-  // 1. Hero Mobile (Centered, slightly wider FOV for portrait ring)
+  // 1. Hero Mobile (Centered, slightly higher target so photo ring sits in upper portion)
   {
     t: 0.0,
-    pos: [0, 0, 9.2],
-    target: [0, 0, 0],
-    fov: 54,
+    pos: [0, 0.1, 8.2],
+    target: [0, 0.35, 0],
+    fov: 52,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
   // 2. Portal Dive
   {
-    t: 0.14,
+    t: 0.12,
     pos: [0, 0, 0.4],
     target: [0, 0, -10.0],
-    fov: 58,
+    fov: 56,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
   // 3. Project 01 Mobile Approach
   {
-    t: 0.20,
-    pos: [0, 0.35, -10.5],
-    target: [0, 1.15, -16.5],
-    fov: 54,
+    t: 0.18,
+    pos: [0, 0.3, -10.0],
+    target: [0, 0.85, -17.0],
+    fov: 50,
     roll: 0.0,
     lighting: vConfig.lighting.project1,
   },
   // 4. Project 01 Mobile Hold (Framed in top 50% of portrait viewport)
   {
-    t: 0.28,
-    pos: [0, 0.25, -12.0],
-    target: [0, 1.15, -16.5],
-    fov: 50,
+    t: 0.27,
+    pos: [0, 0.25, -11.8],
+    target: [0, 0.85, -17.0],
+    fov: 46,
     roll: 0.0,
     lighting: vConfig.lighting.project1,
   },
   // 5. Mobile Transition 1 -> 2
   {
     t: 0.37,
-    pos: [0, 0.4, -21.0],
-    target: [0, 0.4, -29.0],
-    fov: 56,
+    pos: [0, 0.35, -23.5],
+    target: [0, 0.5, -31.0],
+    fov: 54,
     roll: 0.0,
     lighting: vConfig.lighting.project1,
   },
   // 6. Project 02 Mobile Approach
   {
     t: 0.42,
-    pos: [0, 0.35, -24.5],
-    target: [0, 1.15, -30.5],
-    fov: 54,
+    pos: [0, 0.3, -24.0],
+    target: [0, 0.85, -31.0],
+    fov: 50,
     roll: 0.0,
     lighting: vConfig.lighting.project2,
   },
   // 7. Project 02 Mobile Hold (Solar engine in top 50% of portrait viewport)
   {
-    t: 0.50,
-    pos: [0, 0.25, -26.0],
-    target: [0, 1.15, -30.5],
-    fov: 50,
+    t: 0.49,
+    pos: [0, 0.25, -25.8],
+    target: [0, 0.85, -31.0],
+    fov: 46,
     roll: 0.0,
     lighting: vConfig.lighting.project2,
   },
   // 8. Mobile Transition 2 -> 3
   {
     t: 0.59,
-    pos: [0, 0.4, -35.0],
-    target: [0, 0.4, -43.0],
-    fov: 56,
+    pos: [0, 0.35, -37.5],
+    target: [0, 0.5, -45.0],
+    fov: 54,
     roll: 0.0,
     lighting: vConfig.lighting.project2,
   },
   // 9. Project 03 Mobile Hold
   {
-    t: 0.70,
-    pos: [0, 0.25, -40.0],
-    target: [0, 1.15, -44.5],
-    fov: 50,
+    t: 0.71,
+    pos: [0, 0.25, -39.8],
+    target: [0, 0.85, -45.0],
+    fov: 46,
     roll: 0.0,
     lighting: vConfig.lighting.project3,
   },
   // 10. Mobile Transition 3 -> 4
   {
-    t: 0.79,
-    pos: [0, 0.35, -49.0],
-    target: [0, 0.35, -57.0],
-    fov: 56,
+    t: 0.81,
+    pos: [0, 0.35, -51.5],
+    target: [0, 0.5, -59.0],
+    fov: 54,
     roll: 0.0,
     lighting: vConfig.lighting.project3,
   },
   // 11. Project 04 Mobile Hold
   {
-    t: 0.86,
-    pos: [0, 0.25, -54.0],
-    target: [0, 1.15, -58.5],
-    fov: 50,
+    t: 0.87,
+    pos: [0, 0.25, -53.8],
+    target: [0, 0.85, -59.0],
+    fov: 46,
     roll: 0.0,
     lighting: vConfig.lighting.project4,
   },
   // 12. Mobile Spinal Dissolve into The Lab
   {
     t: 0.92,
-    pos: [0, 1.8, -60.0],
-    target: [0, -0.4, -67.0],
-    fov: 54,
+    pos: [0, 1.5, -61.0],
+    target: [0, -0.4, -68.0],
+    fov: 50,
     roll: 0.0,
     lighting: vConfig.lighting.project4,
   },
   // 13. Mobile The Lab
   {
     t: 0.94,
-    pos: [0, 1.0, -64.0],
-    target: [0, -0.3, -70.0],
-    fov: 52,
+    pos: [0, 1.2, -64.0],
+    target: [0, -0.4, -70.0],
+    fov: 48,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
@@ -318,8 +318,8 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
   {
     t: 0.965,
     pos: [0, 0.2, -72.0],
-    target: [0, 0.1, -78.0],
-    fov: 50,
+    target: [0, 0.0, -78.0],
+    fov: 46,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
@@ -328,7 +328,7 @@ const MOBILE_KEYFRAMES: Keyframe[] = [
     t: 1.0,
     pos: [0, 0, -79.0],
     target: [0, 0, -84.0],
-    fov: 48,
+    fov: 44,
     roll: 0.0,
     lighting: vConfig.lighting.default,
   },
@@ -381,7 +381,7 @@ export function getTimelineState(rawProgress: number, scrollVelocity = 0): Timel
 
   // 3. Dynamic Field of View
   const baseFov = THREE.MathUtils.lerp(k1.fov, k2.fov, smoothT);
-  const velocityFovWarp = Math.min(7.0, Math.abs(scrollVelocity) * 2.8);
+  const velocityFovWarp = Math.min(6.0, Math.abs(scrollVelocity) * 2.2);
   const cameraFov = baseFov + velocityFovWarp;
 
   // 4. Camera Roll
@@ -402,27 +402,25 @@ export function getTimelineState(rawProgress: number, scrollVelocity = 0): Timel
   }
 
   // 6. Project Visibilities (Emergence -> Peak hold -> Graceful departure)
+  // Gated strictly so objects from different projects NEVER co-exist or bleed
   const projectVisibilities = [0, 0, 0, 0];
   const hudOpacity = [0, 0, 0, 0, 0, 0, 0, 0];
 
   const projectBeats = [
-    { start: 0.18, peakStart: 0.23, peakEnd: 0.32, end: 0.37 },
-    { start: 0.39, peakStart: 0.45, peakEnd: 0.54, end: 0.59 },
-    { start: 0.61, peakStart: 0.66, peakEnd: 0.75, end: 0.79 },
-    { start: 0.80, peakStart: 0.84, peakEnd: 0.90, end: 0.92 },
+    { start: 0.16, peakStart: 0.23, peakEnd: 0.32, end: 0.37 },
+    { start: 0.38, peakStart: 0.45, peakEnd: 0.54, end: 0.59 },
+    { start: 0.60, peakStart: 0.67, peakEnd: 0.76, end: 0.81 },
+    { start: 0.82, peakStart: 0.85, peakEnd: 0.90, end: 0.93 },
   ];
 
   projectBeats.forEach((b, idx) => {
     if (p < b.start || p > b.end) {
       projectVisibilities[idx] = 0;
     } else if (p < b.peakStart) {
-      // Smooth emergence
       projectVisibilities[idx] = smoothHermite((p - b.start) / (b.peakStart - b.start));
     } else if (p <= b.peakEnd) {
-      // Stable peak inspection
       projectVisibilities[idx] = 1.0;
     } else {
-      // Graceful departure
       projectVisibilities[idx] = 1.0 - smoothHermite((p - b.peakEnd) / (b.end - b.peakEnd));
     }
   });
@@ -439,7 +437,7 @@ export function getTimelineState(rawProgress: number, scrollVelocity = 0): Timel
     }
   }
 
-  // 7. Spine Dispersion (Collapses and transforms into The Lab skills floor)
+  // 7. Spine Dispersion (Collapses into The Lab skills floor)
   const spineDispersion = p < 0.90 ? 0.0 : Math.min(1.0, (p - 0.90) / 0.04);
 
   // 8. Traveling Energy Pulse Phase
@@ -448,19 +446,19 @@ export function getTimelineState(rawProgress: number, scrollVelocity = 0): Timel
   // 9. Storytelling Environment Lighting Interpolation
   _colorA.set(k1.lighting.ambient);
   _colorB.set(k2.lighting.ambient);
-  const ambientHex = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
+  const ambient = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
 
   _colorA.set(k1.lighting.key);
   _colorB.set(k2.lighting.key);
-  const keyHex = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
+  const key = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
 
   _colorA.set(k1.lighting.fill);
   _colorB.set(k2.lighting.fill);
-  const fillHex = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
+  const fill = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
 
   _colorA.set(k1.lighting.fog);
   _colorB.set(k2.lighting.fog);
-  const fogHex = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
+  const fog = '#' + _colorA.lerp(_colorB, smoothT).getHexString();
 
   return {
     progress: p,
@@ -474,12 +472,7 @@ export function getTimelineState(rawProgress: number, scrollVelocity = 0): Timel
     hudOpacity,
     spineDispersion,
     energyPulsePhase,
-    lighting: {
-      ambient: ambientHex,
-      key: keyHex,
-      fill: fillHex,
-      fog: fogHex,
-    },
+    lighting: { ambient, key, fill, fog },
     isMobile,
   };
 }

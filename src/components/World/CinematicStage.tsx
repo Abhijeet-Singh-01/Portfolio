@@ -47,15 +47,15 @@ export const CinematicStage: React.FC = () => {
     gsap.to(experienceState, { detailZoom: 0, duration: 0.8, ease: 'power2.inOut' });
   };
 
-  // Determine active scene window & opacities
-  // Hero: 0.00 -> 0.14
-  const heroOpacity = progress <= 0.07 ? 1 : Math.max(0, 1 - (progress - 0.07) / 0.06);
+  // Scene Opacity Windows (Interpolated smoothly, mutual exclusivity)
+  // Hero: 0.00 -> 0.13
+  const heroOpacity = progress <= 0.06 ? 1 : Math.max(0, 1 - (progress - 0.06) / 0.06);
 
   // Projects:
-  // P01: 0.18 -> 0.36 (peak 0.23 -> 0.32)
-  // P02: 0.40 -> 0.58 (peak 0.45 -> 0.54)
-  // P03: 0.62 -> 0.78 (peak 0.66 -> 0.75)
-  // P04: 0.81 -> 0.91 (peak 0.84 -> 0.90)
+  // P01: 0.16 -> 0.37 (peak 0.23 -> 0.32)
+  // P02: 0.38 -> 0.59 (peak 0.45 -> 0.54)
+  // P03: 0.60 -> 0.81 (peak 0.67 -> 0.76)
+  // P04: 0.82 -> 0.93 (peak 0.85 -> 0.90)
   const getProjectOpacity = (start: number, peakStart: number, peakEnd: number, end: number) => {
     if (progress < start || progress > end) return 0;
     if (progress < peakStart) return (progress - start) / (peakStart - start);
@@ -63,47 +63,47 @@ export const CinematicStage: React.FC = () => {
     return 1 - (progress - peakEnd) / (end - peakEnd);
   };
 
-  const p1Opacity = getProjectOpacity(0.18, 0.23, 0.32, 0.36);
-  const p2Opacity = getProjectOpacity(0.40, 0.45, 0.54, 0.58);
-  const p3Opacity = getProjectOpacity(0.62, 0.66, 0.75, 0.78);
-  const p4Opacity = getProjectOpacity(0.81, 0.84, 0.90, 0.92);
+  const p1Opacity = getProjectOpacity(0.16, 0.23, 0.32, 0.37);
+  const p2Opacity = getProjectOpacity(0.38, 0.45, 0.54, 0.59);
+  const p3Opacity = getProjectOpacity(0.60, 0.67, 0.76, 0.81);
+  const p4Opacity = getProjectOpacity(0.82, 0.85, 0.90, 0.93);
 
-  // Skills (The Lab): 0.92 -> 0.95
+  // Skills (The Lab): 0.92 -> 0.955
   const skillsOpacity =
-    progress >= 0.92 && progress <= 0.95
+    progress >= 0.92 && progress <= 0.955
       ? progress < 0.928
         ? (progress - 0.92) / 0.008
-        : progress > 0.945
-        ? 1 - (progress - 0.945) / 0.005
+        : progress > 0.948
+        ? 1 - (progress - 0.948) / 0.007
         : 1
       : 0;
 
-  // About: 0.95 -> 0.98
+  // About: 0.955 -> 0.985
   const aboutOpacity =
-    progress >= 0.95 && progress <= 0.98
-      ? progress < 0.958
-        ? (progress - 0.95) / 0.008
-        : progress > 0.975
-        ? 1 - (progress - 0.975) / 0.005
+    progress >= 0.955 && progress <= 0.985
+      ? progress < 0.962
+        ? (progress - 0.955) / 0.007
+        : progress > 0.978
+        ? 1 - (progress - 0.978) / 0.007
         : 1
       : 0;
 
-  // Contact: 0.98 -> 1.00
-  const contactOpacity = progress >= 0.98 ? Math.min(1, (progress - 0.98) / 0.015) : 0;
+  // Contact: 0.985 -> 1.00
+  const contactOpacity = progress >= 0.985 ? Math.min(1, (progress - 0.985) / 0.012) : 0;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden select-none">
       {/* ---------------------------------------------------------------------- */}
-      {/* SCENE 0: HERO (Visible at t = 0.00 -> 0.13)                            */}
+      {/* SCENE 0: HERO                                                          */}
       {/* ---------------------------------------------------------------------- */}
       {heroOpacity > 0.01 && (
         <div
-          className="absolute inset-0 flex flex-col justify-between p-6 sm:p-10 md:p-16 pt-24 pb-8 transition-opacity duration-200"
+          className="absolute inset-0 flex flex-col justify-between p-5 sm:p-8 md:p-14 pt-20 sm:pt-24 pb-6 transition-opacity duration-200"
           style={{ opacity: heroOpacity }}
         >
           {/* Top Kicker */}
           <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-[11px] uppercase tracking-[0.25em] text-accent-aqua-ink">
+            <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-accent-aqua-ink">
               ABHIJEET SINGH — LUCKNOW, IN
             </span>
             <span className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border/20 bg-surface/80 text-[10px] text-accent-lime tracking-widest uppercase">
@@ -112,27 +112,27 @@ export const CinematicStage: React.FC = () => {
             </span>
           </div>
 
-          {/* Center Content */}
-          <div className="my-auto py-6 max-w-4xl">
-            <h1 className="font-display font-extrabold uppercase text-[clamp(2.4rem,8.5vw,6rem)] leading-[0.9] tracking-tighter text-text">
+          {/* Content (Desktop: Left Aligned / Mobile: Bottom Stacked) */}
+          <div className={isMobile ? 'mt-auto mb-2 w-full max-w-sm' : 'my-auto max-w-xl'}>
+            <h1 className="font-display font-black uppercase text-[clamp(1.75rem,7vw,4.6rem)] leading-[0.92] tracking-tighter text-text">
               <span className="block">SOFTWARE</span>
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-accent-indigo via-accent-violet to-accent-aqua">
                 DEVELOPER
               </span>
-              <span className="block text-text-2 text-[clamp(1.8rem,6.5vw,4.6rem)]">
+              <span className="block text-text-2 text-[clamp(1.35rem,5.2vw,3.5rem)]">
                 AI + FULL-STACK
               </span>
             </h1>
 
-            <p className="mt-5 max-w-xl text-xs sm:text-sm font-mono text-text-2 leading-relaxed">
+            <p className="mt-3.5 max-w-lg text-xs sm:text-sm font-mono text-text-2 leading-relaxed">
               CS undergraduate (PSIT 2024–2028). Building scalable backend APIs, database-driven architectures, and AI/ML solutions. Strengthening DSA & Generative AI.
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3.5 pointer-events-auto">
+            <div className="mt-5 flex flex-wrap items-center gap-2.5 pointer-events-auto">
               <button
                 type="button"
                 onClick={() => scrollToRoom('projects')}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent-indigo text-white font-mono text-xs uppercase tracking-widest font-semibold hover:bg-accent-violet transition-colors cursor-pointer shadow-lg shadow-accent-indigo/25"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-indigo text-white font-mono text-xs uppercase tracking-widest font-semibold hover:bg-accent-violet transition-colors cursor-pointer shadow-lg shadow-accent-indigo/25"
               >
                 <span>Explore Work</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -141,7 +141,7 @@ export const CinematicStage: React.FC = () => {
               <a
                 href={siteLinks.resume.url}
                 download={siteLinks.resume.download}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-border/25 bg-surface/80 text-text hover:border-accent-aqua/50 hover:text-accent-aqua-ink font-mono text-xs uppercase tracking-widest transition-colors"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-border/25 bg-surface/80 text-text hover:border-accent-aqua/50 hover:text-accent-aqua-ink font-mono text-xs uppercase tracking-widest transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Resume PDF</span>
@@ -150,8 +150,8 @@ export const CinematicStage: React.FC = () => {
           </div>
 
           {/* Bottom Explore Links */}
-          <div className="pt-4 border-t border-border/10 flex items-center justify-between text-xs font-mono">
-            <div className="flex flex-wrap gap-4 sm:gap-7 pointer-events-auto">
+          <div className="pt-3 border-t border-border/10 flex items-center justify-between text-xs font-mono">
+            <div className="flex flex-wrap gap-3.5 sm:gap-6 pointer-events-auto text-[11px]">
               <button
                 type="button"
                 onClick={() => scrollToRoom('projects')}
@@ -245,61 +245,61 @@ export const CinematicStage: React.FC = () => {
       {/* ---------------------------------------------------------------------- */}
       {skillsOpacity > 0.01 && (
         <div
-          className="absolute inset-0 flex items-center justify-center p-6 sm:p-12 transition-opacity duration-300"
+          className="absolute inset-0 flex items-center justify-center p-5 sm:p-10 transition-opacity duration-300"
           style={{ opacity: skillsOpacity }}
         >
-          <div className="w-full max-w-2xl bg-surface/90 border border-white/10 rounded-2xl p-6 sm:p-8 backdrop-blur-2xl shadow-2xl pointer-events-auto">
+          <div className="w-full max-w-2xl bg-surface/90 border border-white/10 rounded-2xl p-5 sm:p-7 backdrop-blur-2xl shadow-2xl pointer-events-auto">
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-border/15 mb-5">
+            <div className="flex items-center justify-between pb-3.5 border-b border-border/15 mb-4">
               <div>
                 <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-accent-lime font-semibold">
                   03 / LAB
                 </span>
-                <h2 className="text-xl sm:text-2xl font-display font-black uppercase text-text tracking-tight">
+                <h2 className="text-lg sm:text-xl font-display font-black uppercase text-text tracking-tight">
                   TECHNICAL ARSENAL
                 </h2>
               </div>
               <span className="text-xs font-mono text-text-2">// THE LAB</span>
             </div>
 
-            {/* Categorized Skills List (Strictly Verified from Resume) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
-              <div className="space-y-1.5">
+            {/* Categorized Skills (Verified Strictly from Resume) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs font-mono">
+              <div className="space-y-1">
                 <span className="text-[10px] uppercase tracking-wider text-accent-aqua-ink font-semibold">
                   01 LANGUAGES
                 </span>
                 <p className="text-text leading-relaxed">C++, Python, C, SQL</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-[10px] uppercase tracking-wider text-accent-aqua-ink font-semibold">
                   02 FRONTEND
                 </span>
                 <p className="text-text leading-relaxed">React.js, HTML, CSS, Tailwind CSS, JavaScript (ES6+)</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-[10px] uppercase tracking-wider text-accent-aqua-ink font-semibold">
                   03 BACKEND
                 </span>
                 <p className="text-text leading-relaxed">FastAPI, REST APIs, Firebase Cloud Messaging (Learning)</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-[10px] uppercase tracking-wider text-accent-aqua-ink font-semibold">
                   04 DATABASES
                 </span>
                 <p className="text-text leading-relaxed">MongoDB, MySQL</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-[10px] uppercase tracking-wider text-accent-aqua-ink font-semibold">
                   05 TOOLS & PLATFORMS
                 </span>
                 <p className="text-text leading-relaxed">Git, GitHub, VS Code</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <span className="text-[10px] uppercase tracking-wider text-accent-aqua-ink font-semibold">
                   06 CORE CS & AI
                 </span>
@@ -315,13 +315,13 @@ export const CinematicStage: React.FC = () => {
       {/* ---------------------------------------------------------------------- */}
       {aboutOpacity > 0.01 && (
         <div
-          className="absolute inset-0 flex items-center justify-center p-6 sm:p-12 transition-opacity duration-300"
+          className="absolute inset-0 flex items-center justify-center p-5 sm:p-10 transition-opacity duration-300"
           style={{ opacity: aboutOpacity }}
         >
-          <div className="w-full max-w-2xl bg-surface/90 border border-white/10 rounded-2xl p-6 sm:p-8 backdrop-blur-2xl shadow-2xl pointer-events-auto">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <div className="w-full max-w-2xl bg-surface/90 border border-white/10 rounded-2xl p-5 sm:p-7 backdrop-blur-2xl shadow-2xl pointer-events-auto">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
               {/* Natural Portrait (Uncropped, crisp) */}
-              <div className="w-24 sm:w-32 aspect-square rounded-2xl overflow-hidden border border-border/25 bg-surface-2 shrink-0">
+              <div className="w-20 sm:w-28 aspect-square rounded-2xl overflow-hidden border border-border/25 bg-surface-2 shrink-0">
                 <img
                   src={profilePhoto}
                   alt="Portrait of Abhijeet Singh"
@@ -334,19 +334,19 @@ export const CinematicStage: React.FC = () => {
                 <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-accent-aqua-ink font-semibold">
                   04 / ABOUT
                 </span>
-                <h2 className="text-xl sm:text-2xl font-display font-black uppercase text-text tracking-tight mt-0.5">
+                <h2 className="text-lg sm:text-xl font-display font-black uppercase text-text tracking-tight mt-0.5">
                   ABHIJEET SINGH
                 </h2>
-                <p className="text-xs font-mono text-text-2 mt-1">
+                <p className="text-xs font-mono text-text-2 mt-0.5">
                   B.Tech CSE · PSIT, Kanpur (2024–2028) · CGPA 7.54
                 </p>
 
-                <p className="text-xs text-text-2 leading-relaxed mt-3">
+                <p className="text-xs text-text-2 leading-relaxed mt-2.5">
                   Undergraduate software developer with a focus on backend systems, clean REST APIs, and AI/ML applications. Passionate about engineering reliable services grounded in real data.
                 </p>
 
                 {/* Achievements & Certifications */}
-                <div className="mt-4 pt-3 border-t border-border/15 flex flex-wrap items-center gap-4 text-xs font-mono">
+                <div className="mt-3.5 pt-3 border-t border-border/15 flex flex-wrap items-center gap-4 text-xs font-mono">
                   <div className="flex items-center gap-1.5 text-accent-aqua-ink">
                     <Code2 className="w-3.5 h-3.5" />
                     <span>250+ LeetCode DSA Solved</span>
@@ -367,7 +367,7 @@ export const CinematicStage: React.FC = () => {
       {/* ---------------------------------------------------------------------- */}
       {contactOpacity > 0.01 && (
         <div
-          className="absolute inset-0 flex flex-col justify-between p-6 sm:p-12 pt-24 pb-8 transition-opacity duration-300"
+          className="absolute inset-0 flex flex-col justify-between p-5 sm:p-10 pt-20 pb-6 transition-opacity duration-300"
           style={{ opacity: contactOpacity }}
         >
           <div />
@@ -376,12 +376,12 @@ export const CinematicStage: React.FC = () => {
             <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-accent-aqua-ink font-semibold">
               05 / CONTACT
             </span>
-            <h2 className="text-3xl sm:text-5xl font-display font-extrabold uppercase text-text tracking-tight leading-tight mt-2 mb-6">
+            <h2 className="text-2xl sm:text-4xl font-display font-extrabold uppercase text-text tracking-tight leading-tight mt-2 mb-6">
               LET'S BUILD SOMETHING MEANINGFUL.
             </h2>
 
             {/* Magnetic Contact Pills */}
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
               <a
                 href={siteLinks.email.url}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent-indigo text-white font-mono text-xs uppercase tracking-wider font-semibold hover:bg-accent-violet transition-colors"
@@ -444,7 +444,7 @@ export const CinematicStage: React.FC = () => {
       >
         {activeModalProject && (
           <div className="flex flex-col h-full max-h-[85vh]">
-            <div className="p-5 border-b border-border/15 flex items-center justify-between bg-surface-2/60">
+            <div className="p-4 sm:p-5 border-b border-border/15 flex items-center justify-between bg-surface-2/60">
               <span className="text-xs font-mono uppercase tracking-widest text-accent-aqua-ink font-semibold">
                 {activeModalProject.category}
               </span>
@@ -457,9 +457,9 @@ export const CinematicStage: React.FC = () => {
               </button>
             </div>
 
-            <div className="p-6 overflow-y-auto space-y-5">
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
               <div>
-                <h3 className="text-2xl font-display font-extrabold uppercase text-text">
+                <h3 className="text-xl sm:text-2xl font-display font-extrabold uppercase text-text">
                   {activeModalProject.name}
                 </h3>
                 <p className="text-xs font-mono text-accent-aqua-ink mt-1">
@@ -468,15 +468,15 @@ export const CinematicStage: React.FC = () => {
               </div>
 
               <div>
-                <h4 className="text-[10px] font-mono uppercase tracking-wider text-text-2 mb-1.5">Overview</h4>
-                <p className="text-xs text-text-2 leading-relaxed bg-surface-2/40 p-3.5 rounded-xl border border-border/10">
+                <h4 className="text-[10px] font-mono uppercase tracking-wider text-text-2 mb-1">Overview</h4>
+                <p className="text-xs text-text-2 leading-relaxed bg-surface-2/40 p-3 rounded-xl border border-border/10">
                   {activeModalProject.description}
                 </p>
               </div>
 
               <div>
-                <h4 className="text-[10px] font-mono uppercase tracking-wider text-text-2 mb-2">Verified Highlights</h4>
-                <ul className="space-y-2">
+                <h4 className="text-[10px] font-mono uppercase tracking-wider text-text-2 mb-1.5">Verified Highlights</h4>
+                <ul className="space-y-1.5">
                   {(activeModalProject.systemHighlights || []).map((feat, i) => (
                     <li key={i} className="flex items-start gap-2 text-xs text-text-2">
                       <CheckCircle className="w-3.5 h-3.5 text-accent-aqua-ink shrink-0 mt-0.5" />
@@ -487,10 +487,10 @@ export const CinematicStage: React.FC = () => {
               </div>
 
               <div>
-                <h4 className="text-[10px] font-mono uppercase tracking-wider text-text-2 mb-2">Engineering Stack</h4>
+                <h4 className="text-[10px] font-mono uppercase tracking-wider text-text-2 mb-1.5">Engineering Stack</h4>
                 <div className="flex flex-wrap gap-1.5">
                   {activeModalProject.technologies.map((t) => (
-                    <span key={t} className="px-2.5 py-1 rounded text-[10px] font-mono border border-border/20 bg-surface-2 text-text-2">
+                    <span key={t} className="px-2 py-0.5 rounded text-[10px] font-mono border border-border/20 bg-surface-2 text-text-2">
                       {t}
                     </span>
                   ))}
@@ -548,77 +548,79 @@ function ProjectView({
 
   return (
     <div
-      className="absolute inset-0 flex items-center p-6 sm:p-12 transition-opacity duration-300"
+      className="absolute inset-0 flex items-center p-5 sm:p-10 transition-opacity duration-300 pointer-events-none"
       style={{ opacity }}
     >
-      {/* DESKTOP VIEWPORT: Opposite Side of the 3D Artifact */}
+      {/* DESKTOP VIEWPORT: Staged cleanly on the opposite half of the 3D Artifact */}
       {!isMobile && (
         <div
-          className={`w-full max-w-lg pointer-events-auto flex flex-col justify-center ${
-            isLeft ? 'ml-auto text-left pl-6' : 'mr-auto text-left pr-6'
+          className={`w-full max-w-md pointer-events-auto flex flex-col justify-center ${
+            isLeft ? 'ml-auto text-left pr-4 lg:pr-12' : 'mr-auto text-left pl-4 lg:pl-12'
           }`}
         >
-          <div className="flex items-center gap-3 mb-2">
-            <span className="font-display font-black text-4xl text-transparent bg-clip-text bg-gradient-to-r from-accent-indigo to-accent-aqua">
-              0{index + 1}
-            </span>
-            <span className="text-xs font-mono text-border font-bold">/</span>
-            <span className="text-xs font-mono text-text-2 tracking-widest uppercase">04</span>
-            <span className="ml-2 px-3 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-widest border border-accent-aqua/30 bg-surface/85 text-accent-aqua-ink font-semibold">
-              {project.category}
-            </span>
-          </div>
-
-          <h2 className="text-3xl lg:text-4xl font-display font-extrabold uppercase text-text tracking-tight leading-tight mb-2">
-            {project.name}
-          </h2>
-
-          <p className="text-xs font-mono text-accent-aqua-ink mb-3">{project.tagline}</p>
-
-          <p className="text-xs text-text-2 leading-relaxed mb-4 max-w-md bg-surface/85 p-3.5 rounded-xl border border-white/10 backdrop-blur-md">
-            {project.description}
-          </p>
-
-          <div className="flex flex-wrap gap-1.5 mb-5 max-w-md">
-            {project.technologies.slice(0, 5).map((tech) => (
-              <span
-                key={tech}
-                className="px-2.5 py-0.5 rounded text-[10px] font-mono border border-border/30 bg-surface/75 text-text-2 font-medium"
-              >
-                {tech}
+          <div className="p-6 rounded-2xl bg-surface/90 border border-white/10 backdrop-blur-xl shadow-2xl">
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="font-display font-black text-3xl text-transparent bg-clip-text bg-gradient-to-r from-accent-indigo to-accent-aqua">
+                0{index + 1}
               </span>
-            ))}
-          </div>
+              <span className="text-xs font-mono text-border font-bold">/</span>
+              <span className="text-xs font-mono text-text-2 tracking-widest uppercase">04</span>
+              <span className="ml-2 px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-widest border border-accent-aqua/30 bg-surface text-accent-aqua-ink font-semibold">
+                {project.category}
+              </span>
+            </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => onOpenModal(project)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono uppercase tracking-wider bg-accent-indigo text-white font-semibold hover:bg-accent-violet transition-colors cursor-pointer"
-            >
-              <span>Details</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <h2 className="text-2xl lg:text-3xl font-display font-extrabold uppercase text-text tracking-tight leading-tight mb-1.5">
+              {project.name}
+            </h2>
 
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-mono uppercase border border-border/30 bg-surface/75 text-text hover:text-accent-aqua-ink transition-colors"
-                aria-label="GitHub Repository"
+            <p className="text-xs font-mono text-accent-aqua-ink mb-2.5">{project.tagline}</p>
+
+            <p className="text-xs text-text-2 leading-relaxed mb-3.5 bg-surface-2/40 p-3 rounded-xl border border-white/5">
+              {project.description}
+            </p>
+
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {project.technologies.slice(0, 5).map((tech) => (
+                <span
+                  key={tech}
+                  className="px-2 py-0.5 rounded text-[10px] font-mono border border-border/30 bg-surface-2/60 text-text-2 font-medium"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => onOpenModal(project)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono uppercase tracking-wider bg-accent-indigo text-white font-semibold hover:bg-accent-violet transition-colors cursor-pointer"
               >
-                <GithubIcon className="w-3.5 h-3.5" />
-                <span>Code</span>
-              </a>
-            )}
+                <span>Details</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-mono uppercase border border-border/30 bg-surface/75 text-text hover:text-accent-aqua-ink transition-colors"
+                  aria-label="GitHub Repository"
+                >
+                  <GithubIcon className="w-3.5 h-3.5" />
+                  <span>Code</span>
+                </a>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* MOBILE VIEWPORT: Positioned in Lower Half, Leaving Upper 50% for 3D Artifact */}
+      {/* MOBILE VIEWPORT: Positioned in Lower Half, Leaving Upper 55% for 3D Artifact */}
       {isMobile && (
-        <div className="fixed bottom-0 inset-x-0 p-4 pb-6 pointer-events-auto">
+        <div className="fixed bottom-4 inset-x-3.5 pointer-events-auto">
           <div className="w-full max-w-sm mx-auto p-4 rounded-2xl bg-surface/95 border border-white/15 backdrop-blur-2xl shadow-2xl">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-2">
@@ -639,7 +641,7 @@ function ProjectView({
               </button>
             </div>
 
-            <h2 className="text-base font-display font-extrabold uppercase text-text tracking-tight mb-1 truncate">
+            <h2 className="text-sm font-display font-extrabold uppercase text-text tracking-tight mb-1 truncate">
               {project.name}
             </h2>
 

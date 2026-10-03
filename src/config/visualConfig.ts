@@ -7,12 +7,12 @@
 export const visualConfig = {
   // 1. The Living Architectural Infrastructure Spine (Futuristic Engineered Spine)
   backbone: {
-    height: 64, // Extended Z-span through all 4 projects
-    radius: 2.2, // Structural envelope radius
-    strutsCount: 28, // Architectural cross-rib frames
-    pulseSpeed: 1.9, // Luminous energy pulse propagation velocity
-    pulseFrequency: 0.24, // Data pulse frequency density
-    nodeSize: 0.09, // Luminous junction node crystal scale
+    height: 64,
+    radius: 2.2,
+    strutsCount: 24,
+    pulseSpeed: 1.8,
+    pulseFrequency: 0.22,
+    nodeSize: 0.08,
     conduitColor: '#7C6CFF', // Base electric indigo
     conduitGlow: '#22D3EE', // Vivid cyan data pulse
     tendrilColor: '#C6F432', // Lime umbilical conduit
@@ -20,17 +20,17 @@ export const visualConfig = {
 
   // 2. Cinematic Camera & Lens System
   camera: {
-    baseFov: 50,
-    travelFov: 58,
-    inspectFov: 42,
-    initialZ: 8.5,
-    travelZ: 82,
-    damping: 3.4,
-    lookAhead: 7.0,
-    mouseLookX: 0.018,
-    mouseLookY: 0.014,
-    breathingSpeed: 0.38,
-    breathingAmp: 0.04,
+    baseFov: 48,
+    travelFov: 54,
+    inspectFov: 40,
+    initialZ: 7.5,
+    travelZ: 84,
+    damping: 3.6,
+    lookAhead: 6.5,
+    mouseLookX: 0.015,
+    mouseLookY: 0.012,
+    breathingSpeed: 0.35,
+    breathingAmp: 0.03,
     diveDuration: 0.95,
   },
 
@@ -49,42 +49,42 @@ export const visualConfig = {
   // 4. Storytelling Dynamic Lighting (Per-Project Color Worlds)
   lighting: {
     default: {
-      ambient: '#1A1050',
+      ambient: '#0A0620',
       key: '#7C6CFF',
       fill: '#22D3EE',
-      fog: '#0A0620',
+      fog: '#05060A',
     },
     // Project 01: AI Incident Intelligence (Deep Observability & Incident Detection)
     project1: {
-      ambient: '#160838',
+      ambient: '#0A0620',
       key: '#7C6CFF', // Electric Indigo
       fill: '#FF5FA8', // Anomaly Magenta
       accent: '#22D3EE', // Telemetry Cyan
-      fog: '#0A0624',
+      fog: '#05060E',
     },
     // Project 02: SolisIQ (Solar Energy System & Photovoltaic Power)
     project2: {
-      ambient: '#261204',
+      ambient: '#1A0D04',
       key: '#FFA36B', // Solar Tangerine
       fill: '#FCD34D', // Photovoltaic Amber
       accent: '#22D3EE', // Storage Aqua
-      fog: '#120803',
+      fog: '#0A0604',
     },
     // Project 03: Instanews (High-Velocity Information Stream & RBAC Node)
     project3: {
-      ambient: '#06162E',
+      ambient: '#060F24',
       key: '#38BDF8', // Data Cyan
       fill: '#6366F1', // Express Indigo
       accent: '#FFFFFF', // Pure White feed
-      fog: '#040B1A',
+      fog: '#030814',
     },
     // Project 04: ZeroHour (Mechanical Precision Chronograph)
     project4: {
-      ambient: '#180B33',
+      ambient: '#100724',
       key: '#A855F7', // Chrono Violet
       fill: '#60A5FA', // Precision Blue
       accent: '#E0E7FF', // Diamond tick marks
-      fog: '#0B051C',
+      fog: '#060312',
     },
   },
 
@@ -92,29 +92,25 @@ export const visualConfig = {
   projects: {
     count: 4,
     coords: [
-      // Project 01: AI Incident Intelligence
+      // Project 01: AI Incident Intelligence (Desktop: Artifact LEFT, Info RIGHT)
       {
-        desktop: { x: -3.2, y: 0.35, z: -17.0, rotY: -0.25, rotX: 0.05, scale: 1.15, side: 'left' as const },
-        mobile: { x: 0, y: 1.15, z: -16.5, rotY: 0.0, rotX: 0.04, scale: 0.82, side: 'center' as const },
-        numberZ: -34.0,
+        desktop: { x: -2.6, y: 0.2, z: -17.0, rotY: -0.25, rotX: 0.05, scale: 1.1, side: 'left' as const },
+        mobile: { x: 0, y: 0.95, z: -17.0, rotY: 0.0, rotX: 0.04, scale: 0.8, side: 'center' as const },
       },
-      // Project 02: SolisIQ
+      // Project 02: SolisIQ (Desktop: Artifact RIGHT, Info LEFT)
       {
-        desktop: { x: 3.2, y: -0.25, z: -31.0, rotY: 0.30, rotX: -0.06, scale: 1.18, side: 'right' as const },
-        mobile: { x: 0, y: 1.15, z: -30.5, rotY: 0.0, rotX: -0.04, scale: 0.82, side: 'center' as const },
-        numberZ: -48.0,
+        desktop: { x: 2.6, y: 0.0, z: -31.0, rotY: 0.28, rotX: -0.05, scale: 1.15, side: 'right' as const },
+        mobile: { x: 0, y: 0.95, z: -31.0, rotY: 0.0, rotX: -0.04, scale: 0.8, side: 'center' as const },
       },
-      // Project 03: Instanews
+      // Project 03: Instanews (Desktop: Artifact LEFT, Info RIGHT)
       {
-        desktop: { x: -2.8, y: 0.8, z: -45.0, rotY: -0.32, rotX: 0.06, scale: 1.15, side: 'left' as const },
-        mobile: { x: 0, y: 1.15, z: -44.5, rotY: 0.0, rotX: 0.04, scale: 0.82, side: 'center' as const },
-        numberZ: -62.0,
+        desktop: { x: -2.6, y: 0.2, z: -45.0, rotY: -0.28, rotX: 0.06, scale: 1.1, side: 'left' as const },
+        mobile: { x: 0, y: 0.95, z: -45.0, rotY: 0.0, rotX: 0.04, scale: 0.8, side: 'center' as const },
       },
-      // Project 04: ZeroHour
+      // Project 04: ZeroHour (Desktop: Artifact RIGHT, Info LEFT)
       {
-        desktop: { x: 2.6, y: -0.3, z: -59.0, rotY: 0.25, rotX: 0.10, scale: 1.2, side: 'right' as const },
-        mobile: { x: 0, y: 1.15, z: -58.5, rotY: 0.0, rotX: 0.06, scale: 0.82, side: 'center' as const },
-        numberZ: -76.0,
+        desktop: { x: 2.6, y: 0.0, z: -59.0, rotY: 0.25, rotX: 0.08, scale: 1.15, side: 'right' as const },
+        mobile: { x: 0, y: 0.95, z: -59.0, rotY: 0.0, rotX: 0.06, scale: 0.8, side: 'center' as const },
       },
     ],
   },
@@ -131,23 +127,23 @@ export const visualConfig = {
   // 7. Multi-Tier GPU Particles (Restrained & Purposeful)
   particles: {
     counts: {
-      high: 1800, // Reduced from excessive 3800 to purposeful 1800
-      medium: 1000,
-      low: 400,
+      high: 1200,
+      medium: 700,
+      low: 300,
     },
-    baseSize: 0.035,
-    driftSpeed: 0.16,
-    streamSpeed: 0.75,
+    baseSize: 0.032,
+    driftSpeed: 0.14,
+    streamSpeed: 0.65,
   },
 
   // 8. 360° Hero Portrait Orb
   hero: {
     dragSensitivity: 0.009,
-    verticalRotationLimit: 1.2,
+    verticalRotationLimit: 1.1,
     autoReturnSpeed: 0.045,
-    idleSwaySpeed: 0.75,
-    idleSwayAmp: 0.08,
-    ringRadius: 1.9,
+    idleSwaySpeed: 0.65,
+    idleSwayAmp: 0.06,
+    ringRadius: 1.85,
     glassThickness: 0.12,
   },
 
@@ -167,7 +163,7 @@ export const visualConfig = {
     loaderDuration: 1200,
     themeTransition: 300,
     cursorDamping: 0.18,
-    scrollDuration: 0.75, // Responsive crisp scroll duration
+    scrollDuration: 0.75,
   },
 } as const;
 
