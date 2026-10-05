@@ -327,6 +327,20 @@
 .hero-in-7 { animation: heroEntrance 500ms cubic-bezier(0.16, 1, 0.3, 1) 480ms both; }
 .hero-in-core { animation: heroFade 500ms ease-out 100ms both; }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 220ms ease-out forwards;
+}
+
 /* Cinematic Project Stage & 3D Spatial Choreography */
 .project-chapter-stage {
   perspective: 1200px;

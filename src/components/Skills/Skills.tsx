@@ -13,6 +13,7 @@ import {
   Layers,
   List,
   CheckCircle2,
+  Search,
 } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 
@@ -34,15 +35,65 @@ const categoryBadges: Record<string, string> = {
   tools: '06 // TOOLS',
 };
 
+const skillProjectMap: Record<string, { id: string; name: string }[]> = {
+  FastAPI: [
+    { id: 'solisiq', name: 'SolisIQ' },
+    { id: 'ai-incident-intelligence', name: 'AI Incident Intelligence' },
+    { id: 'setu', name: 'SETU' },
+  ],
+  'React.js': [
+    { id: 'solisiq', name: 'SolisIQ' },
+    { id: 'setu', name: 'SETU' },
+  ],
+  Python: [
+    { id: 'solisiq', name: 'SolisIQ' },
+    { id: 'ai-incident-intelligence', name: 'AI Incident Intelligence' },
+    { id: 'setu', name: 'SETU' },
+  ],
+  'REST APIs': [
+    { id: 'solisiq', name: 'SolisIQ' },
+    { id: 'ai-incident-intelligence', name: 'AI Incident Intelligence' },
+    { id: 'setu', name: 'SETU' },
+  ],
+  MySQL: [{ id: 'solisiq', name: 'SolisIQ' }],
+  PostgreSQL: [{ id: 'setu', name: 'SETU' }],
+  'Scikit-learn': [
+    { id: 'solisiq', name: 'SolisIQ' },
+    { id: 'ai-incident-intelligence', name: 'AI Incident Intelligence' },
+  ],
+  Pandas: [
+    { id: 'solisiq', name: 'SolisIQ' },
+    { id: 'ai-incident-intelligence', name: 'AI Incident Intelligence' },
+  ],
+  NumPy: [
+    { id: 'solisiq', name: 'SolisIQ' },
+    { id: 'ai-incident-intelligence', name: 'AI Incident Intelligence' },
+  ],
+  'C++': [{ id: 'skills', name: '250+ LeetCode DSA' }],
+  SQL: [
+    { id: 'solisiq', name: 'SolisIQ (MySQL)' },
+    { id: 'setu', name: 'SETU (PostgreSQL)' },
+  ],
+};
+
 export const Skills: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'spatial' | 'list'>('spatial');
 
-  const filteredCategories =
+  const filteredCategories = (
     activeFilter === 'all'
       ? skillsCategories
-      : skillsCategories.filter((cat) => cat.id === activeFilter);
+      : skillsCategories.filter((cat) => cat.id === activeFilter)
+  ).map((cat) => {
+    if (!searchQuery.trim()) return cat;
+    const query = searchQuery.toLowerCase().trim();
+    return {
+      ...cat,
+      skills: cat.skills.filter((s) => s.name.toLowerCase().includes(query)),
+    };
+  }).filter((cat) => cat.skills.length > 0);
 
   const totalSkillsCount = skillsCategories.reduce((sum, cat) => sum + cat.skills.length, 0);
 
@@ -183,6 +234,62 @@ export const Skills: React.FC = () => {
             );
           })}
         </div>
+
+        {/* Interactive Query & Search Filter */}
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[220px] max-w-sm">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-2)] pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Query skills (e.g. FastAPI, Python, React)..."
+              className="w-full pl-9 pr-8 py-1.5 rounded-lg text-xs font-mono bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] placeholder-[var(--text-2)]/60 focus:outline-none focus:border-[var(--accent-secondary)] transition-colors"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono text-[var(--text-2)] hover:text-[var(--text)] cursor-pointer"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+          {searchQuery && (
+            <span className="text-xs font-mono text-[var(--accent-secondary)]">
+              Showing filtered results
+            </span>
+          )}
+        </div>
+
+        {/* Dynamic Cross-Project Architecture HUD */}
+        {hoveredSkill && skillProjectMap[hoveredSkill] && (
+          <div className="mt-4 p-3 rounded-xl bg-[var(--surface)]/95 border border-[var(--accent-secondary)]/60 shadow-lg flex flex-wrap items-center justify-between gap-3 animate-fadeIn">
+            <div className="flex items-center gap-2 text-xs font-mono">
+              <span className="w-2 h-2 rounded-full bg-[var(--accent-secondary)] animate-ping" />
+              <span className="font-bold text-[var(--text)]">{hoveredSkill.toUpperCase()}</span>
+              <span className="text-[var(--text-2)]">is deployed in active architectures:</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {skillProjectMap[hoveredSkill].map((proj) => (
+                <a
+                  key={proj.id}
+                  href={`#project-chapter-${proj.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const el = document.getElementById(`project-chapter-${proj.id}`);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }}
+                  className="px-2.5 py-1 rounded-md bg-[var(--surface-2)] border border-[var(--border)] text-xs font-mono font-semibold text-[var(--accent-secondary)] hover:bg-[var(--accent-secondary)] hover:text-[var(--bg)] transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <span>{proj.name}</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Mode A: Spatial 3D Networked Hex Grid */}

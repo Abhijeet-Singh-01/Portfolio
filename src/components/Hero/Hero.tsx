@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { ArrowDown, Download, Mail, ArrowUpRight } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 import profilePhoto from '../../assets/images/profile.webp';
@@ -6,6 +6,7 @@ import { GithubIcon, LinkedinIcon, LeetcodeIcon } from '../common/BrandIcons';
 
 export const Hero: React.FC = () => {
   const heroSectionRef = useRef<HTMLElement>(null);
+  const [coreMode, setCoreMode] = useState<'lens' | 'gimbal' | 'telemetry'>('lens');
 
   const scrollToProjects = () => {
     const projectsEl = document.getElementById('projects');
@@ -216,7 +217,7 @@ export const Hero: React.FC = () => {
               CENTRAL 3D DIGITAL IDENTITY CORE SCENE (5 cols on desktop)
               Visibly Dimensional at Rest with Layering, Lens, Orbits, Objects
              ================================================================= */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end relative w-full pt-4 pb-4">
+          <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-center relative w-full pt-4 pb-4">
             <div className="hero-in-core hero-3d-stage w-full max-w-[340px] sm:max-w-[380px] xl:max-w-[400px] min-h-[380px] sm:min-h-[420px]">
               
               {/* Core 3D Rig: Holds resting asymmetric angle & multi-layer assembly */}
@@ -518,6 +519,25 @@ export const Hero: React.FC = () => {
                 </div>
 
               </div>
+            </div>
+
+            {/* Interactive 3D Core Mode Switcher */}
+            <div className="mt-3 flex items-center justify-center gap-1 p-1 rounded-full bg-[var(--surface-2)]/90 backdrop-blur-md border border-[var(--border)] shadow-md select-none z-20">
+              {(['lens', 'gimbal', 'telemetry'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setCoreMode(mode)}
+                  aria-pressed={coreMode === mode}
+                  className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase font-bold transition-all cursor-pointer ${
+                    coreMode === mode
+                      ? 'bg-[var(--accent-secondary)] text-[var(--bg)] shadow-xs scale-105'
+                      : 'text-[var(--text-2)] hover:text-[var(--text)]'
+                  }`}
+                >
+                  {mode === 'lens' ? '01 // Lens' : mode === 'gimbal' ? '02 // Gimbal' : '03 // Telemetry'}
+                </button>
+              ))}
             </div>
           </div>
         </div>

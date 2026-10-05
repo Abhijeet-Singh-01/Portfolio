@@ -8,6 +8,7 @@ import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
 import { CinematicCursor } from './components/common/CinematicCursor';
 import { CommandPalette } from './components/common/CommandPalette';
+import { SpatialScrollHud } from './components/common/SpatialScrollHud';
 
 export const App: React.FC = () => {
   // Single-trigger IntersectionObserver for subtle scroll reveals (respects prefers-reduced-motion)
@@ -44,6 +45,9 @@ export const App: React.FC = () => {
 
       {/* Desktop Lightweight Cinematic Cursor */}
       <CinematicCursor />
+
+      {/* High-Precision Spatial Scroll HUD */}
+      <SpatialScrollHud />
 
       {/* Global Command Palette (Ctrl+K / Cmd+K) */}
       <CommandPalette />

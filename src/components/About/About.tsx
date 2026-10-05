@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { educationData, certificationData, careerObjective } from '../../data/education';
 import { GraduationCap, Award, CheckCircle, ExternalLink } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 
+type TerminalTab = 'mission' | 'stack' | 'focus' | 'whoami';
+
 export const About: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<TerminalTab>('mission');
+
   return (
     <section id="about" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
       {/* Section Header with Large Editorial Typography */}
@@ -20,34 +24,155 @@ export const About: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Column: Architectural Intent & Certifications (6 cols) */}
+        {/* Left Column: Interactive Developer Terminal & Certifications (6 cols) */}
         <div className="lg:col-span-6 space-y-6">
-          <div className="card-base p-6 sm:p-8 reveal-item">
-            <h3 className="text-xl sm:text-2xl font-bold text-[var(--text)] mb-4 tracking-tight leading-snug">
-              Engineering scalable software through algorithmic discipline.
-            </h3>
+          {/* Interactive Developer Terminal: AS-SHELL */}
+          <div className="card-base rounded-2xl overflow-hidden border border-[var(--border)] shadow-xl reveal-item">
+            {/* Terminal Window Header Bar */}
+            <div className="bg-[var(--surface-2)]/90 px-4 py-3 border-b border-[var(--border-subtle)] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/50" />
+                <span className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/50" />
+                <span className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/50" />
+                <span className="ml-2 font-mono text-[11px] text-[var(--text-2)] font-semibold hidden sm:inline">
+                  as-shell // ~/engineering-intent
+                </span>
+              </div>
 
-            <p className="text-sm sm:text-base text-[var(--text-2)] leading-relaxed mb-6">
-              {careerObjective}
-            </p>
+              {/* Mode Tabs */}
+              <div className="flex items-center gap-1 font-mono text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('mission')}
+                  className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    activeTab === 'mission'
+                      ? 'bg-[var(--accent-secondary)] text-[var(--bg)] font-bold'
+                      : 'text-[var(--text-2)] hover:text-[var(--text)]'
+                  }`}
+                >
+                  mission.sh
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('stack')}
+                  className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    activeTab === 'stack'
+                      ? 'bg-[var(--accent-secondary)] text-[var(--bg)] font-bold'
+                      : 'text-[var(--text-2)] hover:text-[var(--text)]'
+                  }`}
+                >
+                  stack.json
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('focus')}
+                  className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    activeTab === 'focus'
+                      ? 'bg-[var(--accent-secondary)] text-[var(--bg)] font-bold'
+                      : 'text-[var(--text-2)] hover:text-[var(--text)]'
+                  }`}
+                >
+                  focus.md
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('whoami')}
+                  className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    activeTab === 'whoami'
+                      ? 'bg-[var(--accent-secondary)] text-[var(--bg)] font-bold'
+                      : 'text-[var(--text-2)] hover:text-[var(--text)]'
+                  }`}
+                >
+                  whoami
+                </button>
+              </div>
+            </div>
 
-            <div className="pt-6 border-t border-[var(--border-subtle)] space-y-3">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--accent-secondary)] block">
-                Engineering Focus
-              </span>
-              <ul className="space-y-2.5 list-none p-0 m-0">
-                {[
-                  'Scalable backend systems and RESTful API architecture',
-                  'Database-driven full-stack engineering with modern React & Python',
-                  'AI/ML integration: anomaly detection, vector search, and RAG pipelines',
-                  'Strengthening Data Structures & Algorithms with consistent practice',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[var(--text-2)]">
-                    <CheckCircle className="w-4 h-4 text-[var(--accent-secondary)] shrink-0 mt-0.5" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
+            {/* Terminal Body Content */}
+            <div className="p-5 sm:p-6 font-mono text-xs sm:text-sm bg-[var(--surface)] min-h-[260px] flex flex-col justify-between">
+              {activeTab === 'mission' && (
+                <div className="space-y-3 animate-fadeIn">
+                  <div className="text-[var(--text-2)] flex items-center gap-2">
+                    <span className="text-emerald-400 font-bold">$</span>
+                    <span>cat mission.sh</span>
+                  </div>
+                  <div className="text-[var(--text)] leading-relaxed text-xs sm:text-sm border-l-2 border-[var(--accent-secondary)] pl-3 py-1">
+                    "{careerObjective}"
+                  </div>
+                  <div className="pt-2 text-[10px] text-[var(--accent-secondary)] font-bold">
+                    # STATUS: Available for software engineering opportunities
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'stack' && (
+                <div className="space-y-2 text-xs font-mono animate-fadeIn">
+                  <div className="text-[var(--text-2)] flex items-center gap-2">
+                    <span className="text-emerald-400 font-bold">$</span>
+                    <span>jq . stack.json</span>
+                  </div>
+                  <pre className="text-teal-300 bg-[var(--surface-2)]/60 p-3 rounded-lg overflow-x-auto text-[11px] sm:text-xs">
+{`{
+  "engineer": "Abhijeet Singh",
+  "degree": "B.Tech Computer Science (PSIT 2024–28)",
+  "specializations": ["Backend APIs", "Full-Stack", "AI/ML"],
+  "core_stack": ["FastAPI", "Python", "React.js", "C++", "SQL"],
+  "verified_dsa": "250+ LeetCode problems solved"
+}`}
+                  </pre>
+                </div>
+              )}
+
+              {activeTab === 'focus' && (
+                <div className="space-y-3 animate-fadeIn">
+                  <div className="text-[var(--text-2)] flex items-center gap-2">
+                    <span className="text-emerald-400 font-bold">$</span>
+                    <span>cat focus.md</span>
+                  </div>
+                  <ul className="space-y-2 list-none p-0 m-0">
+                    {[
+                      'Scalable backend systems and RESTful API architecture',
+                      'Database-driven full-stack engineering with modern React & Python',
+                      'AI/ML integration: anomaly detection, vector search, and RAG pipelines',
+                      'Strengthening Data Structures & Algorithms with consistent practice',
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-xs text-[var(--text)]">
+                        <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" aria-hidden="true" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {activeTab === 'whoami' && (
+                <div className="space-y-3 animate-fadeIn">
+                  <div className="text-[var(--text-2)] flex items-center gap-2">
+                    <span className="text-emerald-400 font-bold">$</span>
+                    <span>whoami --verbose</span>
+                  </div>
+                  <div className="p-3 rounded-lg bg-[var(--surface-2)]/70 border border-[var(--border-subtle)] space-y-1.5 text-xs">
+                    <p className="font-bold text-[var(--text)]">Abhijeet Singh</p>
+                    <p className="text-[var(--text-2)]">Undergraduate Software Developer · Lucknow, India</p>
+                    <p className="text-[var(--accent-secondary)]">PSIT Computer Science (2024–2028) · CGPA 7.54</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Execution Pills */}
+              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex flex-wrap items-center gap-2">
+                <span className="text-[10px] text-[var(--text-2)] font-mono">Quick Run:</span>
+                {(['mission', 'stack', 'focus', 'whoami'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => setActiveTab(tab)}
+                    className="px-2 py-0.5 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] text-[10px] font-mono text-[var(--text-2)] hover:text-[var(--text)] transition-colors cursor-pointer"
+                  >
+                    cat {tab}
+                  </button>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
 
@@ -86,10 +211,10 @@ export const About: React.FC = () => {
                 <div key={idx} className="relative group">
                   {/* Timeline node */}
                   <span
-                    className={`absolute -left-[22px] top-1.5 w-3.5 h-3.5 rounded-full border-2 bg-[var(--surface)] ${
+                    className={`absolute -left-[22px] top-1.5 w-3.5 h-3.5 rounded-full border-2 bg-[var(--surface)] transition-all ${
                       idx === 0
-                        ? 'border-[var(--accent-secondary)] bg-[var(--accent-secondary)]/20'
-                        : 'border-[var(--border)]'
+                        ? 'border-[var(--accent-secondary)] bg-[var(--accent-secondary)]/30 ring-4 ring-[var(--accent-secondary)]/15 scale-110'
+                        : 'border-[var(--border)] group-hover:border-[var(--accent-secondary)]'
                     }`}
                     aria-hidden="true"
                   />
