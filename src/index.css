@@ -397,6 +397,7 @@
     transform: none !important;
     transition: none !important;
   }
+  .the-work-stage,
   .project-chapter-stage,
   .chapter-active,
   .chapter-subordinate {
@@ -421,6 +422,7 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .the-work-stage,
   .reveal-item {
     opacity: 1 !important;
     transform: none !important;

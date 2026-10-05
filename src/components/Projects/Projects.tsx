@@ -7,9 +7,10 @@ import { GithubIcon } from '../common/BrandIcons';
 
 export const Projects: React.FC = () => {
   const [activeProjectId, setActiveProjectId] = useState<string>(projectsData[0].id);
+  const [isWorkActive, setIsWorkActive] = useState<boolean>(true);
 
   // Multi-threshold IntersectionObserver for cinematic scroll choreography
-  // Tracks active project chapter without continuous scroll listeners or RAF loops
+  // Tracks active project chapter and THE WORK portal without continuous scroll listeners or RAF loops
   useEffect(() => {
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
 
@@ -38,13 +39,35 @@ export const Projects: React.FC = () => {
     const chapterElements = document.querySelectorAll('.project-chapter');
     chapterElements.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
+    let workObserver: IntersectionObserver | null = null;
+    const workTransitionEl = document.getElementById('the-work-transition');
+    if (workTransitionEl) {
+      workObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            setIsWorkActive(entry.isIntersecting);
+          });
+        },
+        { threshold: 0.15, rootMargin: '-10% 0px -10% 0px' }
+      );
+      workObserver.observe(workTransitionEl);
+    }
+
+    return () => {
+      observer.disconnect();
+      if (workObserver) workObserver.disconnect();
+    };
   }, []);
 
   return (
     <section id="projects" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* Cinematic Pause: THE WORK. */}
-      <div className="min-h-[50vh] sm:min-h-[60vh] flex flex-col justify-center mb-16 sm:mb-24 border-b border-[var(--border)] pb-12 sm:pb-16 reveal-item">
+      {/* Full-screen Cinematic Chapter Transition: THE WORK. */}
+      <div
+        id="the-work-transition"
+        className={`the-work-stage min-h-[80svh] sm:min-h-[90svh] flex flex-col justify-center mb-16 sm:mb-24 border-b border-[var(--border)] pb-12 sm:pb-20 transition-all duration-700 ease-out select-none ${
+          isWorkActive ? 'opacity-100 scale-100' : 'opacity-40 scale-[0.98]'
+        }`}
+      >
         <div className="flex items-center gap-3 mb-6">
           <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent-secondary)] animate-pulse" aria-hidden="true" />
           <span className="text-xs sm:text-sm font-mono tracking-widest text-[var(--accent-secondary)] uppercase">
@@ -52,7 +75,7 @@ export const Projects: React.FC = () => {
           </span>
         </div>
 
-        <h2 className="text-6xl sm:text-8xl lg:text-9xl font-black tracking-tighter text-[var(--text)] uppercase leading-[0.9] select-none">
+        <h2 className="text-6xl sm:text-8xl md:text-9xl lg:text-[clamp(6.5rem,14vw,12.5rem)] font-black tracking-tighter text-[var(--text)] uppercase leading-[0.88] select-none">
           THE <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--text)] via-[var(--text)] to-[var(--accent-secondary)]">
             WORK.
@@ -63,10 +86,16 @@ export const Projects: React.FC = () => {
           Four production and research implementations spanning AI incident triage, solar analytics, high-throughput media publishing, and real-time state calculation.
         </p>
 
-        {/* Live Active Chapter Tracker Badge */}
-        <div className="mt-8 inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-[var(--surface-2)] border border-[var(--border)] text-xs font-mono text-[var(--text-2)]">
-          <span className="text-[var(--accent-secondary)] font-semibold">STAGE:</span>
-          <span>{projectsData.find((p) => p.id === activeProjectId)?.name}</span>
+        {/* Live Active Chapter Tracker Badge & Stage Prompt */}
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface-2)] border border-[var(--border)] text-xs font-mono text-[var(--text-2)]">
+            <span className="text-[var(--accent-secondary)] font-semibold">STAGE:</span>
+            <span>{projectsData.find((p) => p.id === activeProjectId)?.name}</span>
+          </div>
+
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-2)]/70">
+            <span>01 — 04 / CHRONOLOGY</span>
+          </div>
         </div>
       </div>
 
