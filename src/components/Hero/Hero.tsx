@@ -3,12 +3,14 @@ import { ArrowDown, Download, Mail, ArrowUpRight } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 import profilePhoto from '../../assets/images/profile.webp';
 import { GithubIcon, LinkedinIcon, LeetcodeIcon } from '../common/BrandIcons';
+import { playClick } from '../../lib/sound';
 
 export const Hero: React.FC = () => {
   const heroSectionRef = useRef<HTMLElement>(null);
   const [coreMode, setCoreMode] = useState<'lens' | 'gimbal' | 'telemetry'>('lens');
 
   const scrollToProjects = () => {
+    playClick();
     const projectsEl = document.getElementById('projects');
     if (projectsEl) {
       projectsEl.scrollIntoView({ behavior: 'smooth' });
@@ -527,7 +529,10 @@ export const Hero: React.FC = () => {
                 <button
                   key={mode}
                   type="button"
-                  onClick={() => setCoreMode(mode)}
+                  onClick={() => {
+                    playClick();
+                    setCoreMode(mode);
+                  }}
                   aria-pressed={coreMode === mode}
                   className={`px-3 py-1 rounded-full text-[10px] font-mono uppercase font-bold transition-all cursor-pointer ${
                     coreMode === mode

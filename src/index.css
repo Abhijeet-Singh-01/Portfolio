@@ -715,6 +715,35 @@
   }
 }
 
+@keyframes radar-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.radar-sweep-beam {
+  transform-origin: 160px 160px;
+  animation: radar-sweep 5s linear infinite;
+}
+
+@keyframes radar-vertex-pulse {
+  0%, 100% {
+    r: 4;
+    opacity: 0.8;
+  }
+  50% {
+    r: 7;
+    opacity: 0.3;
+  }
+}
+
+.radar-vertex-pulse {
+  animation: radar-vertex-pulse 2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Sun, Moon, Search } from 'lucide-react';
+import { Menu, X, Sun, Moon, Search, Volume2, VolumeX } from 'lucide-react';
 import { applyAuroraTheme, getInitialTheme, type AuroraTheme } from '../../lib/theme';
+import { toggleSound, getSoundEnabled, playClick } from '../../lib/sound';
 
 interface NavItem {
   id: string;
@@ -18,6 +19,7 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('home');
   const [theme, setTheme] = useState<AuroraTheme>(getInitialTheme);
+  const [soundEnabled, setSoundEnabledState] = useState<boolean>(getSoundEnabled);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
 
@@ -95,12 +97,19 @@ export const Navbar: React.FC = () => {
   }, [mobileMenuOpen]);
 
   const toggleTheme = () => {
+    playClick();
     const nextTheme: AuroraTheme = theme === 'night' ? 'light' : 'night';
     applyAuroraTheme(nextTheme);
     setTheme(nextTheme);
   };
 
+  const handleToggleSound = () => {
+    const next = toggleSound();
+    setSoundEnabledState(next);
+  };
+
   const handleNavClick = (id: string) => {
+    playClick();
     setMobileMenuOpen(false);
     const target = document.getElementById(id);
     if (target) {
@@ -157,7 +166,10 @@ export const Navbar: React.FC = () => {
           {/* Command Palette Trigger */}
           <button
             type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+            onClick={() => {
+              playClick();
+              window.dispatchEvent(new CustomEvent('open-command-palette'));
+            }}
             className="min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-mono text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--border)] transition-colors flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer"
             aria-label="Open command palette (Ctrl+K)"
           >
@@ -166,6 +178,25 @@ export const Navbar: React.FC = () => {
             <kbd className="px-1.5 py-0.5 rounded bg-[var(--surface-tint)] text-[10px] font-mono text-[var(--text-2)] border border-[var(--border-subtle)] select-none">
               Ctrl+K
             </kbd>
+          </button>
+
+          {/* Audio Synthesizer Toggle */}
+          <button
+            type="button"
+            onClick={handleToggleSound}
+            className={`min-h-[44px] min-w-[44px] p-2.5 rounded-md transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer ${
+              soundEnabled
+                ? 'text-[var(--accent-secondary)] bg-[var(--surface-2)] shadow-xs'
+                : 'text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)]'
+            }`}
+            aria-label={`Turn audio feedback ${soundEnabled ? 'off' : 'on'}`}
+            title={`Audio Feedback: ${soundEnabled ? 'Enabled' : 'Disabled'}`}
+          >
+            {soundEnabled ? (
+              <Volume2 className="w-4 h-4 animate-pulse" />
+            ) : (
+              <VolumeX className="w-4 h-4 opacity-75" />
+            )}
           </button>
 
           {/* Theme Toggle Button */}
@@ -183,15 +214,29 @@ export const Navbar: React.FC = () => {
           </button>
         </nav>
 
-        {/* Mobile Actions: Search + Theme Toggle + Hamburger Button */}
+        {/* Mobile Actions: Search + Sound + Theme Toggle + Hamburger Button */}
         <div className="flex md:hidden items-center gap-1">
           <button
             type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+            onClick={() => {
+              playClick();
+              window.dispatchEvent(new CustomEvent('open-command-palette'));
+            }}
             className="min-h-[44px] min-w-[44px] p-2.5 rounded-md text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer"
             aria-label="Open search command palette"
           >
             <Search className="w-4 h-4 text-[var(--accent-secondary)]" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleToggleSound}
+            className={`min-h-[44px] min-w-[44px] p-2.5 rounded-md transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer ${
+              soundEnabled ? 'text-[var(--accent-secondary)]' : 'text-[var(--text-2)]'
+            }`}
+            aria-label={`Turn audio feedback ${soundEnabled ? 'off' : 'on'}`}
+          >
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
 
           <button

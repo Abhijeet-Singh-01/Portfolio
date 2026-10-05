@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { playClick, playAlert, playSuccess } from '../../lib/sound';
 
 interface ProjectVisualProps {
   projectId: string;
@@ -87,7 +88,10 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
                 <button
                   key={mode}
                   type="button"
-                  onClick={() => setSolisPreset(mode)}
+                  onClick={() => {
+                    playClick();
+                    setSolisPreset(mode);
+                  }}
                   aria-pressed={solisPreset === mode}
                   className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold transition-all cursor-pointer ${
                     solisPreset === mode
@@ -235,7 +239,10 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
             <div className="flex items-center gap-1 bg-[var(--surface)]/90 p-0.5 rounded-md border border-[var(--border-subtle)]">
               <button
                 type="button"
-                onClick={() => setAiStage('monitoring')}
+                onClick={() => {
+                  playClick();
+                  setAiStage('monitoring');
+                }}
                 className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold transition-all cursor-pointer ${
                   aiStage === 'monitoring'
                     ? 'bg-[var(--accent-secondary)] text-[var(--bg)] shadow-xs'
@@ -246,7 +253,10 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
               </button>
               <button
                 type="button"
-                onClick={() => setAiStage('spike')}
+                onClick={() => {
+                  playAlert();
+                  setAiStage('spike');
+                }}
                 className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold transition-all cursor-pointer ${
                   aiStage === 'spike'
                     ? 'bg-rose-500 text-white shadow-xs animate-pulse'
@@ -257,7 +267,10 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
               </button>
               <button
                 type="button"
-                onClick={() => setAiStage('rca')}
+                onClick={() => {
+                  playSuccess();
+                  setAiStage('rca');
+                }}
                 className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold transition-all cursor-pointer ${
                   aiStage === 'rca'
                     ? 'bg-purple-500 text-white shadow-xs'
@@ -412,7 +425,10 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
                 <button
                   key={unit}
                   type="button"
-                  onClick={() => setSetuUnit(unit)}
+                  onClick={() => {
+                    playClick();
+                    setSetuUnit(unit);
+                  }}
                   aria-pressed={setuUnit === unit}
                   className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold transition-all cursor-pointer ${
                     setuUnit === unit

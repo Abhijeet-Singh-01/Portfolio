@@ -56,6 +56,23 @@ export const ProjectChapter: React.FC<ProjectChapterProps> = ({
         isActive ? 'chapter-active' : 'chapter-subordinate'
       }`}
     >
+      {/* 3D Cybernetic Chapter Spine Node (Desktop) */}
+      <div
+        className="hidden md:flex absolute -left-[41px] top-28 w-5 h-5 rounded-full items-center justify-center pointer-events-none select-none"
+        aria-hidden="true"
+      >
+        <div
+          className={`w-3.5 h-3.5 rounded-full border-2 transition-all duration-500 ${
+            isActive
+              ? 'border-[var(--accent-secondary)] bg-[var(--accent-secondary)] shadow-[0_0_12px_var(--accent-secondary)] scale-125'
+              : 'border-[var(--border)] bg-[var(--surface)]'
+          }`}
+        />
+        {isActive && (
+          <div className="absolute inset-0 rounded-full border border-teal-400 animate-ping opacity-60" />
+        )}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
         {/* Text & Metadata Column */}
         <div

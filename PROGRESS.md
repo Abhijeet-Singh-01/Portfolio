@@ -24,26 +24,27 @@
    - Phone numbers strictly omitted.
 
 3. **Advanced 3D Spatial Features & Scroll Effects:**
+   - **Zero-Dependency Procedural Web Audio API Synthesizer (`src/lib/sound.ts`):**
+     - High-fidelity micro-interaction sound design synthesized on-the-fly with 0 KB asset downloads (`playHover`, `playClick`, `playAlert`, `playSuccess`).
+     - Persistent mute toggle (`Volume2` / `VolumeX`) in Navbar with auto-persistence in `localStorage`.
    - **Hero 3D Digital Identity Core:** Multi-layered 3D core with recessed portrait plane, mechanical chassis standoff pins, depth casing extrusion, 3D optical glass lens with specular reflection sweep & radial flare, titanium front bezel with reticle corner brackets, and intersecting 3D orbital rings passing both behind and in front of the lens.
-   - **Interactive Hero Core Mode Controller:** Three interactive modes (`[01 // Lens]`, `[02 // Gimbal]`, `[03 // Telemetry]`) with real-time reactive optical and orbit beam transformations.
+   - **Interactive Hero Core Mode Controller:** Three interactive modes (`[01 // Lens]`, `[02 // Gimbal]`, `[03 // Telemetry]`) with real-time reactive optical and orbit beam transformations and sound feedback.
    - **SpatialScrollHud:** High-precision top gradient reading progress line with glowing comet head plus desktop floating vertical Section Beacon Track (`01 HERO` to `05 CONNECT`) with live percentage readout (`042%`) and click-to-teleport jumps.
+   - **Cybernetic Laser Spine Track (`Projects.tsx` & `ProjectChapter.tsx`):**
+     - Connected vertical laser spine linking chapters with a live active radar beacon traveling alongside the active project.
    - **Projects 3D Isometric Visuals & Interactive Simulators (`ProjectVisual.tsx`):**
-     - *SolisIQ:* Interactive sizing capacity selector (`[3kW Eco]`, `[4.8kW Standard]`, `[7.2kW Max]`) dynamically updating photovoltaic generation gauge (52% to 94%), peak output, and payback timeline (3.1 to 4.5 Yrs).
-     - *AI Incident Intelligence:* Interactive anomaly simulator (`[Nominal]`, `[Spike Alert]`, `[RAG RCA]`) dynamically flaring waveform spikes, accelerating 3D gimbal, and generating real-time diagnostic triage.
+     - *SolisIQ:* Interactive sizing capacity selector (`[3kW Eco]`, `[4.8kW Standard]`, `[7.2kW Max]`) dynamically updating photovoltaic generation gauge (52% to 94%), peak output, and payback timeline (3.1 to 4.5 Yrs) with sound feedback.
+     - *AI Incident Intelligence:* Interactive anomaly simulator (`[Nominal]`, `[Spike Alert]`, `[RAG RCA]`) dynamically flaring waveform spikes, accelerating 3D gimbal, and generating real-time diagnostic triage with acoustic alert chimes.
      - *SETU:* Interactive responder focus selector (`[All Units]`, `[Resp-01]`, `[Resp-02]`) isolating proximity vector beams, locking GPS coordinates, and computing real-time dispatch ETAs.
      - *3D Cursor Glare:* Mouse movement tilts project visual stages (`project-visual-3d`) with dynamic radial light glare.
-   - **Chapter Choreography & HUD:**
-     - 3D miniature spatial gyro compass widget in `ProjectChapterNav.tsx` (`rotateX(60deg) rotateZ(activeIndex * 120deg)` with pulse ping).
-     - Chapter scroll choreography: active chapter at `translateZ(0px)`, subordinate chapters at `translateZ(-75px) rotateX(2.5deg) scale(0.96)`.
-     - "THE WORK." title with layered Z-depths (`translateZ(24px)` and `translateZ(48px)` with subtle text glow).
-   - **Skills Lab 3D Floor, Search & Architecture Cross-Reference HUD:**
+   - **Skills Lab 3D Floor, Search, Architecture HUD & Cybernetic Radar Matrix (`Skills.tsx`):**
+     - Mode A: 3D Spatial Grid with perspective tilt cards and glowing status indicators.
+     - Mode B: Cybernetic Capabilities Radar / Telemetry Matrix featuring rotating sweep beam, concentric range rings, multi-axis capability polygon, and interactive vector inspection cards.
+     - Mode C: Accessible Plain Semantic List for screen readers.
      - Interactive skill query search input with instant highlight filter.
      - Dynamic cross-project architecture HUD displaying connected project implementations upon skill hover/click with direct jump shortcuts.
-     - Interactive pointer tilt on category cards (`card-3d` with specular glare).
-     - 3D honeycomb floor perspective (`hex-floor-3d` with `rotateX(54deg)`).
-     - 3D skill chip elevation (`skill-chip-3d` lifting `translateZ(16px)` on hover).
-   - **About Section: Interactive AS-SHELL Developer Terminal:**
-     - Full interactive terminal window with traffic-light chrome, tab switching (`mission.sh`, `stack.json`, `focus.md`, `whoami`), formatted JSON output, and quick-run execution pills.
+   - **About Section: Interactive AS-SHELL Developer Terminal (`About.tsx`):**
+     - Full interactive terminal window with traffic-light chrome, tab switching (`mission.sh`, `stack.json`, `focus.md`, `whoami`), CLI command prompt input (`$ cat mission`, `$ whoami`, etc.), execution pills, and acoustic feedback.
    - **Contact 3D Convergence Ring & Link Pills:**
      - 3D ambient convergence ring (`contact-converge-ring` with `rotateX(68deg) rotateZ(18deg)`).
      - 3D magnetic hover elevation on profile cards (`contact-link-3d`).

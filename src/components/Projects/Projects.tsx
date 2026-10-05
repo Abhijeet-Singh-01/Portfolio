@@ -129,8 +129,8 @@ export const Projects: React.FC = () => {
         </div>
       </div>
 
-      {/* Sequential Cinematic Project Chapters */}
-      <div className="space-y-6 sm:space-y-12">
+      {/* Sequential Cinematic Project Chapters with Laser Spine Track */}
+      <div className="relative pl-0 md:pl-8 space-y-6 sm:space-y-12 md:before:absolute md:before:left-0 md:before:top-12 md:before:bottom-12 md:before:w-[2px] md:before:bg-gradient-to-b md:before:from-[var(--accent-secondary)] md:before:via-[var(--accent-primary)] md:before:to-teal-400 md:before:shadow-[0_0_8px_var(--accent-secondary)]">
         {projectsData.map((project, index) => (
           <ProjectChapter
             key={project.id}

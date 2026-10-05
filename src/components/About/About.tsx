@@ -2,11 +2,40 @@ import React, { useState } from 'react';
 import { educationData, certificationData, careerObjective } from '../../data/education';
 import { GraduationCap, Award, CheckCircle, ExternalLink } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
+import { playClick, playSuccess } from '../../lib/sound';
 
 type TerminalTab = 'mission' | 'stack' | 'focus' | 'whoami';
 
 export const About: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TerminalTab>('mission');
+  const [customCommand, setCustomCommand] = useState<string>('');
+  const [commandFeedback, setCommandFeedback] = useState<string | null>(null);
+
+  const handleRunCommand = (cmd: string) => {
+    playClick();
+    const cleanCmd = cmd.trim().toLowerCase();
+    if (cleanCmd.includes('mission') || cleanCmd === '1') {
+      setActiveTab('mission');
+      setCommandFeedback('Displaying engineering mission');
+    } else if (cleanCmd.includes('stack') || cleanCmd === '2') {
+      setActiveTab('stack');
+      setCommandFeedback('Displaying verified tech stack JSON');
+    } else if (cleanCmd.includes('focus') || cleanCmd === '3') {
+      setActiveTab('focus');
+      setCommandFeedback('Displaying core engineering pillars');
+    } else if (cleanCmd.includes('whoami') || cleanCmd === '4') {
+      setActiveTab('whoami');
+      setCommandFeedback('Displaying user credentials');
+    } else if (cleanCmd.includes('dsa') || cleanCmd.includes('leetcode')) {
+      playSuccess();
+      setActiveTab('stack');
+      setCommandFeedback('Verified: 250+ LeetCode DSA algorithmic problems solved.');
+    } else if (cleanCmd === 'clear') {
+      setCommandFeedback(null);
+    } else {
+      setCommandFeedback(`Command '${cmd}' not recognized. Try: mission, stack, focus, whoami, dsa, clear`);
+    }
+  };
 
   return (
     <section id="about" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
@@ -159,19 +188,56 @@ export const About: React.FC = () => {
                 </div>
               )}
 
-              {/* Quick Execution Pills */}
-              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] flex flex-wrap items-center gap-2">
-                <span className="text-[10px] text-[var(--text-2)] font-mono">Quick Run:</span>
-                {(['mission', 'stack', 'focus', 'whoami'] as const).map((tab) => (
+              {/* Quick Execution Pills & Command Prompt */}
+              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] text-[var(--text-2)] font-mono">Quick Run:</span>
+                  {(['mission', 'stack', 'focus', 'whoami'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => handleRunCommand(tab)}
+                      className="px-2 py-0.5 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] text-[10px] font-mono text-[var(--text-2)] hover:text-[var(--text)] transition-colors cursor-pointer"
+                    >
+                      cat {tab}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Interactive CLI Command Input Form */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (customCommand.trim()) {
+                      handleRunCommand(customCommand);
+                      setCustomCommand('');
+                    }
+                  }}
+                  className="flex items-center gap-2 pt-2 border-t border-[var(--border-subtle)] text-xs font-mono"
+                >
+                  <span className="text-emerald-400 font-bold">$</span>
+                  <input
+                    type="text"
+                    value={customCommand}
+                    onChange={(e) => setCustomCommand(e.target.value)}
+                    placeholder="Type command: mission, stack, focus, whoami, dsa, clear..."
+                    className="flex-1 bg-transparent border-none outline-none text-[var(--text)] placeholder-[var(--text-2)]/50 font-mono text-xs"
+                    aria-label="Terminal command prompt"
+                  />
                   <button
-                    key={tab}
-                    type="button"
-                    onClick={() => setActiveTab(tab)}
-                    className="px-2 py-0.5 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] text-[10px] font-mono text-[var(--text-2)] hover:text-[var(--text)] transition-colors cursor-pointer"
+                    type="submit"
+                    className="px-2.5 py-0.5 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] text-[10px] font-mono text-[var(--accent-secondary)] hover:bg-[var(--accent-secondary)] hover:text-[var(--bg)] transition-colors cursor-pointer font-bold"
                   >
-                    cat {tab}
+                    EXEC
                   </button>
-                ))}
+                </form>
+
+                {commandFeedback && (
+                  <div className="text-[11px] font-mono text-teal-300 flex items-center gap-1.5 animate-fadeIn">
+                    <span className="text-emerald-400">&gt;&gt;</span>
+                    <span>{commandFeedback}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
