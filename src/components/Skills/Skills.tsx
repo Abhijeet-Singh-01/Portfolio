@@ -8,7 +8,6 @@ import {
   Database,
   Layout,
   Zap,
-  Network,
   Sparkles,
   ExternalLink,
   Layers,
@@ -22,9 +21,8 @@ const categoryIcons: Record<string, React.ReactNode> = {
   frontend: <Layout className="w-4 h-4 text-cyan-400" aria-hidden="true" />,
   backend: <Zap className="w-4 h-4 text-amber-400" aria-hidden="true" />,
   databases: <Database className="w-4 h-4 text-purple-400" aria-hidden="true" />,
+  'ml-data': <Cpu className="w-4 h-4 text-rose-400" aria-hidden="true" />,
   tools: <Terminal className="w-4 h-4 text-blue-400" aria-hidden="true" />,
-  'core-cs': <Network className="w-4 h-4 text-rose-400" aria-hidden="true" />,
-  ai: <Cpu className="w-4 h-4 text-[var(--accent-secondary)]" aria-hidden="true" />,
 };
 
 const categoryBadges: Record<string, string> = {
@@ -32,9 +30,8 @@ const categoryBadges: Record<string, string> = {
   frontend: '02 // FE',
   backend: '03 // BE',
   databases: '04 // DB',
-  tools: '05 // OPS',
-  'core-cs': '06 // DSA',
-  ai: '07 // GENAI',
+  'ml-data': '05 // ML/DATA',
+  tools: '06 // TOOLS',
 };
 
 export const Skills: React.FC = () => {
@@ -300,22 +297,22 @@ export const Skills: React.FC = () => {
               <ExternalLink className="w-3.5 h-3.5 text-[var(--accent-secondary)] shrink-0" aria-hidden="true" />
             </div>
             <p className="text-xs text-[var(--text-2)] leading-relaxed">
-              Consistent algorithmic problem solving strengthening Data Structures &amp; Algorithms across arrays, strings, linked lists, stacks, trees, and recursion.
+              Solved 250+ DSA problems on LeetCode, covering arrays, strings, linked lists, stacks, queues, trees, and recursion.
             </p>
           </div>
         </a>
 
-        {/* AWS GenAI Highlight */}
+        {/* AWS Credentials Highlight */}
         <div className="card-base p-5 flex items-start gap-4">
           <div className="w-10 h-10 rounded-lg bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center shrink-0 text-[var(--accent-primary)]">
             <Award className="w-5 h-5" aria-hidden="true" />
           </div>
           <div>
             <h4 className="text-sm font-bold text-[var(--text)] mb-1">
-              2 AWS Generative AI Certifications
+              2 AWS Credentials Earned
             </h4>
             <p className="text-xs text-[var(--text-2)] leading-relaxed">
-              Official AWS credentials: Planning a Generative AI Project &amp; Introduction to Generative AI (Art of the Possible).
+              AWS Academy Graduate – Machine Learning Foundations Training Badge &amp; AWS Planning a Generative AI Project.
             </p>
           </div>
         </div>

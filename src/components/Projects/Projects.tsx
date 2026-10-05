@@ -113,7 +113,7 @@ export const Projects: React.FC = () => {
         </h2>
 
         <p className="mt-8 text-base sm:text-xl text-[var(--text-2)] max-w-2xl leading-relaxed">
-          Engineering implementations spanning AI-powered incident triage, solar analytics &amp; advisory, full-stack news distribution, and high-precision event countdowns.
+          Engineering implementations spanning AI-powered solar analytics &amp; advisory, machine learning incident root-cause triage, and spatial emergency response coordination.
         </p>
 
         {/* Live Active Chapter Tracker Badge & Stage Prompt */}

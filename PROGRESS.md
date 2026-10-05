@@ -235,42 +235,47 @@
   - Only visible when user is actively exploring the projects section.
 
 ### 3. Four-Project Lineup & Deep-Dive Case Study Architecture Modals
-- **Verified 4-Project Lineup**:
-  1. `01 AI Incident Intelligence`: Python, FastAPI, ML, RAG, Embeddings, Vector Search, PostgreSQL, LLM.
-  2. `02 SolisIQ – Smart Solar Usage & Savings Monitoring System`: React.js, Python (FastAPI), MongoDB, JavaScript, Chart.js, REST APIs.
-  3. `03 Instanews`: React, Redux Toolkit, Node.js, Express.js, MongoDB, JWT.
-  4. `04 ZeroHour`: HTML, CSS, JavaScript countdown application with dynamic DOM calculations.
+- **Verified 3-Project Lineup (Exact Match to Resume)**:
+  1. `01 SolisIQ – Smart Solar Usage & Savings Monitoring System`: Python, Flask, MySQL, JavaScript, HTML, CSS, Scikit-learn, Pandas, NumPy, Joblib, REST APIs, Render. (Verified GitHub repo: `https://github.com/Abhijeet-Singh-01/SolisIQ`).
+  2. `02 AI-Powered Incident Intelligence & Root Cause Analysis Platform (Ongoing)`: Python, FastAPI, Scikit-learn, Pandas, NumPy, Joblib, REST APIs. (Verified GitHub repo: `https://github.com/Abhijeet-Singh-01/ai-incident-intelligence`).
+  3. `03 SETU – Smart Emergency Response System`: React.js, FastAPI, PostgreSQL, Python, Leaflet, OpenStreetMap, REST APIs. (Button hidden; zero fake links).
 - **Deep-Dive Architecture & Case Study Modal (`ProjectCaseStudyModal.tsx`)**:
-  - Problem framing, engineering approach, and key implementations.
-  - **Interactive Architecture Flow**: Clickable/hoverable interactive system nodes with live technical inspector detail cards.
+  - Problem framing, engineering approach, and key implementations verbatim from resume.
+  - **Interactive Architecture Flow**: Clickable/hoverable interactive system nodes with live technical inspector detail cards for all 3 projects.
   - Verified source code and live demo buttons (empty buttons strictly hidden).
   - Accessible focus trap, keyboard navigation (`Tab` / `Shift+Tab`), and `Escape` dismiss.
 
 ### 4. Technical Arsenal & Skills Lab (Spatial 3D Matrix)
 - **Spatial Networked Laboratory Layout (`Skills.tsx`)**:
-  - Category groupings: Languages, Frontend, Backend, Databases, Tools, Core, and AI.
+  - Category groupings strictly matching the resume:
+    - **Languages (4)**: C++, Python, C, SQL
+    - **Frontend (5)**: React.js, HTML, CSS, Tailwind CSS, JavaScript (ES6+)
+    - **Backend (4)**: FastAPI, Flask, REST APIs, Firebase Cloud Messaging (Learning)
+    - **Databases (3)**: MongoDB, MySQL, PostgreSQL
+    - **ML / Data (4)**: Scikit-learn, Pandas, NumPy, Joblib
+    - **Tools (3)**: Git, GitHub, VS Code
   - Ambient SVG hexagonal honeycomb grid background with subtle pulse scanline.
   - Interactive skill pill nodes with hover highlight and category connection.
-  - Category matrix filters (`All Matrix (19)`, `Languages`, `Frontend`, etc.).
+  - Category matrix filters (`All Matrix (23)`, `Languages (4)`, `Frontend (5)`, `Backend (4)`, `Databases (3)`, `ML / Data (4)`, `Tools (3)`).
   - View switcher: Toggle between **Spatial Grid** and **Plain Accessible List** for screen readers and recruiters.
-  - Verified achievements: 250+ LeetCode DSA solved and 2 AWS Generative AI certifications.
+  - Verified achievements: 250+ LeetCode DSA solved and 2 AWS credentials.
 
 ### 5. Global Command Palette (`CommandPalette.tsx`)
 - Keyboard accessible via `Ctrl+K` or `Cmd+K` from anywhere in the application.
 - Trigger pill in desktop and mobile header navigation with `⌘K` badge.
-- Instant search filter for navigating to Projects, Skills, About, Contact, Resume download, and external profiles (GitHub, LinkedIn, LeetCode).
+- Instant search filter for navigating to Projects (including direct jumps to SolisIQ, AI Incident Intelligence, and SETU), Skills, About, Contact, Resume download, and external profiles (GitHub, LinkedIn, LeetCode).
 - Full arrow-key navigation (`Up`/`Down`/`Enter`/`Esc`) and focus trap.
 
 ### 6. Verification & Test Metrics
 - **TypeScript & Linter**: 0 errors, **0 warnings** across all 24 project files (`oxlint`).
-- **Production Build (`npm run build`)**: **655 ms** clean compilation into `dist/`.
+- **Production Build (`npm run build`)**: **638 ms** clean compilation into `dist/`.
 - **Browser Runtime Test (Microsoft Edge Headless / CDP)**:
   - Console Errors: **0**
   - Page Exceptions: **0**
   - Viewport 390px (Mobile iPhone): `docWidth: 390, winWidth: 390` (**0px horizontal overflow**)
   - Viewport 360px (Mobile Android): `docWidth: 360, winWidth: 360` (**0px horizontal overflow**)
   - Resume Download: HTTP 200, `application/pdf`, **137,947 bytes** verified.
-  - Architecture Modal: Opened, verified 4 deep-dive headings and interactive nodes.
+  - Architecture Modal: Opened, verified 4 deep-dive headings and interactive nodes for SolisIQ, AI Incident Intelligence, and SETU.
   - Command Palette: Opened via `Ctrl+K`, search input focused, all navigation items verified.
 
 

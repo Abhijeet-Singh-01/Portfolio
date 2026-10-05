@@ -30,6 +30,36 @@ export const CommandPalette: React.FC = () => {
       },
     },
     {
+      id: 'project-solisiq',
+      title: 'SolisIQ – Smart Solar Usage System',
+      category: 'Project',
+      description: 'Flask REST, MySQL, Scikit-learn, solar sizing & ROI monitoring',
+      icon: <FolderGit2 className="w-4 h-4 text-teal-400" />,
+      action: () => {
+        document.getElementById('project-chapter-solisiq')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      },
+    },
+    {
+      id: 'project-ai-incident',
+      title: 'AI Incident Intelligence Platform',
+      category: 'Project',
+      description: 'FastAPI, ML anomaly detection, Scikit-learn, Joblib root-cause analysis',
+      icon: <FolderGit2 className="w-4 h-4 text-amber-400" />,
+      action: () => {
+        document.getElementById('project-chapter-ai-incident-intelligence')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      },
+    },
+    {
+      id: 'project-setu',
+      title: 'SETU – Smart Emergency Response System',
+      category: 'Project',
+      description: 'React.js, FastAPI, PostgreSQL, Leaflet, OSM emergency mapping',
+      icon: <FolderGit2 className="w-4 h-4 text-rose-400" />,
+      action: () => {
+        document.getElementById('project-chapter-setu')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      },
+    },
+    {
       id: 'skills',
       title: 'Skills & Capabilities',
       category: 'Navigation',
