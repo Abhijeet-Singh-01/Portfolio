@@ -15,9 +15,71 @@ import {
   CheckCircle2,
   Search,
   Activity,
+  Play,
+  RotateCcw,
 } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
-import { playClick, playHover } from '../../lib/sound';
+import { playClick, playHover, playSuccess } from '../../lib/sound';
+
+const binarySearchData = [3, 8, 14, 21, 35, 48, 59, 73, 84, 96];
+const binarySearchSteps = [
+  {
+    low: 0,
+    high: 9,
+    mid: 4,
+    val: 35,
+    status: 'Initial state: range [0..9]. Mid element is nums[4] = 35. 59 > 35, so low = mid + 1.',
+    eliminated: [] as number[],
+    found: false,
+  },
+  {
+    low: 5,
+    high: 9,
+    mid: 7,
+    val: 73,
+    status: 'Sub-range [5..9]. Mid element is nums[7] = 73. 59 < 73, so high = mid - 1.',
+    eliminated: [0, 1, 2, 3, 4],
+    found: false,
+  },
+  {
+    low: 5,
+    high: 6,
+    mid: 5,
+    val: 48,
+    status: 'Sub-range [5..6]. Mid element is nums[5] = 48. 59 > 48, so low = mid + 1.',
+    eliminated: [0, 1, 2, 3, 4, 7, 8, 9],
+    found: false,
+  },
+  {
+    low: 6,
+    high: 6,
+    mid: 6,
+    val: 59,
+    status: 'Sub-range [6..6]. Mid element nums[6] = 59 matches target! Search resolved in O(log N) operations.',
+    eliminated: [0, 1, 2, 3, 4, 5, 7, 8, 9],
+    found: true,
+  },
+];
+
+const bstNodes = [
+  { val: 25, x: 170, y: 35 },
+  { val: 15, x: 95, y: 85 },
+  { val: 35, x: 245, y: 85 },
+  { val: 10, x: 60, y: 140 },
+  { val: 20, x: 130, y: 140 },
+  { val: 30, x: 210, y: 140 },
+  { val: 40, x: 280, y: 140 },
+];
+const bstInOrderSequence = [10, 15, 20, 25, 30, 35, 40];
+
+const stackSteps = [
+  { token: '{', action: 'Push open brace "{" onto stack', stack: ['{'], status: 'Validating stream: token 1/6' },
+  { token: '[', action: 'Push open bracket "[" onto stack', stack: ['{', '['], status: 'Validating stream: token 2/6' },
+  { token: '(', action: 'Push open paren "(" onto stack', stack: ['{', '[', '('], status: 'Validating stream: token 3/6' },
+  { token: ')', action: 'Closing paren ")" matches top "(". Pop top element!', stack: ['{', '['], status: 'Match confirmed: token 4/6' },
+  { token: ']', action: 'Closing bracket "]" matches top "[". Pop top element!', stack: ['{'], status: 'Match confirmed: token 5/6' },
+  { token: '}', action: 'Closing brace "}" matches top "{". Pop top element!', stack: [] as string[], status: 'Stack empty -> BALANCED & VALIDATED!' },
+];
 
 const categoryIcons: Record<string, React.ReactNode> = {
   languages: <Code2 className="w-4 h-4 text-emerald-400" aria-hidden="true" />,
@@ -121,8 +183,10 @@ export const Skills: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [viewMode, setViewMode] = useState<'spatial' | 'radar' | 'list'>('spatial');
+  const [viewMode, setViewMode] = useState<'spatial' | 'radar' | 'dsa' | 'list'>('spatial');
   const [selectedRadarCategory, setSelectedRadarCategory] = useState<string>('backend');
+  const [dsaAlgorithm, setDsaAlgorithm] = useState<'binary-search' | 'bst-traversal' | 'stack-validator'>('binary-search');
+  const [dsaStep, setDsaStep] = useState<number>(0);
 
   const filteredCategories = (
     activeFilter === 'all'
@@ -235,6 +299,22 @@ export const Skills: React.FC = () => {
             >
               <Activity className="w-3.5 h-3.5" aria-hidden="true" />
               <span>Radar Matrix</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                playClick();
+                setViewMode('dsa');
+              }}
+              className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
+                viewMode === 'dsa'
+                  ? 'bg-[var(--surface)] text-[var(--accent-secondary)] font-semibold shadow-xs'
+                  : 'text-[var(--text-2)] hover:text-[var(--text)]'
+              }`}
+              aria-label="Switch to Interactive DSA Algorithmic Lab view"
+            >
+              <Code2 className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>DSA Lab (250+)</span>
             </button>
             <button
               type="button"
@@ -631,8 +711,330 @@ export const Skills: React.FC = () => {
             </div>
           </div>
         </div>
+      ) : viewMode === 'dsa' ? (
+        /* Mode C: Interactive DSA Algorithmic Lab (250+ LeetCode Solved) */
+        <div className="card-base p-6 sm:p-8 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border)] pb-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <h3 className="text-sm font-mono uppercase tracking-wider font-bold text-[var(--text)]">
+                  INTERACTIVE DSA ALGORITHMIC LAB · 250+ LEETCODE PROBLEMS
+                </h3>
+              </div>
+              <p className="text-xs text-[var(--text-2)] font-mono">
+                Real-time pointer execution, spatial memory traversal &amp; algorithmic Big-O simulation
+              </p>
+            </div>
+
+            {/* Algorithm Mode Switcher Pills */}
+            <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-lg bg-[var(--surface-2)] border border-[var(--border)]">
+              {[
+                { id: 'binary-search', label: 'Binary Search (Log N)' },
+                { id: 'bst-traversal', label: 'BST In-Order (Tree)' },
+                { id: 'stack-validator', label: 'Monotonic Stack (LIFO)' },
+              ].map((algo) => (
+                <button
+                  key={algo.id}
+                  type="button"
+                  onClick={() => {
+                    playClick();
+                    setDsaAlgorithm(algo.id as any);
+                    setDsaStep(0);
+                  }}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-all cursor-pointer ${
+                    dsaAlgorithm === algo.id
+                      ? 'bg-[var(--accent-secondary)] text-[var(--bg)] font-bold shadow-xs'
+                      : 'text-[var(--text-2)] hover:text-[var(--text)]'
+                  }`}
+                >
+                  {algo.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Algorithm 1: Binary Search Visualizer */}
+          {dsaAlgorithm === 'binary-search' && (
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                <div className="flex items-center gap-3">
+                  <span className="px-2.5 py-1 rounded bg-[var(--surface-2)] border border-[var(--border)] text-[var(--text)] font-bold">
+                    TARGET: 59
+                  </span>
+                  <span className="text-[var(--text-2)]">
+                    STEP: {dsaStep + 1} / {binarySearchSteps.length}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextStep = (dsaStep + 1) % binarySearchSteps.length;
+                      if (nextStep === binarySearchSteps.length - 1) playSuccess();
+                      else playClick();
+                      setDsaStep(nextStep);
+                    }}
+                    className="btn-primary text-xs py-1 px-3"
+                  >
+                    <Play className="w-3 h-3" />
+                    <span>{dsaStep === binarySearchSteps.length - 1 ? 'Restart Search' : 'Step Forward'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSuccess();
+                      setDsaStep(0);
+                    }}
+                    className="btn-secondary text-xs py-1 px-2.5"
+                    title="Reset to step 0"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Array Memory Blocks */}
+              <div className="p-4 sm:p-6 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] overflow-x-auto">
+                <div className="flex items-center justify-center gap-2 sm:gap-3 min-w-[500px]">
+                  {binarySearchData.map((num, idx) => {
+                    const currentStep = binarySearchSteps[dsaStep];
+                    const isMid = currentStep.mid === idx;
+                    const isLow = currentStep.low === idx;
+                    const isHigh = currentStep.high === idx;
+                    const isEliminated = currentStep.eliminated.includes(idx);
+                    const isFound = currentStep.found && isMid;
+
+                    return (
+                      <div key={idx} className="flex flex-col items-center gap-1.5">
+                        {/* Pointer Badge */}
+                        <div className="h-5 flex items-center justify-center">
+                          {isMid && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-amber-400 text-black animate-pulse">
+                              MID
+                            </span>
+                          )}
+                          {!isMid && isLow && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-cyan-400 text-black">
+                              LOW
+                            </span>
+                          )}
+                          {!isMid && isHigh && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-rose-400 text-black">
+                              HIGH
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Array Cell Box */}
+                        <div
+                          className={`w-10 sm:w-12 h-12 sm:h-14 rounded-lg flex items-center justify-center font-mono text-sm sm:text-base font-bold transition-all duration-300 border ${
+                            isFound
+                              ? 'bg-emerald-500 text-black border-emerald-400 ring-4 ring-emerald-400/30 scale-110'
+                              : isMid
+                              ? 'bg-amber-400/20 text-amber-300 border-amber-400 scale-105'
+                              : isEliminated
+                              ? 'bg-black/20 text-[var(--text-2)]/30 border-transparent line-through'
+                              : 'bg-[var(--surface)] text-[var(--text)] border-[var(--border)]'
+                          }`}
+                        >
+                          {num}
+                        </div>
+
+                        {/* Index */}
+                        <span className="text-[10px] font-mono text-[var(--text-2)]/60">
+                          [{idx}]
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Status Commentary & C++ Implementation */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-[var(--surface-2)]/60 border border-[var(--border)]">
+                  <span className="text-[10px] font-mono text-[var(--accent-secondary)] uppercase font-bold block mb-1">
+                    EXECUTION COMMENTARY
+                  </span>
+                  <p className="text-xs sm:text-sm font-mono text-[var(--text)] leading-relaxed">
+                    {binarySearchSteps[dsaStep].status}
+                  </p>
+                  <div className="mt-3 flex items-center gap-4 text-[10px] font-mono text-[var(--text-2)]">
+                    <span>TIME: O(log N)</span>
+                    <span>SPACE: O(1) AUX</span>
+                    <span>PASS: {dsaStep + 1}</span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[var(--surface-2)]/90 border border-[var(--border)] font-mono text-[11px] text-[var(--text-2)]">
+                  <span className="text-[10px] text-emerald-400 font-bold block mb-1">// C++ Optimal Implementation</span>
+                  <code>
+                    <span className="text-indigo-400">int</span> mid = low + (high - low) / 2;<br />
+                    <span className="text-purple-400">if</span> (nums[mid] == target) <span className="text-emerald-400">return</span> mid;<br />
+                    <span className="text-purple-400">else if</span> (nums[mid] &lt; target) low = mid + 1;<br />
+                    <span className="text-purple-400">else</span> high = mid - 1;
+                  </code>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Algorithm 2: BST In-Order Traversal */}
+          {dsaAlgorithm === 'bst-traversal' && (
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                <span className="text-[var(--text-2)]">
+                  IN-ORDER TRAVERSAL: LEFT &rarr; ROOT &rarr; RIGHT (SORTED ASCENDING)
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextStep = (dsaStep + 1) % (bstInOrderSequence.length + 1);
+                      if (nextStep === bstInOrderSequence.length) playSuccess();
+                      else playClick();
+                      setDsaStep(nextStep);
+                    }}
+                    className="btn-primary text-xs py-1 px-3"
+                  >
+                    <Play className="w-3 h-3" />
+                    <span>{dsaStep >= bstInOrderSequence.length ? 'Restart Traversal' : 'Visit Next Node'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSuccess();
+                      setDsaStep(0);
+                    }}
+                    className="btn-secondary text-xs py-1 px-2.5"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Tree SVG Visualization */}
+              <div className="p-4 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] flex flex-col items-center">
+                <svg className="w-[340px] h-[190px]" viewBox="0 0 340 190">
+                  {/* Tree Edges */}
+                  <line x1="170" y1="35" x2="95" y2="85" stroke="var(--border)" strokeWidth="1.5" />
+                  <line x1="170" y1="35" x2="245" y2="85" stroke="var(--border)" strokeWidth="1.5" />
+                  <line x1="95" y1="85" x2="60" y2="140" stroke="var(--border)" strokeWidth="1.5" />
+                  <line x1="95" y1="85" x2="130" y2="140" stroke="var(--border)" strokeWidth="1.5" />
+                  <line x1="245" y1="85" x2="210" y2="140" stroke="var(--border)" strokeWidth="1.5" />
+                  <line x1="245" y1="85" x2="280" y2="140" stroke="var(--border)" strokeWidth="1.5" />
+
+                  {/* Tree Nodes */}
+                  {bstNodes.map((node) => {
+                    const visitedIndex = bstInOrderSequence.indexOf(node.val);
+                    const isVisited = visitedIndex < dsaStep;
+                    const isCurrent = visitedIndex === dsaStep - 1;
+
+                    return (
+                      <g key={node.val}>
+                        <circle
+                          cx={node.x}
+                          cy={node.y}
+                          r="16"
+                          fill={isCurrent ? 'var(--accent-secondary)' : isVisited ? 'var(--surface)' : 'var(--surface-2)'}
+                          stroke={isCurrent ? 'var(--accent-secondary)' : isVisited ? 'var(--accent-secondary)' : 'var(--border)'}
+                          strokeWidth="2"
+                          className="transition-colors duration-300"
+                        />
+                        <text
+                          x={node.x}
+                          y={node.y + 4}
+                          textAnchor="middle"
+                          fill={isCurrent ? 'var(--bg)' : 'var(--text)'}
+                          fontSize="11"
+                          fontFamily="monospace"
+                          fontWeight="bold"
+                        >
+                          {node.val}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+
+                {/* Visited Sequence Output Array */}
+                <div className="mt-4 flex items-center gap-2 font-mono text-xs text-[var(--text-2)]">
+                  <span className="font-bold text-[var(--text)]">IN-ORDER STREAM:</span>
+                  <div className="flex items-center gap-1.5 p-2 rounded bg-[var(--surface)] border border-[var(--border)] min-w-[200px]">
+                    {bstInOrderSequence.slice(0, dsaStep).map((val, i) => (
+                      <span key={val} className="px-1.5 py-0.5 rounded bg-[var(--accent-secondary)]/20 text-[var(--accent-secondary)] font-bold">
+                        {val}
+                        {i < dsaStep - 1 && <span className="text-[var(--text-2)] ml-1">&rarr;</span>}
+                      </span>
+                    ))}
+                    {dsaStep === 0 && <span className="opacity-50">// Click "Visit Next Node"</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Algorithm 3: Monotonic Stack Validator */}
+          {dsaAlgorithm === 'stack-validator' && (
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+                <span className="text-[var(--text-2)]">
+                  INPUT STREAM: {'{ [ ( ) ] }'} · LIFO MEMORY ALLOCATION
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextStep = (dsaStep + 1) % stackSteps.length;
+                      if (nextStep === stackSteps.length - 1) playSuccess();
+                      else playClick();
+                      setDsaStep(nextStep);
+                    }}
+                    className="btn-primary text-xs py-1 px-3"
+                  >
+                    <Play className="w-3 h-3" />
+                    <span>{dsaStep === stackSteps.length - 1 ? 'Restart Stream' : 'Process Token'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playSuccess();
+                      setDsaStep(0);
+                    }}
+                    className="btn-secondary text-xs py-1 px-2.5"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Stack Visualizer */}
+              <div className="p-6 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] flex flex-col items-center">
+                <div className="w-36 h-48 border-x-2 border-b-2 border-[var(--accent-secondary)] rounded-b-xl p-2 flex flex-col-reverse items-center gap-2 bg-[var(--surface)]/50">
+                  {stackSteps[dsaStep].stack.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="w-full py-2 rounded bg-[var(--accent-secondary)]/20 border border-[var(--accent-secondary)] text-center font-mono font-bold text-sm text-[var(--accent-secondary)] animate-bounce"
+                    >
+                      {item}
+                    </div>
+                  ))}
+                  {stackSteps[dsaStep].stack.length === 0 && (
+                    <span className="text-[10px] font-mono text-[var(--text-2)]/60 my-auto">
+                      STACK EMPTY
+                    </span>
+                  )}
+                </div>
+                <span className="text-[11px] font-mono text-[var(--text-2)] mt-3">
+                  {stackSteps[dsaStep].action}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
       ) : (
-        /* Mode C: Accessible Plain Semantic List */
+        /* Mode D: Accessible Plain Semantic List */
         <div className="card-base p-6 sm:p-8 space-y-6">
           <div className="border-b border-[var(--border)] pb-4">
             <h3 className="text-sm font-mono uppercase tracking-wider font-bold text-[var(--text)]">

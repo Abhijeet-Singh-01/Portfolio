@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, FolderGit2, Cpu, User, Mail, Download, X, Command } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 import { GithubIcon, LinkedinIcon, LeetcodeIcon } from './BrandIcons';
+import { playClick, playHover, playSuccess } from '../../lib/sound';
 
 interface CommandItem {
   id: string;
@@ -150,6 +151,9 @@ export const CommandPalette: React.FC = () => {
           if (!prev) {
             setQuery('');
             setSelectedIndex(0);
+            playClick();
+          } else {
+            playClick();
           }
           return !prev;
         });
@@ -159,6 +163,7 @@ export const CommandPalette: React.FC = () => {
     const handleCustomOpen = () => {
       setQuery('');
       setSelectedIndex(0);
+      playClick();
       setIsOpen(true);
     };
 
@@ -182,12 +187,15 @@ export const CommandPalette: React.FC = () => {
 
     const handleModalKeys = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        playClick();
         setIsOpen(false);
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
+        playHover();
         setSelectedIndex((prev) => (filteredItems.length === 0 ? 0 : (prev + 1) % filteredItems.length));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
+        playHover();
         setSelectedIndex((prev) =>
           filteredItems.length === 0 ? 0 : (prev - 1 + filteredItems.length) % filteredItems.length
         );
@@ -195,6 +203,7 @@ export const CommandPalette: React.FC = () => {
         const activeItem = filteredItems[selectedIndex];
         if (activeItem) {
           e.preventDefault();
+          playSuccess();
           activeItem.action();
           setIsOpen(false);
         }
@@ -265,10 +274,16 @@ export const CommandPalette: React.FC = () => {
                   key={item.id}
                   type="button"
                   onClick={() => {
+                    playSuccess();
                     item.action();
                     setIsOpen(false);
                   }}
-                  onMouseEnter={() => setSelectedIndex(idx)}
+                  onMouseEnter={() => {
+                    if (selectedIndex !== idx) {
+                      playHover();
+                      setSelectedIndex(idx);
+                    }
+                  }}
                   className={`w-full flex items-center justify-between p-3 rounded-xl text-left transition-colors cursor-pointer ${
                     isSelected
                       ? 'bg-[var(--surface-2)] text-[var(--text)] ring-1 ring-[var(--accent-secondary)]/40'

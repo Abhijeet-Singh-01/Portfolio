@@ -1,13 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { ArrowDown, Download, Mail, ArrowUpRight } from 'lucide-react';
+import { ArrowDown, Download, Mail, ArrowUpRight, RotateCcw } from 'lucide-react';
 import { siteLinks } from '../../data/socialLinks';
 import profilePhoto from '../../assets/images/profile.webp';
 import { GithubIcon, LinkedinIcon, LeetcodeIcon } from '../common/BrandIcons';
-import { playClick } from '../../lib/sound';
+import { playClick, playHover, playSuccess } from '../../lib/sound';
 
 export const Hero: React.FC = () => {
   const heroSectionRef = useRef<HTMLElement>(null);
   const [coreMode, setCoreMode] = useState<'lens' | 'gimbal' | 'telemetry'>('lens');
+  const [dragRotation, setDragRotation] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<{ x: number; y: number; rotX: number; rotY: number }>({ x: 0, y: 0, rotX: 0, rotY: 0 });
+  const lastSoundTickRef = useRef<number>(0);
 
   const scrollToProjects = () => {
     playClick();
@@ -15,6 +19,44 @@ export const Hero: React.FC = () => {
     if (projectsEl) {
       projectsEl.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleCorePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      rotX: dragRotation.x,
+      rotY: dragRotation.y,
+    };
+    playClick();
+  };
+
+  const handleCorePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
+
+    const newY = dragStartRef.current.rotY + dx * 0.75;
+    const newX = Math.max(-45, Math.min(45, dragStartRef.current.rotX - dy * 0.5));
+
+    setDragRotation({ x: newX, y: newY });
+
+    const totalAngle = Math.abs(Math.round(newY));
+    if (Math.floor(totalAngle / 25) !== lastSoundTickRef.current) {
+      lastSoundTickRef.current = Math.floor(totalAngle / 25);
+      playHover();
+    }
+  };
+
+  const handleCorePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+    playSuccess();
   };
 
   // Pointer movement: modulates the resting 3D angle and drives multi-plane parallax
@@ -220,10 +262,51 @@ export const Hero: React.FC = () => {
               Visibly Dimensional at Rest with Layering, Lens, Orbits, Objects
              ================================================================= */}
           <div className="lg:col-span-5 flex flex-col items-center lg:items-end justify-center relative w-full pt-4 pb-4">
+            
+            {/* 3D Gyro Orbit Drag Prompt & Telemetry Badge */}
+            <div className="flex items-center gap-2 mb-2 text-[10px] font-mono text-[var(--text-2)] select-none">
+              <span className={`w-1.5 h-1.5 rounded-full ${isDragging ? 'bg-cyan-400 animate-ping' : 'bg-emerald-400'}`} />
+              <span className="font-semibold tracking-wider">
+                {isDragging
+                  ? `ORBIT: YAW ${(dragRotation.y % 360).toFixed(0)}° · PITCH ${dragRotation.x.toFixed(0)}°`
+                  : (dragRotation.x !== 0 || dragRotation.y !== 0)
+                  ? `ORBIT LOCKED · YAW ${(dragRotation.y % 360).toFixed(0)}°`
+                  : '3D GYRO CORE · DRAG TO ROTATE 360°'}
+              </span>
+              {(dragRotation.x !== 0 || dragRotation.y !== 0) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSuccess();
+                    setDragRotation({ x: 0, y: 0 });
+                  }}
+                  className="px-1.5 py-0.5 rounded bg-[var(--surface-2)] border border-[var(--border)] text-[9px] hover:text-[var(--accent-secondary)] transition-colors flex items-center gap-1 cursor-pointer"
+                  title="Reset core to default front angle"
+                >
+                  <RotateCcw className="w-2.5 h-2.5" />
+                  <span>RESET</span>
+                </button>
+              )}
+            </div>
+
             <div className="hero-in-core hero-3d-stage w-full max-w-[340px] sm:max-w-[380px] xl:max-w-[400px] min-h-[380px] sm:min-h-[420px]">
               
-              {/* Core 3D Rig: Holds resting asymmetric angle & multi-layer assembly */}
-              <div className="hero-core-rig relative w-[clamp(250px,72vw,310px)] h-[clamp(310px,88vw,390px)] flex items-center justify-center">
+              {/* Core 3D Rig: Holds resting asymmetric angle & multi-layer assembly with pointer drag capture */}
+              <div
+                onPointerDown={handleCorePointerDown}
+                onPointerMove={handleCorePointerMove}
+                onPointerUp={handleCorePointerUp}
+                onPointerCancel={handleCorePointerUp}
+                style={{
+                  transform: (dragRotation.x !== 0 || dragRotation.y !== 0 || isDragging)
+                    ? `rotateX(${7.5 + dragRotation.x}deg) rotateY(${-13.5 + dragRotation.y}deg) rotateZ(-1deg)`
+                    : undefined,
+                  transition: isDragging ? 'none' : 'transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+                  touchAction: 'none',
+                  cursor: isDragging ? 'grabbing' : 'grab',
+                }}
+                className="hero-core-rig relative w-[clamp(250px,72vw,310px)] h-[clamp(310px,88vw,390px)] flex items-center justify-center select-none"
+              >
 
                 {/* -------------------------------------------------------------
                     3D ORBITAL SYSTEMS: Passed behind & in front for true occlusion

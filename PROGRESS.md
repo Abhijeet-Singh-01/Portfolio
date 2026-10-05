@@ -27,8 +27,9 @@
    - **Zero-Dependency Procedural Web Audio API Synthesizer (`src/lib/sound.ts`):**
      - High-fidelity micro-interaction sound design synthesized on-the-fly with 0 KB asset downloads (`playHover`, `playClick`, `playAlert`, `playSuccess`).
      - Persistent mute toggle (`Volume2` / `VolumeX`) in Navbar with auto-persistence in `localStorage`.
-   - **Hero 3D Digital Identity Core:** Multi-layered 3D core with recessed portrait plane, mechanical chassis standoff pins, depth casing extrusion, 3D optical glass lens with specular reflection sweep & radial flare, titanium front bezel with reticle corner brackets, and intersecting 3D orbital rings passing both behind and in front of the lens.
-   - **Interactive Hero Core Mode Controller:** Three interactive modes (`[01 // Lens]`, `[02 // Gimbal]`, `[03 // Telemetry]`) with real-time reactive optical and orbit beam transformations and sound feedback.
+   - **Hero 3D Digital Identity Core & Interactive 360° Gyro Orbit:** Multi-layered 3D core with recessed portrait plane, mechanical chassis standoff pins, depth casing extrusion, 3D optical glass lens with specular reflection sweep & radial flare, titanium front bezel with reticle corner brackets, and intersecting 3D orbital rings passing both behind and in front of the lens.
+     - *360° Pointer Drag Capture:* Direct pointer capture allowing visitors to drag and freely spin the entire 3D Gyro Rig in 3D space (continuous Yaw 0° to 360°, clamped Pitch -45° to +45°), with procedural acoustic angle ticks, live telemetry orientation readout (`ORBIT: YAW 142° · PITCH 18°`), and one-click return to default resting angle.
+     - *Interactive Hero Core Mode Controller:* Three interactive modes (`[01 // Lens]`, `[02 // Gimbal]`, `[03 // Telemetry]`) with real-time reactive optical and orbit beam transformations and sound feedback.
    - **SpatialScrollHud:** High-precision top gradient reading progress line with glowing comet head plus desktop floating vertical Section Beacon Track (`01 HERO` to `05 CONNECT`) with live percentage readout (`042%`) and click-to-teleport jumps.
    - **Cybernetic Laser Spine Track (`Projects.tsx` & `ProjectChapter.tsx`):**
      - Connected vertical laser spine linking chapters with a live active radar beacon traveling alongside the active project.
@@ -37,12 +38,19 @@
      - *AI Incident Intelligence:* Interactive anomaly simulator (`[Nominal]`, `[Spike Alert]`, `[RAG RCA]`) dynamically flaring waveform spikes, accelerating 3D gimbal, and generating real-time diagnostic triage with acoustic alert chimes.
      - *SETU:* Interactive responder focus selector (`[All Units]`, `[Resp-01]`, `[Resp-02]`) isolating proximity vector beams, locking GPS coordinates, and computing real-time dispatch ETAs.
      - *3D Cursor Glare:* Mouse movement tilts project visual stages (`project-visual-3d`) with dynamic radial light glare.
-   - **Skills Lab 3D Floor, Search, Architecture HUD & Cybernetic Radar Matrix (`Skills.tsx`):**
+   - **Skills Lab 3D Floor, Search, Architecture HUD, Radar Matrix & DSA Lab (`Skills.tsx`):**
      - Mode A: 3D Spatial Grid with perspective tilt cards and glowing status indicators.
      - Mode B: Cybernetic Capabilities Radar / Telemetry Matrix featuring rotating sweep beam, concentric range rings, multi-axis capability polygon, and interactive vector inspection cards.
-     - Mode C: Accessible Plain Semantic List for screen readers.
+     - Mode C: Interactive DSA Algorithmic Lab (directly highlighting verified 250+ LeetCode DSA achievement) featuring 3 interactive simulators:
+       * *Binary Search Engine (Log N):* Step-by-step array search with dynamic LOW, MID, HIGH pointers, eliminated cell dimming, and C++ logic execution commentary.
+       * *BST In-Order Traversal (Tree):* Spatial SVG binary tree with edge lines, pulsing node visitation, and real-time sorted stream output.
+       * *Monotonic Stack Validator (LIFO):* Interactive bracket matching stream with animated LIFO stack visualizer and acoustic validation cues.
+     - Mode D: Accessible Plain Semantic List for screen readers.
      - Interactive skill query search input with instant highlight filter.
      - Dynamic cross-project architecture HUD displaying connected project implementations upon skill hover/click with direct jump shortcuts.
+   - **Global Command Palette (`CommandPalette.tsx`):**
+     - Accessible via `Ctrl+K` / `Cmd+K` and Navbar Search trigger.
+     - Procedural audio feedback integration with `playClick`, `playHover`, and `playSuccess` across keyboard shortcuts, arrow navigation, and command execution.
    - **About Section: Interactive AS-SHELL Developer Terminal (`About.tsx`):**
      - Full interactive terminal window with traffic-light chrome, tab switching (`mission.sh`, `stack.json`, `focus.md`, `whoami`), CLI command prompt input (`$ cat mission`, `$ whoami`, etc.), execution pills, and acoustic feedback.
    - **Contact 3D Convergence Ring & Link Pills:**
