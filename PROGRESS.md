@@ -148,16 +148,22 @@
    - Pure CSS/hardware-accelerated transforms; 0 window scroll listeners, 0 RAF scroll loops.
    - 100% flat fallbacks on touch/mobile and `prefers-reduced-motion`.
 
-4. **Optimized Cinematic Cursor (Idle RAF Stop):**
+4. **Optimized Cinematic Cursor (Contextual Modes & Idle RAF Stop):**
    - Cursor animation loop automatically halts when pointer movement settles within 0.15px.
    - Restarts via event-driven `wakeUp()` on `pointermove` or click, eliminating CPU/GPU consumption when stationary.
+   - Contextual visual modes: displays "DRAG" badge when hovering over the tactile 3D portrait card, and "VIEW" badge when exploring project chapters and visuals.
+   - Added lightweight expanding click ripple effect on pointerdown.
 
-5. **Final Production Verification:**
-   - Production Build: **484 ms** (Clean)
-   - Oxlint: **0 warnings, 0 errors**
+5. **Full-Screen THE WORK Portal & Semantic Hero Footer:**
+   - Expanded THE WORK chapter entry into a commanding full-screen transition (`min-h-[80svh] sm:min-h-[90svh]`) with dynamic IntersectionObserver focus.
+   - Hero footer migrated to semantic `<footer>` element with verified CGPA metadata (`CS // LUCKNOW · CGPA 7.54`).
+
+6. **Final Production Verification:**
+   - Production Build: **538 ms** (Clean, 0 errors)
+   - Oxlint: **0 warnings, 0 errors** across 21 files
    - Lighthouse Mobile: **Performance 99**, **Accessibility 100**, **Best Practices 100**, **SEO 100**
    - Multi-Viewport (360px to 1920px + Landscape): **All PASS (0px overflow)**
-   - Tap Targets: **30 / 30 Passed (>= 44px)**
+   - Tap Targets: **All Passed (>= 44px)**
    - Console Errors: **0**
 
 
