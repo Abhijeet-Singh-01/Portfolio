@@ -211,5 +211,34 @@
    - Lighthouse Mobile: **Performance 99**, **Accessibility 100**, **Best Practices 100**, **SEO 100**
    - Viewport Verification: **Passes 360px to 1920px (0px overflow)**
 
+---
+
+## Content Synchronization with New Resume (`resume (3).pdf`)
+
+1. **Resume Replacement:**
+   - Replaced `public/resume.pdf` with the updated verified resume (137,947 bytes).
+   - Verified that `/resume.pdf` serves with HTTP 200 and Content-Type `application/pdf`.
+
+2. **Project Data Alignment (3 Verified Projects):**
+   - **01 AI-Powered Incident Intelligence & Root Cause Analysis Platform (Ongoing)**: Python, FastAPI, Scikit-learn, Pandas, NumPy, Joblib, REST APIs. Verified GitHub repo: `https://github.com/Abhijeet-Singh-01/ai-incident-intelligence` (HTTP 200).
+   - **02 SolisIQ – Smart Solar Usage & Savings Monitoring System**: Python, Flask, MySQL, JavaScript, HTML, CSS, Scikit-learn, Pandas, NumPy, Joblib, REST APIs, Render. Verified GitHub repo: `https://github.com/Abhijeet-Singh-01/SolisIQ` (HTTP 200).
+   - **03 SETU – Smart Emergency Response System**: React.js, FastAPI, PostgreSQL, Python, Leaflet, OpenStreetMap, REST APIs. (Buttons hidden since repo is not yet public; zero fake links).
+   - Removed unverified/legacy projects (`Instanews`, `ZeroHour`) that are absent from the new resume.
+
+3. **Bespoke Visual Metaphor for SETU:**
+   - Built an interactive emergency response mapping visual in `ProjectVisual.tsx` featuring Leaflet/OSM topology, distress epicentre with radar sweep, coordinate reticle, and volunteer responder proximity vectors (`0.8 KM` and `1.4 KM`).
+   - Updated SolisIQ visual to accurately reflect Flask REST APIs, MySQL, and Render.
+
+4. **Skills & Education Updates:**
+   - Updated `skillsCategories` with `Flask`, `PostgreSQL`, and new `ML / Data` category (`Scikit-learn`, `Pandas`, `NumPy`, `Joblib`).
+   - Updated `certificationData` to: `AWS Academy Graduate – Machine Learning Foundations Training Badge – AWS` and `AWS Planning a Generative AI Project – AWS`.
+   - Updated `careerObjective` to verbatim text from the new resume.
+
+5. **Verification Results:**
+   - Oxlint: **0 warnings, 0 errors**
+   - Production Build: **588 ms** (Clean, 0 errors)
+   - Dev Server: Status 200, 0 runtime errors
+
+
 
 

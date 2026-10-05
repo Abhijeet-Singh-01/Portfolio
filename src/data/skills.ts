@@ -19,7 +19,7 @@ export const skillsCategories: SkillCategory[] = [
       { name: 'HTML', iconName: 'Layout' },
       { name: 'CSS', iconName: 'Sparkles' },
       { name: 'Tailwind CSS', iconName: 'Palette' },
-      { name: 'JavaScript', iconName: 'FileCode', highlight: true },
+      { name: 'JavaScript (ES6+)', iconName: 'FileCode', highlight: true },
     ],
   },
   {
@@ -27,7 +27,9 @@ export const skillsCategories: SkillCategory[] = [
     title: 'Backend',
     skills: [
       { name: 'FastAPI', iconName: 'Zap', highlight: true },
+      { name: 'Flask', iconName: 'Server', highlight: true },
       { name: 'REST APIs', iconName: 'Route', highlight: true },
+      { name: 'Firebase Cloud Messaging (Learning)', iconName: 'Radio' },
     ],
   },
   {
@@ -35,7 +37,18 @@ export const skillsCategories: SkillCategory[] = [
     title: 'Databases',
     skills: [
       { name: 'MongoDB', iconName: 'Database', highlight: true },
-      { name: 'MySQL', iconName: 'Database' },
+      { name: 'MySQL', iconName: 'Database', highlight: true },
+      { name: 'PostgreSQL', iconName: 'Database', highlight: true },
+    ],
+  },
+  {
+    id: 'ml-data',
+    title: 'ML / Data',
+    skills: [
+      { name: 'Scikit-learn', iconName: 'Cpu', highlight: true },
+      { name: 'Pandas', iconName: 'Table', highlight: true },
+      { name: 'NumPy', iconName: 'Binary', highlight: true },
+      { name: 'Joblib', iconName: 'Archive' },
     ],
   },
   {

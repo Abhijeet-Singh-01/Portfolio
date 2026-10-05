@@ -27,14 +27,14 @@ export const educationData: EducationItem[] = [
 ];
 
 export const certificationData = [
-  'AWS Planning a Generative AI Project - Amazon Web Services (AWS)',
-  'AWS Introduction to Generative AI - Art of the Possible - Amazon Web Services (AWS)',
+  'AWS Academy Graduate – Machine Learning Foundations Training Badge – AWS',
+  'AWS Planning a Generative AI Project – AWS',
 ];
 
 export const achievementData = [
   {
     title: '250+ DSA problems solved on LeetCode',
-    description: 'Arrays, strings, linked lists, stacks, queues, trees, and recursion.',
+    description: 'Covering arrays, strings, linked lists, stacks, queues, trees, and recursion.',
     url: siteLinks.leetcode.url,
   },
   {
@@ -44,7 +44,7 @@ export const achievementData = [
 ];
 
 export const careerObjective =
-  'Computer Science undergraduate seeking software development opportunities to apply problem-solving and programming skills in backend and full-stack engineering. Interested in building scalable APIs, database-driven applications, and AI-powered solutions while strengthening expertise in DSA, Generative AI, and modern software development.';
+  'Computer Science undergraduate with hands-on experience in full-stack development, backend engineering, machine learning, and AI-powered applications. Skilled in developing REST APIs, database-driven systems, interactive web applications, and ML-based solutions through academic and personal projects. Seeking software development opportunities where I can apply strong problem-solving and programming skills, contribute to scalable and reliable software solutions, and continue developing expertise in Data Structures and Algorithms, backend systems, AI/ML, and Generative AI.';
 
 export const personalBio = {
   name: 'Abhijeet Singh',

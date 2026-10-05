@@ -37,7 +37,7 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
               <span className={`w-1.5 h-1.5 rounded-full bg-emerald-400 ${isActive ? 'animate-pulse' : ''}`} />
               <span>LIVE TELEMETRY INGESTION</span>
             </div>
-            <span className="font-mono text-[10px] text-[var(--text)]/85 font-medium">RAG PIPELINE // V-SEARCH</span>
+            <span className="font-mono text-[10px] text-[var(--text)]/85 font-medium">FASTAPI // SCIKIT-LEARN &amp; JOBLIB</span>
           </div>
 
           {/* Center Graphic: Incident Signal & Connected Evidence Graph */}
@@ -123,7 +123,7 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
               <span>SOLAR SIZING CALCULATOR</span>
             </div>
-            <span className="font-mono text-[10px] text-[var(--text)]/85 font-medium">FASTAPI // REACT DASHBOARD</span>
+            <span className="font-mono text-[10px] text-[var(--text)]/85 font-medium">FLASK REST // MYSQL &amp; RENDER</span>
           </div>
 
           {/* Center Graphic: Solar Dial & Energy Efficiency Gauge */}
@@ -194,60 +194,86 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
         </div>
       );
 
-    case 'instanews':
+    case 'setu':
       return (
         <div className={containerClasses} aria-hidden="true">
-          {/* Background Editorial Accents */}
+          {/* Background Map Grid & Radial Dispatch Glow */}
           <div
             className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${
               isActive
-                ? 'bg-[radial-gradient(ellipse_at_bottom_right,rgba(99,102,241,0.20),transparent_65%)] opacity-100'
+                ? 'bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,0.18)_0%,rgba(99,102,241,0.10)_60%,transparent_80%)] opacity-100'
                 : 'opacity-20'
             }`}
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 bg-[linear-gradient(to_right,var(--border-subtle)_1px,transparent_1px),linear-gradient(to_bottom,var(--border-subtle)_1px,transparent_1px)] bg-[size:32px_32px] opacity-30 pointer-events-none"
             aria-hidden="true"
           />
 
           {/* Visual Header */}
           <div className="relative z-10 flex items-center justify-between">
             <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[var(--surface)]/85 border border-[var(--border)] text-[10px] font-mono text-[var(--text)] font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
-              <span>HIGH-THROUGHPUT DISPATCH</span>
+              <span className={`w-1.5 h-1.5 rounded-full bg-rose-500 ${isActive ? 'animate-pulse' : ''}`} />
+              <span>LIVE TRIAGE &amp; DISPATCH</span>
             </div>
-            <span className="font-mono text-[10px] text-[var(--text)]/85 font-medium">JWT AUTH // REDUX TOOLKIT</span>
+            <span className="font-mono text-[10px] text-[var(--text)]/85 font-medium">LEAFLET + OSM // POSTGRESQL</span>
           </div>
 
-          {/* Center Graphic: Editorial Streaming Feed Cards */}
-          <div className="relative z-10 my-auto space-y-2 py-1">
-            {/* Mock Editorial Card 1 */}
-            <div className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] shadow-sm flex items-center justify-between gap-3">
-              <div className="space-y-1.5 flex-1">
-                <div className="w-16 h-2 rounded bg-[var(--accent-secondary)]/30" />
-                <div className="w-4/5 h-2.5 rounded bg-[var(--text)]/80" />
-                <div className="w-3/5 h-2 rounded bg-[var(--text)]/60" />
-              </div>
-              <div className="w-12 h-12 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] flex items-center justify-center font-mono text-[10px] text-[var(--text)] font-bold shrink-0">
-                LIVE
-              </div>
-            </div>
+          {/* Center Graphic: Interactive Emergency Map Visualization */}
+          <div className="relative z-10 my-auto py-2">
+            <svg
+              viewBox="0 0 400 130"
+              className="w-full h-auto overflow-visible"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-label="SETU emergency map and volunteer dispatch visual"
+            >
+              {/* Map Topology Roads / Spatial Grid Segments */}
+              <path d="M 20 65 L 140 65 L 200 40 L 380 40" stroke="var(--border)" strokeWidth="1.2" opacity="0.4" />
+              <path d="M 140 10 L 140 120" stroke="var(--border)" strokeWidth="1" opacity="0.3" strokeDasharray="3 3" />
+              <path d="M 270 20 L 270 125" stroke="var(--border)" strokeWidth="1" opacity="0.3" strokeDasharray="3 3" />
+              <path d="M 60 115 L 200 40 L 340 110" stroke="var(--border)" strokeWidth="1" opacity="0.35" />
 
-            {/* Mock Editorial Card 2 */}
-            <div className="p-3 rounded-lg bg-[var(--surface)]/60 border border-[var(--border-subtle)] flex items-center justify-between gap-3 opacity-80">
-              <div className="space-y-1.5 flex-1">
-                <div className="w-12 h-2 rounded bg-[var(--accent-primary)]/30" />
-                <div className="w-2/3 h-2.5 rounded bg-[var(--text)]/70" />
-                <div className="w-1/2 h-2 rounded bg-[var(--text)]/50" />
-              </div>
-              <div className="w-12 h-12 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] flex items-center justify-center font-mono text-[10px] text-[var(--text)]/90 font-bold shrink-0">
-                FEED
-              </div>
-            </div>
+              {/* Distress Incident Epicentre (Pulsing Radar Sweep) */}
+              <circle cx="200" cy="40" r="22" stroke="#EF4444" strokeWidth="1" strokeDasharray="2 4" opacity={isActive ? 0.6 : 0.2} />
+              <circle cx="200" cy="40" r="14" fill="#EF4444" fillOpacity="0.2" />
+              <circle cx="200" cy="40" r="6" fill="#EF4444" stroke="#FECACA" strokeWidth="2" />
+
+              {/* Incident Crosshair Marker */}
+              <line x1="188" y1="40" x2="212" y2="40" stroke="#EF4444" strokeWidth="1.5" />
+              <line x1="200" y1="28" x2="200" y2="52" stroke="#EF4444" strokeWidth="1.5" />
+
+              {/* Location Tag */}
+              <text x="200" y="16" fill="var(--text)" fontSize="8" fontFamily="monospace" textAnchor="middle" fontWeight="bold">
+                INCIDENT: P1 CRITICAL
+              </text>
+
+              {/* Proximity Vectors to Volunteers */}
+              <line x1="90" y1="95" x2="200" y2="40" stroke="var(--accent-secondary)" strokeWidth="1.5" strokeDasharray="4 3" opacity={isActive ? 0.85 : 0.3} />
+              <line x1="320" y1="85" x2="200" y2="40" stroke="var(--accent-primary)" strokeWidth="1.5" strokeDasharray="4 3" opacity={isActive ? 0.85 : 0.3} />
+
+              {/* Volunteer Responder 01 */}
+              <circle cx="90" cy="95" r="7" fill="var(--surface)" stroke="var(--accent-secondary)" strokeWidth="2" />
+              <circle cx="90" cy="95" r="3" fill="var(--accent-secondary)" />
+              <text x="90" y="116" fill="var(--accent-secondary)" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                RESP-01 (0.8 KM)
+              </text>
+
+              {/* Volunteer Responder 02 */}
+              <circle cx="320" cy="85" r="7" fill="var(--surface)" stroke="var(--accent-primary)" strokeWidth="2" />
+              <circle cx="320" cy="85" r="3" fill="var(--accent-primary)" />
+              <text x="320" y="106" fill="var(--accent-primary)" fontSize="8" fontFamily="monospace" textAnchor="middle">
+                RESP-02 (1.4 KM)
+              </text>
+            </svg>
           </div>
 
           {/* Visual Footer */}
           <div className="relative z-10 grid grid-cols-3 gap-2 pt-3 border-t border-[var(--border-subtle)] text-[10px] font-mono text-[var(--text)]/85 text-center">
-            <span>RBAC ACCESS</span>
-            <span className="text-[var(--text)] font-semibold">CACHE LAYER</span>
-            <span>INFINITE SCROLL</span>
+            <span>AUTOMATED TRIAGE</span>
+            <span className="text-teal-300 font-semibold">LEAFLET / OSM</span>
+            <span>PROXIMITY DISPATCH</span>
           </div>
         </div>
       );

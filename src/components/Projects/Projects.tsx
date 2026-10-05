@@ -83,7 +83,7 @@ export const Projects: React.FC = () => {
         </h2>
 
         <p className="mt-8 text-base sm:text-xl text-[var(--text-2)] max-w-2xl leading-relaxed">
-          Four production and research implementations spanning AI incident triage, solar analytics, high-throughput media publishing, and real-time state calculation.
+          Engineering implementations spanning AI-powered incident triage, solar analytics &amp; advisory, and emergency response spatial mapping.
         </p>
 
         {/* Live Active Chapter Tracker Badge & Stage Prompt */}
@@ -94,7 +94,7 @@ export const Projects: React.FC = () => {
           </div>
 
           <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--text-2)]/70">
-            <span>01 — 04 / CHRONOLOGY</span>
+            <span>01 — {String(projectsData.length).padStart(2, '0')} / CHRONOLOGY</span>
           </div>
         </div>
       </div>
