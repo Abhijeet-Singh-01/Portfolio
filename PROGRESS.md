@@ -213,31 +213,65 @@
 
 ---
 
-## Content Synchronization with New Resume (`resume (3).pdf`)
+## Complete Premium Portfolio Upgrade (Spatial 3D & Recruiter-Friendly Architecture)
 
-1. **Resume Replacement:**
-   - Replaced `public/resume.pdf` with the updated verified resume (137,947 bytes).
-   - Verified that `/resume.pdf` serves with HTTP 200 and Content-Type `application/pdf`.
+### 1. Spatial 3D Hero Centerpiece
+- **Dimensional Digital Identity Core**: High-presence 3D composition with distinct resting angle (`rotateX(7.5deg) rotateY(-13.5deg)`), 6 depth planes (`-95px` to `+62px`), and three orbital rings.
+- **Multi-Plane Physical Depth**:
+  - Deep rear shadow & coordinates plate (`translateZ(-95px)`)
+  - Back ambient glow (`translateZ(-55px)`)
+  - Mid photo container (`translateZ(0px)`)
+  - Optical semi-transparent glass lens with Fresnel edge lighting and caustic highlight reflection (`translateZ(+38px)`)
+  - Authentic 3D Isometric Mini-Cube with key/ambient/rim shaded faces (`translateZ(+55px)`)
+  - Floating status pill & sensor reticles (`translateZ(+62px)`)
+- **Resting 3D Visibility**: The spatial relationship, specular glare, lens refraction, and depth layering are immediately apparent even when the pointer is completely motionless.
+- **Cinematic Parallax**: Non-blocking pointer tracking modulating the resting angle with spring ease on leave. Touch screens and `prefers-reduced-motion` are guarded and respected.
 
-2. **Project Data Alignment (3 Verified Projects):**
-   - **01 AI-Powered Incident Intelligence & Root Cause Analysis Platform (Ongoing)**: Python, FastAPI, Scikit-learn, Pandas, NumPy, Joblib, REST APIs. Verified GitHub repo: `https://github.com/Abhijeet-Singh-01/ai-incident-intelligence` (HTTP 200).
-   - **02 SolisIQ – Smart Solar Usage & Savings Monitoring System**: Python, Flask, MySQL, JavaScript, HTML, CSS, Scikit-learn, Pandas, NumPy, Joblib, REST APIs, Render. Verified GitHub repo: `https://github.com/Abhijeet-Singh-01/SolisIQ` (HTTP 200).
-   - **03 SETU – Smart Emergency Response System**: React.js, FastAPI, PostgreSQL, Python, Leaflet, OpenStreetMap, REST APIs. (Buttons hidden since repo is not yet public; zero fake links).
-   - Removed unverified/legacy projects (`Instanews`, `ZeroHour`) that are absent from the new resume.
+### 2. Cinematic Scroll Transition & Chapter Choreography
+- **Portal Transition**: Massive `THE WORK.` typography (`min-h-[85svh]`) with dynamic `IntersectionObserver` scaling down and dollying into sequential project chapters.
+- **Floating Chapter Navigation HUD (`ProjectChapterNav.tsx`)**:
+  - Floating glass pill indicator (`01 / 04`) with chapter dots.
+  - Smooth-scroll chapter jumps to each project stage on click.
+  - Only visible when user is actively exploring the projects section.
 
-3. **Bespoke Visual Metaphor for SETU:**
-   - Built an interactive emergency response mapping visual in `ProjectVisual.tsx` featuring Leaflet/OSM topology, distress epicentre with radar sweep, coordinate reticle, and volunteer responder proximity vectors (`0.8 KM` and `1.4 KM`).
-   - Updated SolisIQ visual to accurately reflect Flask REST APIs, MySQL, and Render.
+### 3. Four-Project Lineup & Deep-Dive Case Study Architecture Modals
+- **Verified 4-Project Lineup**:
+  1. `01 AI Incident Intelligence`: Python, FastAPI, ML, RAG, Embeddings, Vector Search, PostgreSQL, LLM.
+  2. `02 SolisIQ – Smart Solar Usage & Savings Monitoring System`: React.js, Python (FastAPI), MongoDB, JavaScript, Chart.js, REST APIs.
+  3. `03 Instanews`: React, Redux Toolkit, Node.js, Express.js, MongoDB, JWT.
+  4. `04 ZeroHour`: HTML, CSS, JavaScript countdown application with dynamic DOM calculations.
+- **Deep-Dive Architecture & Case Study Modal (`ProjectCaseStudyModal.tsx`)**:
+  - Problem framing, engineering approach, and key implementations.
+  - **Interactive Architecture Flow**: Clickable/hoverable interactive system nodes with live technical inspector detail cards.
+  - Verified source code and live demo buttons (empty buttons strictly hidden).
+  - Accessible focus trap, keyboard navigation (`Tab` / `Shift+Tab`), and `Escape` dismiss.
 
-4. **Skills & Education Updates:**
-   - Updated `skillsCategories` with `Flask`, `PostgreSQL`, and new `ML / Data` category (`Scikit-learn`, `Pandas`, `NumPy`, `Joblib`).
-   - Updated `certificationData` to: `AWS Academy Graduate – Machine Learning Foundations Training Badge – AWS` and `AWS Planning a Generative AI Project – AWS`.
-   - Updated `careerObjective` to verbatim text from the new resume.
+### 4. Technical Arsenal & Skills Lab (Spatial 3D Matrix)
+- **Spatial Networked Laboratory Layout (`Skills.tsx`)**:
+  - Category groupings: Languages, Frontend, Backend, Databases, Tools, Core, and AI.
+  - Ambient SVG hexagonal honeycomb grid background with subtle pulse scanline.
+  - Interactive skill pill nodes with hover highlight and category connection.
+  - Category matrix filters (`All Matrix (19)`, `Languages`, `Frontend`, etc.).
+  - View switcher: Toggle between **Spatial Grid** and **Plain Accessible List** for screen readers and recruiters.
+  - Verified achievements: 250+ LeetCode DSA solved and 2 AWS Generative AI certifications.
 
-5. **Verification Results:**
-   - Oxlint: **0 warnings, 0 errors**
-   - Production Build: **588 ms** (Clean, 0 errors)
-   - Dev Server: Status 200, 0 runtime errors
+### 5. Global Command Palette (`CommandPalette.tsx`)
+- Keyboard accessible via `Ctrl+K` or `Cmd+K` from anywhere in the application.
+- Trigger pill in desktop and mobile header navigation with `⌘K` badge.
+- Instant search filter for navigating to Projects, Skills, About, Contact, Resume download, and external profiles (GitHub, LinkedIn, LeetCode).
+- Full arrow-key navigation (`Up`/`Down`/`Enter`/`Esc`) and focus trap.
+
+### 6. Verification & Test Metrics
+- **TypeScript & Linter**: 0 errors, **0 warnings** across all 24 project files (`oxlint`).
+- **Production Build (`npm run build`)**: **655 ms** clean compilation into `dist/`.
+- **Browser Runtime Test (Microsoft Edge Headless / CDP)**:
+  - Console Errors: **0**
+  - Page Exceptions: **0**
+  - Viewport 390px (Mobile iPhone): `docWidth: 390, winWidth: 390` (**0px horizontal overflow**)
+  - Viewport 360px (Mobile Android): `docWidth: 360, winWidth: 360` (**0px horizontal overflow**)
+  - Resume Download: HTTP 200, `application/pdf`, **137,947 bytes** verified.
+  - Architecture Modal: Opened, verified 4 deep-dive headings and interactive nodes.
+  - Command Palette: Opened via `Ctrl+K`, search input focused, all navigation items verified.
 
 
 

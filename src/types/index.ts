@@ -1,3 +1,10 @@
+export interface ArchitectureNode {
+  id: string;
+  name: string;
+  type: string;
+  detail: string;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -6,6 +13,9 @@ export interface Project {
   category: string;
   technologies: string[];
   systemHighlights: string[];
+  problem?: string;
+  approach?: string;
+  keyImplementation?: string[];
   metrics?: { label: string; value: string }[];
   githubUrl?: string;
   liveUrl?: string;
@@ -14,6 +24,7 @@ export interface Project {
     title: string;
     flow: string[];
   };
+  architectureFlow?: ArchitectureNode[];
 }
 
 export interface SkillItem {

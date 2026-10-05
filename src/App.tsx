@@ -7,6 +7,7 @@ import { About } from './components/About/About';
 import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
 import { CinematicCursor } from './components/common/CinematicCursor';
+import { CommandPalette } from './components/common/CommandPalette';
 
 export const App: React.FC = () => {
   // Single-trigger IntersectionObserver for subtle scroll reveals (respects prefers-reduced-motion)
@@ -43,6 +44,9 @@ export const App: React.FC = () => {
 
       {/* Desktop Lightweight Cinematic Cursor */}
       <CinematicCursor />
+
+      {/* Global Command Palette (Ctrl+K / Cmd+K) */}
+      <CommandPalette />
 
       {/* Restrained 3D Ambient Depth Layer (CSS/SVG only, 0 JS overhead) */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import type { Project } from '../../types';
 import { projectsData } from '../../data/projects';
 import { ProjectChapter } from './ProjectChapter';
+import { ProjectCaseStudyModal } from './ProjectCaseStudyModal';
+import { ProjectChapterNav } from './ProjectChapterNav';
 import { siteLinks } from '../../data/socialLinks';
 import { ExternalLink } from 'lucide-react';
 import { GithubIcon } from '../common/BrandIcons';
@@ -8,17 +11,15 @@ import { GithubIcon } from '../common/BrandIcons';
 export const Projects: React.FC = () => {
   const [activeProjectId, setActiveProjectId] = useState<string>(projectsData[0].id);
   const [isWorkActive, setIsWorkActive] = useState<boolean>(true);
+  const [isProjectsSectionVisible, setIsProjectsSectionVisible] = useState<boolean>(false);
+  const [selectedCaseStudyProject, setSelectedCaseStudyProject] = useState<Project | null>(null);
 
   // Multi-threshold IntersectionObserver for cinematic scroll choreography
   // Tracks active project chapter and THE WORK portal without continuous scroll listeners or RAF loops
   useEffect(() => {
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
 
-    // If reduced-motion is requested, keep all chapters equally active
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-
+    // Track active project chapters
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -39,6 +40,7 @@ export const Projects: React.FC = () => {
     const chapterElements = document.querySelectorAll('.project-chapter');
     chapterElements.forEach((el) => observer.observe(el));
 
+    // Track THE WORK transition portal
     let workObserver: IntersectionObserver | null = null;
     const workTransitionEl = document.getElementById('the-work-transition');
     if (workTransitionEl) {
@@ -53,14 +55,42 @@ export const Projects: React.FC = () => {
       workObserver.observe(workTransitionEl);
     }
 
+    // Track overall projects section visibility for floating chapter HUD
+    let sectionObserver: IntersectionObserver | null = null;
+    const projectsSectionEl = document.getElementById('projects');
+    if (projectsSectionEl) {
+      sectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            setIsProjectsSectionVisible(entry.isIntersecting);
+          });
+        },
+        { threshold: 0.05, rootMargin: '-5% 0px -5% 0px' }
+      );
+      sectionObserver.observe(projectsSectionEl);
+    }
+
     return () => {
       observer.disconnect();
       if (workObserver) workObserver.disconnect();
+      if (sectionObserver) sectionObserver.disconnect();
     };
   }, []);
 
+  const handleSelectProject = (id: string) => {
+    setActiveProjectId(id);
+    const el = document.getElementById(`project-chapter-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  const selectedProjectIndex = selectedCaseStudyProject
+    ? projectsData.findIndex((p) => p.id === selectedCaseStudyProject.id)
+    : 0;
+
   return (
-    <section id="projects" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
+    <section id="projects" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto relative">
       {/* Full-screen Cinematic Chapter Transition: THE WORK. */}
       <div
         id="the-work-transition"
@@ -83,7 +113,7 @@ export const Projects: React.FC = () => {
         </h2>
 
         <p className="mt-8 text-base sm:text-xl text-[var(--text-2)] max-w-2xl leading-relaxed">
-          Engineering implementations spanning AI-powered incident triage, solar analytics &amp; advisory, and emergency response spatial mapping.
+          Engineering implementations spanning AI-powered incident triage, solar analytics &amp; advisory, full-stack news distribution, and high-precision event countdowns.
         </p>
 
         {/* Live Active Chapter Tracker Badge & Stage Prompt */}
@@ -107,9 +137,26 @@ export const Projects: React.FC = () => {
             project={project}
             index={index}
             isActive={activeProjectId === project.id}
+            onOpenCaseStudy={setSelectedCaseStudyProject}
           />
         ))}
       </div>
+
+      {/* Floating Project Chapter Navigation HUD */}
+      <ProjectChapterNav
+        projects={projectsData}
+        activeProjectId={activeProjectId}
+        isVisible={isProjectsSectionVisible}
+        onSelectProject={handleSelectProject}
+      />
+
+      {/* Deep-Dive Case Study & Architecture Modal */}
+      <ProjectCaseStudyModal
+        project={selectedCaseStudyProject}
+        projectIndex={selectedProjectIndex}
+        isOpen={!!selectedCaseStudyProject}
+        onClose={() => setSelectedCaseStudyProject(null)}
+      />
 
       {/* GitHub Repository Banner */}
       <div className="mt-20 p-6 sm:p-8 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">

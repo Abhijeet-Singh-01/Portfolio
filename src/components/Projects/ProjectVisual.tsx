@@ -194,6 +194,64 @@ export const ProjectVisual: React.FC<ProjectVisualProps> = ({ projectId, project
         </div>
       );
 
+    case 'instanews':
+      return (
+        <div className={containerClasses} aria-hidden="true">
+          {/* Background Editorial Accents */}
+          <div
+            className={`absolute inset-0 transition-opacity duration-500 pointer-events-none ${
+              isActive
+                ? 'bg-[radial-gradient(ellipse_at_bottom_right,rgba(99,102,241,0.20),transparent_65%)] opacity-100'
+                : 'opacity-20'
+            }`}
+            aria-hidden="true"
+          />
+
+          {/* Visual Header */}
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[var(--surface)]/85 border border-[var(--border)] text-[10px] font-mono text-[var(--text)] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" />
+              <span>HIGH-THROUGHPUT DISPATCH</span>
+            </div>
+            <span className="font-mono text-[10px] text-[var(--text)]/85 font-medium">JWT AUTH // REDUX TOOLKIT</span>
+          </div>
+
+          {/* Center Graphic: Editorial Streaming Feed Cards */}
+          <div className="relative z-10 my-auto space-y-2 py-1">
+            {/* Mock Editorial Card 1 */}
+            <div className="p-3 rounded-lg bg-[var(--surface)] border border-[var(--border)] shadow-sm flex items-center justify-between gap-3">
+              <div className="space-y-1.5 flex-1">
+                <div className="w-16 h-2 rounded bg-[var(--accent-secondary)]/30" />
+                <div className="w-4/5 h-2.5 rounded bg-[var(--text)]/80" />
+                <div className="w-3/5 h-2 rounded bg-[var(--text)]/60" />
+              </div>
+              <div className="w-12 h-12 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] flex items-center justify-center font-mono text-[10px] text-[var(--text)] font-bold shrink-0">
+                LIVE
+              </div>
+            </div>
+
+            {/* Mock Editorial Card 2 */}
+            <div className="p-3 rounded-lg bg-[var(--surface)]/60 border border-[var(--border-subtle)] flex items-center justify-between gap-3 opacity-80">
+              <div className="space-y-1.5 flex-1">
+                <div className="w-12 h-2 rounded bg-[var(--accent-primary)]/30" />
+                <div className="w-2/3 h-2.5 rounded bg-[var(--text)]/70" />
+                <div className="w-1/2 h-2 rounded bg-[var(--text)]/50" />
+              </div>
+              <div className="w-12 h-12 rounded bg-[var(--surface-2)] border border-[var(--border-subtle)] flex items-center justify-center font-mono text-[10px] text-[var(--text)]/90 font-bold shrink-0">
+                FEED
+              </div>
+            </div>
+          </div>
+
+          {/* Visual Footer */}
+          <div className="relative z-10 grid grid-cols-3 gap-2 pt-3 border-t border-[var(--border-subtle)] text-[10px] font-mono text-[var(--text)]/85 text-center">
+            <span>RBAC ACCESS</span>
+            <span className="text-[var(--text)] font-semibold">CACHE LAYER</span>
+            <span>INFINITE SCROLL</span>
+          </div>
+        </div>
+      );
+
     case 'setu':
       return (
         <div className={containerClasses} aria-hidden="true">

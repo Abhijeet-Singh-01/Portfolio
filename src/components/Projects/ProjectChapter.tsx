@@ -1,16 +1,22 @@
 import React, { useRef } from 'react';
 import type { Project } from '../../types';
 import { ProjectVisual } from './ProjectVisual';
-import { ExternalLink, CheckCircle } from 'lucide-react';
+import { ExternalLink, CheckCircle, Layers } from 'lucide-react';
 import { GithubIcon } from '../common/BrandIcons';
 
 interface ProjectChapterProps {
   project: Project;
   index: number;
   isActive: boolean;
+  onOpenCaseStudy?: (project: Project) => void;
 }
 
-export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index, isActive }) => {
+export const ProjectChapter: React.FC<ProjectChapterProps> = ({
+  project,
+  index,
+  isActive,
+  onOpenCaseStudy,
+}) => {
   const visualRef = useRef<HTMLDivElement>(null);
   const formattedIndex = String(index + 1).padStart(2, '0');
   const isEven = index % 2 === 1;
@@ -116,36 +122,46 @@ export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index, 
             ))}
           </div>
 
-          {/* Action Buttons: Only show when a verified real URL exists */}
-          {(project.githubUrl || project.liveUrl) ? (
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-secondary text-xs"
-                  aria-label={`View ${project.name} source code on GitHub (opens in new tab)`}
-                >
-                  <GithubIcon className="w-4 h-4" />
-                  <span>Source Code</span>
-                </a>
-              )}
+          {/* Action Buttons: Architecture Case Study + Verified URLs */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            {project.architectureFlow && project.architectureFlow.length > 0 && (
+              <button
+                type="button"
+                onClick={() => onOpenCaseStudy?.(project)}
+                className="btn-secondary text-xs inline-flex items-center gap-2 group cursor-pointer"
+                aria-label={`Inspect ${project.name} architecture and case study`}
+              >
+                <Layers className="w-3.5 h-3.5 text-[var(--accent-secondary)] transition-transform duration-300 group-hover:scale-110" aria-hidden="true" />
+                <span>Architecture &amp; Case Study</span>
+              </button>
+            )}
 
-              {project.liveUrl && (
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary text-xs"
-                  aria-label={`View ${project.name} live demo (opens in new tab)`}
-                >
-                  <span>Live Demo</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              )}
-            </div>
-          ) : null}
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary text-xs"
+                aria-label={`View ${project.name} source code on GitHub (opens in new tab)`}
+              >
+                <GithubIcon className="w-4 h-4" />
+                <span>Source Code</span>
+              </a>
+            )}
+
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary text-xs"
+                aria-label={`View ${project.name} live demo (opens in new tab)`}
+              >
+                <span>Live Demo</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
         </div>
 
         {/* Visual Abstract Metaphor Column */}
@@ -158,9 +174,25 @@ export const ProjectChapter: React.FC<ProjectChapterProps> = ({ project, index, 
         >
           <div
             ref={visualRef}
-            className="project-visual-3d transition-transform duration-300 ease-out will-change-transform"
+            onClick={() => onOpenCaseStudy?.(project)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onOpenCaseStudy?.(project);
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Inspect interactive architecture for ${project.name}`}
+            className="project-visual-3d transition-transform duration-300 ease-out will-change-transform relative group/vis cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] rounded-2xl"
           >
             <ProjectVisual projectId={project.id} projectName={project.name} isActive={isActive} />
+
+            {/* Subtle hover prompt pill on desktop */}
+            <div className="absolute bottom-4 right-4 z-20 hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--surface)]/90 backdrop-blur-md border border-[var(--border)] text-[11px] font-mono text-[var(--text-2)] shadow-md opacity-75 group-hover/vis:opacity-100 transition-opacity">
+              <Layers className="w-3.5 h-3.5 text-[var(--accent-secondary)]" aria-hidden="true" />
+              <span>Inspect Architecture</span>
+            </div>
           </div>
         </div>
       </div>

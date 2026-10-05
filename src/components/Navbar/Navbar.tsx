@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, Search } from 'lucide-react';
 import { applyAuroraTheme, getInitialTheme, type AuroraTheme } from '../../lib/theme';
 
 interface NavItem {
@@ -154,6 +154,20 @@ export const Navbar: React.FC = () => {
 
           <div className="w-[1px] h-5 bg-[var(--border)] mx-2" aria-hidden="true" />
 
+          {/* Command Palette Trigger */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+            className="min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-mono text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--border)] transition-colors flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer"
+            aria-label="Open command palette (Ctrl+K)"
+          >
+            <Search className="w-3.5 h-3.5 text-[var(--accent-secondary)]" aria-hidden="true" />
+            <span className="hidden lg:inline text-[11px]">Search</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-[var(--surface-tint)] text-[10px] font-mono text-[var(--text-2)] border border-[var(--border-subtle)] select-none">
+              Ctrl+K
+            </kbd>
+          </button>
+
           {/* Theme Toggle Button */}
           <button
             type="button"
@@ -169,8 +183,17 @@ export const Navbar: React.FC = () => {
           </button>
         </nav>
 
-        {/* Mobile Actions: Theme Toggle + Hamburger Button */}
+        {/* Mobile Actions: Search + Theme Toggle + Hamburger Button */}
         <div className="flex md:hidden items-center gap-1">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+            className="min-h-[44px] min-w-[44px] p-2.5 rounded-md text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--surface-2)] transition-colors flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)] cursor-pointer"
+            aria-label="Open search command palette"
+          >
+            <Search className="w-4 h-4 text-[var(--accent-secondary)]" />
+          </button>
+
           <button
             type="button"
             onClick={toggleTheme}

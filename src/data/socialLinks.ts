@@ -61,6 +61,7 @@ export const socialLinks: SocialLink[] = [
 export const projectLinks = {
   solisiqSource: 'https://github.com/Abhijeet-Singh-01/SolisIQ',
   aiIncidentIntelligenceSource: 'https://github.com/Abhijeet-Singh-01/ai-incident-intelligence',
+  zeroHourSource: 'https://github.com/Abhijeet-Singh-01/ZeroHour',
 };
 
 export const sameAsLinks = [siteLinks.github.url, siteLinks.linkedin.url, siteLinks.leetcode.url];
