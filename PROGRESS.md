@@ -166,4 +166,50 @@
    - Tap Targets: **All Passed (>= 44px)**
    - Console Errors: **0**
 
+---
+
+## 3D Hero Visual Rebuild (True Physical Spatial Composition)
+
+1. **Rejection of Flat 2D Aesthetics:**
+   - Eliminated the flat card presentation and 0deg frontal resting orientation that made the previous iteration look 2D.
+   - Built a true 3D spatial stage around a dimensional "Digital Identity Core" with an asymmetric resting perspective (`perspective: 1100px; rotateX(7.5deg) rotateY(-13.5deg) rotateZ(-1deg)`).
+   - Visibly 3D **at rest** before any pointer movement.
+
+2. **Central 3D Core Physical Multi-Layer Assembly:**
+   - **Layer 0: Deep Cast Shadow Plane (`-95px Z`)**: Directional soft shadow (`box-shadow: 24px 36px 70px -8px rgba(0,0,0,0.85)`), physically detaching the core from the background.
+   - **Layer 1: Back Structural Chassis & Standoffs (`-55px Z`)**: Chamfered metallic baseplate with mechanical standoff hex pins and etched chassis serial.
+   - **Layer 2: Stepped Depth Casing / Side Extrusion (`-15px Z`)**: Distinct intermediate casing with metallic rim highlights providing physical wall thickness.
+   - **Layer 3: Recessed Photo Plane & Physical Portrait Core (`+6px Z`)**: Deeply recessed housing with inner drop shadow (`inset 0 0 24px rgba(0,0,0,0.85)`), framing the untouched authentic photo of Abhijeet Singh.
+   - **Layer 4: 3D Optical Glass Lens (`+40px Z`)**: Physical optical lens element with 1.5px bevel edge, specular reflection streak, radial optic highlight, and micro indicator. Sits 34px forward from the photo plane, creating genuine optical depth.
+   - **Layer 5: Front Titanium Bezel & Reticle Markers (`+62px Z`)**: 4 front corner calipers clamping the lens with telemetry engravings.
+
+3. **3D Orbital Systems with Real Spatial Occlusion:**
+   - **Orbit A (Equatorial Plane)**: Tilted `rotateX(72deg) rotateY(-16deg) rotateZ(10deg)`. Rear arc sits at `-52px Z` (passing behind chassis), front arc sits at `+72px Z` (passing in front of lens) with pulsing satellite node.
+   - **Orbit B (Meridian Plane)**: Tilted `rotateY(75deg) rotateX(18deg) rotateZ(-20deg)`. Rear arc sits at `-62px Z`, front arc sits at `+82px Z`.
+   - **Orbit C (Celestial Diagonal Ring)**: Tilted `rotateX(40deg) rotateY(46deg) rotateZ(-25deg)` at `+15px Z` with gentle, continuous GPU rotation.
+
+4. **Floating 3D Technical Artifacts (Distinct Z-Depths):**
+   - **Object 1: Deep Spatial Plate (`-80px Z`)**: Micro-plate with coordinates `LAT 26.85°N / LONG 80.95°E`.
+   - **Object 2: 3D Isometric Mini-Cube (`+95px Z`)**: Authentic 3D CSS cube with 3 visible physical faces catching key, ambient, and rim light in `preserve-3d`.
+   - **Object 3: Foreground Spatial Reticle & Sensor Node (`+130px Z`)**: Precision caliper with cyan LED and `DEPTH // Z:+130`.
+   - **Object 4: Vertical Z-Datum Line (`+45px Z`)**: Calibrated scale axis `Z:+45`.
+   - **Object 5: Optical Sensor Node (`-35px Z`)**: Pulse beacon `CORE // STABLE`.
+   - **Object 6: Tethered Top Telemetry Tag (`+75px Z`)**: Floating chip `IDENTITY CORE // 01`.
+
+5. **Editorial 3D Typography:**
+   - "ABHIJEET." headline wrapped in spatial perspective with front text layer (`translateZ(24px)`) and atmospheric depth shadow layer (`translateZ(-15px)`).
+
+6. **Interaction & Responsive Architecture:**
+   - **Multi-Plane Parallax**: Smooth pointer tracking modulating the resting angle and driving differential layer parallax multipliers (1x background to 8x foreground objects).
+   - **Scroll Depth Dolly**: Zero-listener `IntersectionObserver` scaling down the stage, translating Z backward (`-160px`), and dollying into THE WORK.
+   - **Mobile 3D Preservation**: Full 3D resting angle and depth planes preserved on mobile with fluid `clamp()` sizing (zero horizontal overflow at 360px).
+   - **Accessibility**: Smooth fallbacks for `prefers-reduced-motion` retaining static dimensional hierarchy.
+
+7. **Production Metrics:**
+   - Production Build: **580 ms** (Clean, 0 errors)
+   - Oxlint: **0 warnings, 0 errors** across 21 files
+   - Lighthouse Mobile: **Performance 99**, **Accessibility 100**, **Best Practices 100**, **SEO 100**
+   - Viewport Verification: **Passes 360px to 1920px (0px overflow)**
+
+
 

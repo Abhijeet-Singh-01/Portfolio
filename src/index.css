@@ -130,28 +130,155 @@
   opacity: 0.28;
 }
 
-/* Hero 3D Physical Portrait Card System */
-.hero-3d-scene {
-  perspective: 1200px;
-}
-.hero-3d-wrap {
+/* ==========================================================================
+   HERO 3D DIGITAL IDENTITY CORE SYSTEM
+   True Physical Spatial Composition with Depth, Layering, Occlusion, Lighting
+   ========================================================================== */
+
+.hero-spatial-canvas {
+  perspective: 1100px;
   transform-style: preserve-3d;
-  transform: rotateX(var(--hero-rx, 0deg)) rotateY(var(--hero-ry, 0deg));
-  transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Base Stage with Resting Asymmetric Angle & Pointer Modulation */
+.hero-3d-stage {
+  perspective: 1100px;
+  transform-style: preserve-3d;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  /* Cinematic Scroll Depth Dolly: scales down and moves backward in Z */
+  transform: scale(calc(1 - var(--hero-scroll-progress, 0) * 0.12))
+             translateZ(calc(var(--hero-scroll-progress, 0) * -160px))
+             translateY(calc(var(--hero-scroll-progress, 0) * -24px));
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-core-rig {
+  transform-style: preserve-3d;
+  /* Resting 3D Asymmetric Pose: visibly dimensional AT REST before any mouse move! */
+  --base-rx: 7.5deg;
+  --base-ry: -13.5deg;
+  transform: rotateX(calc(var(--base-rx) + (var(--my, 0) * -7deg)))
+             rotateY(calc(var(--base-ry) + (var(--mx, 0) * 9deg)))
+             rotateZ(-1deg);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
-.hero-plane-glow {
-  transform: translateZ(-35px) scale(1.1);
+
+/* Layer 0: Deep Directional Cast Shadow Plane (-95px Z) */
+.hero-shadow-plane {
+  transform: translate3d(calc(var(--mx, 0) * 6px + 20px), calc(var(--my, 0) * 6px + 26px), -95px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hero-plane-wire {
-  transform: translateZ(-15px);
+
+/* Layer 1: Back Structural Chassis & Standoffs (-55px Z) */
+.hero-back-chassis {
+  transform: translate3d(calc(var(--mx, 0) * 10px), calc(var(--my, 0) * 10px), -55px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hero-portrait-card {
-  transform: translateZ(32px);
-  transition: box-shadow 300ms ease;
+
+/* Layer 2: Stepped Depth Casing / Side Extrusion (-15px Z) */
+.hero-depth-casing {
+  transform: translate3d(calc(var(--mx, 0) * 16px), calc(var(--my, 0) * 16px), -15px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hero-portrait-badge {
-  transform: translateZ(52px);
+
+/* Layer 3: Recessed Photo Plane (+6px Z) */
+.hero-photo-plane {
+  transform: translate3d(calc(var(--mx, 0) * 22px), calc(var(--my, 0) * 22px), 6px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Layer 4: 3D Optical Glass Lens (+40px Z) */
+.hero-glass-lens {
+  transform: translate3d(calc(var(--mx, 0) * 32px), calc(var(--my, 0) * 32px), 40px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Layer 5: Front Titanium Bezel & Reticle Markers (+62px Z) */
+.hero-front-bezel {
+  transform: translate3d(calc(var(--mx, 0) * 40px), calc(var(--my, 0) * 40px), 62px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 3D Typography Depth Layering */
+.hero-text-shadow {
+  transform: translate3d(calc(var(--mx, 0) * -8px + 6px), calc(var(--my, 0) * -8px + 8px), -15px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-text-front {
+  transform: translateZ(24px);
+}
+
+/* 3D Orbital Structures & Occlusion */
+.hero-orbit-a-back {
+  transform-style: preserve-3d;
+  transform: rotateX(72deg) rotateY(-16deg) rotateZ(10deg) translateZ(-52px)
+             translate3d(calc(var(--mx, 0) * 8px), calc(var(--my, 0) * 8px), 0);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-orbit-a-front {
+  transform-style: preserve-3d;
+  transform: rotateX(72deg) rotateY(-16deg) rotateZ(10deg) translateZ(72px)
+             translate3d(calc(var(--mx, 0) * 26px), calc(var(--my, 0) * 26px), 0);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-orbit-b-back {
+  transform-style: preserve-3d;
+  transform: rotateY(75deg) rotateX(18deg) rotateZ(-20deg) translateZ(-62px)
+             translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-orbit-b-front {
+  transform-style: preserve-3d;
+  transform: rotateY(75deg) rotateX(18deg) rotateZ(-20deg) translateZ(82px)
+             translate3d(calc(var(--mx, 0) * 30px), calc(var(--my, 0) * 30px), 0);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-orbit-c {
+  transform-style: preserve-3d;
+  transform: rotateX(40deg) rotateY(46deg) rotateZ(-25deg) translateZ(15px);
+  animation: orbitCelestialSpin 45s linear infinite;
+}
+
+@keyframes orbitCelestialSpin {
+  0% {
+    transform: rotateX(40deg) rotateY(46deg) rotateZ(0deg) translateZ(15px);
+  }
+  100% {
+    transform: rotateX(40deg) rotateY(46deg) rotateZ(360deg) translateZ(15px);
+  }
+}
+
+/* Floating Technical Objects at Distinct Z-Depths */
+.hero-obj-plate {
+  transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), -80px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-obj-voxel {
+  transform: translate3d(calc(var(--mx, 0) * 44px), calc(var(--my, 0) * 44px), 95px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-obj-reticle {
+  transform: translate3d(calc(var(--mx, 0) * 52px), calc(var(--my, 0) * 52px), 130px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-obj-gauge {
+  transform: translate3d(calc(var(--mx, 0) * 24px), calc(var(--my, 0) * 24px), 45px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-obj-sensor {
+  transform: translate3d(calc(var(--mx, 0) * 10px), calc(var(--my, 0) * 10px), -35px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-obj-tag {
+  transform: translate3d(calc(var(--mx, 0) * 36px), calc(var(--my, 0) * 36px), 75px);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Subtle Scroll Indicator Pulse */
@@ -386,14 +513,25 @@
   transform: perspective(1000px) translateY(0) rotateX(0deg);
 }
 
-/* Accessibility: prefers-reduced-motion & touch devices */
-@media (prefers-reduced-motion: reduce), (pointer: coarse) {
-  .hero-3d-wrap {
+/* Touch Devices: Restrain hover-specific card tilts, KEEP static 3D depth active */
+@media (pointer: coarse) {
+  .card-3d,
+  .project-visual-3d {
     transform: none !important;
     transition: none !important;
   }
-  .card-3d,
-  .project-visual-3d {
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-orbit-c {
+    animation: none !important;
+  }
+  .hero-core-rig {
+    transform: rotateX(7.5deg) rotateY(-13.5deg) rotateZ(-1deg) !important;
+    transition: none !important;
+  }
+  .hero-3d-stage {
     transform: none !important;
     transition: none !important;
   }
@@ -404,12 +542,6 @@
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
-  }
-  .hero-plane-glow,
-  .hero-plane-wire,
-  .hero-portrait-card,
-  .hero-portrait-badge {
-    transform: none !important;
   }
 }
 
