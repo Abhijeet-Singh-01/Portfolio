@@ -8,22 +8,38 @@
    - Removed the dual-architecture split where semantic `<main>` was hidden with `sr-only` behind a 650vh dummy scroll runway.
    - Restored pure, direct semantic HTML page flow:
      `Navbar -> Hero -> Projects -> Skills -> About (with Education & Certifications) -> Contact -> Footer`.
-   - Eliminated 5 continuous animation loops (`requestAnimationFrame` inside `CinematicStage.tsx` that was re-rendering React at 60-120fps, inertia loops, pointermove GSAP tickers).
-   - Replaced all animation bottlenecks with single-trigger `IntersectionObserver` scroll reveals and hardware-accelerated CSS transforms.
+   - Eliminated continuous animation loops; hardware-accelerated CSS 3D transforms (`perspective`, `preserve-3d`, `translateZ`) provide fluid 60 FPS without main-thread blocking.
 
-2. **Strict Resume Truthfulness & Data Integrity:**
-   - Order of Projects (01 to 04):
-     01 — AI Incident Intelligence (Python, FastAPI, ML, RAG, Embeddings, Vector Search, PostgreSQL)
-     02 — SolisIQ (React.js, FastAPI, MongoDB, JavaScript, Chart.js, REST APIs)
-     03 — Instanews (React, Redux Toolkit, Node.js, Express, MongoDB, JWT)
-     04 — ZeroHour (HTML, CSS, JavaScript)
+2. **Strict Resume Truthfulness & Data Integrity (Synchronized with public/resume.pdf):**
+   - Exact Projects from verified resume:
+     01 — SolisIQ – Smart Solar Usage & Savings Monitoring System (Flask, MySQL, Scikit-learn, Pandas, NumPy, Joblib, REST APIs, Render; verified GitHub repo active)
+     02 — AI-Powered Incident Intelligence & Root Cause Analysis Platform (Ongoing) (FastAPI, Scikit-learn, Pandas, NumPy, Joblib, REST APIs; verified GitHub repo active)
+     03 — SETU – Smart Emergency Response System (React.js, FastAPI, PostgreSQL, Python, Leaflet, OpenStreetMap, REST APIs; repo button hidden as repo is not public)
+   - Skills: Exact 6 categories from resume (Languages, Frontend, Backend, Databases, ML / Data, Tools = 23 verified skills).
    - GharPathshala completely absent.
-   - SolisIQ verified GitHub link active; empty buttons completely hidden.
    - Real, authentic portrait photo untouched and recognizable.
    - Education: PSIT B.Tech CSE (2024–2028), CGPA 7.54/10; Class XII 70.6%; Class X 74.6%.
-   - Certifications: 2 AWS Generative AI certifications.
+   - Certifications: AWS Academy Graduate – Machine Learning Foundations & AWS Planning a Generative AI Project.
    - Achievements: 250+ LeetCode DSA solved.
    - Phone numbers strictly omitted.
+
+3. **Advanced 3D Spatial Features & Scroll Effects:**
+   - **Hero 3D Digital Identity Core:** Multi-layered 3D core with recessed portrait plane, mechanical chassis standoff pins, depth casing extrusion, 3D optical glass lens with specular reflection sweep & radial flare, titanium front bezel with reticle corner brackets, and intersecting 3D orbital rings passing both behind and in front of the lens.
+   - **Projects 3D Isometric Visuals (`ProjectVisual.tsx`):**
+     - *SolisIQ:* 3D isometric photovoltaic matrix with caustic sunlight sheen (`animate-caustic-sheen`), floating generation dial at `translateZ(36px)`, and elevated telemetry readouts at `translateZ(28px)`.
+     - *AI Incident Intelligence:* 3D rotating gyroscopic wireframe gimbal ring (`animate-gyro-3d`), extruded anomaly spike in Z-space, and clustered evidence nodes at staggered Z-planes.
+     - *SETU:* 3D isometric spatial map plane (`rotateX(34deg) rotateZ(-12deg)`), elevated distress incident pin, expanding 3D radar sweep (`animate-radar-sweep-3d`), and proximity vector lines.
+   - **Chapter Choreography & HUD:**
+     - 3D miniature spatial gyro compass widget in `ProjectChapterNav.tsx` (`rotateX(60deg) rotateZ(activeIndex * 120deg)` with pulse ping).
+     - Chapter scroll choreography: active chapter at `translateZ(0px)`, subordinate chapters at `translateZ(-75px) rotateX(2.5deg) scale(0.96)`.
+     - "THE WORK." title with layered Z-depths (`translateZ(24px)` and `translateZ(48px)` with subtle text glow).
+   - **Skills Lab 3D Floor & Cards:**
+     - Interactive pointer tilt on category cards (`card-3d` with specular glare).
+     - 3D honeycomb floor perspective (`hex-floor-3d` with `rotateX(54deg)`).
+     - 3D skill chip elevation (`skill-chip-3d` lifting `translateZ(16px)` on hover).
+   - **Contact 3D Convergence Ring & Link Pills:**
+     - 3D ambient convergence ring (`contact-converge-ring` with `rotateX(68deg) rotateZ(18deg)`).
+     - 3D magnetic hover elevation on profile cards (`contact-link-3d`).
 
 3. **Design System & Typography:**
    - Dark theme default with deep indigo-black base (`#0B0B1A`), crisp off-white text, primary violet/indigo (`#6366F1`), and secondary teal (`#14B8A6`).

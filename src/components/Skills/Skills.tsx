@@ -46,33 +46,51 @@ export const Skills: React.FC = () => {
 
   const totalSkillsCount = skillsCategories.reduce((sum, cat) => sum + cat.skills.length, 0);
 
+  const handleCardPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    e.currentTarget.style.setProperty('--card-rx', `${(-y * 10).toFixed(2)}deg`);
+    e.currentTarget.style.setProperty('--card-ry', `${(x * 10).toFixed(2)}deg`);
+    e.currentTarget.style.setProperty('--card-gx', `${((x + 0.5) * 100).toFixed(1)}%`);
+    e.currentTarget.style.setProperty('--card-gy', `${((y + 0.5) * 100).toFixed(1)}%`);
+  };
+
+  const handleCardPointerLeave = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.style.setProperty('--card-rx', '0deg');
+    e.currentTarget.style.setProperty('--card-ry', '0deg');
+  };
+
   return (
     <section
       id="skills"
       aria-label="Technical Arsenal and Skills Lab"
       className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto relative overflow-hidden"
     >
-      {/* Subtle Background Hex Honeycomb & Scanline Layer */}
+      {/* 3D Background Hex Honeycomb Floor & Scanline Layer */}
       <div
-        className="absolute inset-0 pointer-events-none -z-10 opacity-30 select-none overflow-hidden"
+        className="absolute inset-0 pointer-events-none -z-10 opacity-30 select-none overflow-hidden hex-floor-3d"
         aria-hidden="true"
       >
-        {/* Hexagonal grid pattern SVG */}
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="hex-pattern" width="48" height="84" patternUnits="userSpaceOnUse" patternTransform="scale(1)">
-              <path
-                d="M48 42L24 56L0 42L0 14L24 0L48 14Z M24 56L24 84 M48 42L48 70 M0 42L0 70"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-                className="text-[var(--border)]"
-                strokeOpacity="0.45"
-              />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#hex-pattern)" />
-        </svg>
+        <div className="w-full h-full hex-floor-plane">
+          {/* Hexagonal grid pattern SVG */}
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="hex-pattern" width="48" height="84" patternUnits="userSpaceOnUse" patternTransform="scale(1)">
+                <path
+                  d="M48 42L24 56L0 42L0 14L24 0L48 14Z M24 56L24 84 M48 42L48 70 M0 42L0 70"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  className="text-[var(--border)]"
+                  strokeOpacity="0.45"
+                />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#hex-pattern)" />
+          </svg>
+        </div>
 
         {/* Subtle Ambient Scanline */}
         <div
@@ -173,10 +191,9 @@ export const Skills: React.FC = () => {
           {filteredCategories.map((category) => (
             <div
               key={category.id}
-              className="card-base p-6 flex flex-col justify-between reveal-item relative group hover:border-[var(--accent-secondary)]/50 transition-all duration-300 hover:shadow-lg"
-              style={{
-                perspective: '1000px',
-              }}
+              onPointerMove={handleCardPointerMove}
+              onPointerLeave={handleCardPointerLeave}
+              className="card-base card-3d p-6 flex flex-col justify-between reveal-item relative group hover:border-[var(--accent-secondary)]/50 transition-all duration-300 hover:shadow-lg"
             >
               {/* Category Card Header */}
               <div>
@@ -209,7 +226,7 @@ export const Skills: React.FC = () => {
                         key={skill.name}
                         onMouseEnter={() => setHoveredSkill(skill.name)}
                         onMouseLeave={() => setHoveredSkill(null)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-all duration-200 cursor-default select-none border ${
+                        className={`skill-chip-3d inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-all duration-200 cursor-default select-none border ${
                           isHovered
                             ? 'bg-[var(--accent-secondary)] text-[var(--bg)] border-[var(--accent-secondary)] shadow-sm font-bold scale-105'
                             : skill.highlight

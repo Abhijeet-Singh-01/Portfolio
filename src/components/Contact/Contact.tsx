@@ -14,7 +14,15 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto">
+    <section id="contact" className="py-20 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto relative overflow-hidden contact-converge-stage">
+      {/* Subtle 3D Ambient Ring Convergence Background */}
+      <div
+        className="absolute inset-0 pointer-events-none -z-10 overflow-hidden flex items-center justify-center"
+        aria-hidden="true"
+      >
+        <div className="w-[420px] h-[420px] sm:w-[620px] sm:h-[620px] rounded-full border border-[var(--border)] border-dashed contact-converge-ring opacity-35" />
+      </div>
+
       {/* Cinematic Closing Eyebrow */}
       <div className="mb-6">
         <span className="section-eyebrow">
@@ -108,7 +116,7 @@ export const Contact: React.FC = () => {
                 href={siteLinks.github.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] transition-colors flex items-center justify-between group"
+                className="contact-link-3d p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] transition-colors flex items-center justify-between group"
                 aria-label={siteLinks.github.accessibilityLabel}
               >
                 <div className="flex items-center gap-3">
@@ -126,7 +134,7 @@ export const Contact: React.FC = () => {
                 href={siteLinks.linkedin.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] transition-colors flex items-center justify-between group"
+                className="contact-link-3d p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] transition-colors flex items-center justify-between group"
                 aria-label={siteLinks.linkedin.accessibilityLabel}
               >
                 <div className="flex items-center gap-3">
@@ -144,7 +152,7 @@ export const Contact: React.FC = () => {
                 href={siteLinks.leetcode.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] transition-colors flex items-center justify-between group"
+                className="contact-link-3d p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-secondary)] transition-colors flex items-center justify-between group"
                 aria-label={siteLinks.leetcode.accessibilityLabel}
               >
                 <div className="flex items-center gap-3">
@@ -161,7 +169,7 @@ export const Contact: React.FC = () => {
               <a
                 href={siteLinks.resume.url}
                 download={siteLinks.resume.download}
-                className="p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)] transition-colors flex items-center justify-between group"
+                className="contact-link-3d p-3.5 rounded-lg bg-[var(--surface-2)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)] transition-colors flex items-center justify-between group"
                 aria-label={siteLinks.resume.accessibilityLabel}
               >
                 <div className="flex items-center gap-3">

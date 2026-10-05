@@ -105,9 +105,9 @@ export const Projects: React.FC = () => {
           </span>
         </div>
 
-        <h2 className="text-6xl sm:text-8xl md:text-9xl lg:text-[clamp(6.5rem,14vw,12.5rem)] font-black tracking-tighter text-[var(--text)] uppercase leading-[0.88] select-none">
-          THE <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--text)] via-[var(--text)] to-[var(--accent-secondary)]">
+        <h2 className="the-work-title-3d text-6xl sm:text-8xl md:text-9xl lg:text-[clamp(6.5rem,14vw,12.5rem)] font-black tracking-tighter text-[var(--text)] uppercase leading-[0.88] select-none">
+          <span className="work-line-the">THE</span> <br />
+          <span className="work-line-work text-transparent bg-clip-text bg-gradient-to-r from-[var(--text)] via-[var(--text)] to-[var(--accent-secondary)]">
             WORK.
           </span>
         </h2>

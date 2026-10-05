@@ -20,11 +20,31 @@ export const ProjectChapterNav: React.FC<ProjectChapterNavProps> = ({
   const currentNum = String(activeIndex + 1).padStart(2, '0');
   const totalNum = String(projects.length).padStart(2, '0');
 
+  const activeProject = projects[activeIndex];
+
   return (
     <nav
-      aria-label="Projects chapter navigation"
+      aria-label={`Projects chapter navigation. Active: ${activeProject?.name || currentNum} of ${totalNum}`}
       className="fixed bottom-6 right-4 sm:right-8 z-40 flex items-center gap-2 p-1.5 sm:p-2 rounded-full bg-[var(--surface)]/90 backdrop-blur-md border border-[var(--border)] shadow-xl transition-all duration-300 animate-fadeIn select-none"
     >
+      {/* 3D Miniature Spatial Gyroscope Widget */}
+      <div
+        className="w-5 h-5 hidden sm:flex items-center justify-center relative shrink-0 ml-1"
+        style={{ perspective: '200px', transformStyle: 'preserve-3d' }}
+        title="3D Spatial Compass"
+        aria-hidden="true"
+      >
+        <div
+          className="w-4 h-4 rounded-full border border-[var(--accent-secondary)] transition-transform duration-700 ease-out"
+          style={{
+            transform: `rotateX(60deg) rotateZ(${activeIndex * 120}deg)`,
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          <div className="absolute inset-0 rounded-full border border-teal-400/40 animate-ping" />
+        </div>
+      </div>
+
       {/* Chapter Counter Badge */}
       <div className="px-2 sm:px-2.5 py-1 rounded-full bg-[var(--surface-2)] text-[10px] sm:text-xs font-mono font-bold text-[var(--accent-secondary)] flex items-center gap-1">
         <span>{currentNum}</span>
