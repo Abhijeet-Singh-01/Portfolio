@@ -313,3 +313,28 @@
 
 
 
+
+## 2026-10-14 Handover Baseline (current checkout)
+
+### Phase 0 status: BLOCKED before source changes
+
+- Current branch: `main`, commit `024d700140f00a579168123d5827195771cd15f2` (`first commit`); tracks `origin/main` according to local Git metadata.
+- Working tree was clean at inspection (`git status --short --branch`: `## main...origin/main`). All files reported by `git ls-files` are tracked; no untracked files were reported.
+- Configured remote: `origin https://github.com/Abhijeet-Singh-01/Portfolio.git` (fetch/push). Remote reachability could not be verified: `git ls-remote` failed to connect to `github.com:443`.
+- Local checkpoints exist: branch `checkpoint-before-premium-upgrade` at `851b3be9bfbfb07adde5dcbc7e565cc69c374a45`, branch `checkpoint-before-spatial-rebuild` at `07e54d79ddfb53bf32aa9ec5ce642447357a138b`, and tag `checkpoint-premium-start` at `8e3275eb6646ef587a0fc56fa305bdf2a77d05fe`. These point to older, divergent trees; neither is a verified remote backup of current `main`.
+- GitHub CLI is not installed (`gh` unavailable), and network access prevented remote branch/tag checks or a push. Thus the required checkpoint push and remote verification cannot be completed in this environment. Per Phase 0 gate, implementation has not started.
+- `.gitignore` ignores `node_modules`, `dist`, and `*.local`; it does not explicitly ignore all `.env*` patterns. No credential values were printed. A broad keyword scan found common words in code/docs and cannot establish secret absence; a credential-specific/history audit is still needed after network/backup access is restored.
+- Stack: React 19, TypeScript 6, Vite 8, Tailwind CSS 4 via `@tailwindcss/vite`, Oxlint. Dependencies already installed locally. App is a semantic HTML/CSS 3D experience with sections for Hero, Projects, Skills, About, Contact, Footer; has command palette, cursor, scroll HUD, reduced-motion hook and error boundary. There is no R3F/Three.js/GSAP/Lenis dependency in the current package manifest.
+- Existing content/data and assets to preserve: `src/data/{projects,skills,education,socialLinks}.ts`, `public/resume.pdf`, `src/assets/images/profile.webp`, plus current UI components. Current `PROGRESS.md` and parts of prior content notes appear stale or inconsistent with the current facts rule; verify against source and resume after Phase 0 is cleared.
+- Existing visuals include a CSS depth hero, project chapters/visual metaphors, skills matrix, about/contact, command palette and HUD. The owner’s workflow requests a full-screen world, but performance rules permit a CSS fallback and require smoothness. No changes to source or dependencies were made during this inspection.
+
+### Planned work once checkpoint gate is cleared
+
+1. Reconcile factual project/content data against the current rules and resume; fix tokens and quality configuration only where needed.
+2. Keep the current accessible semantic section structure and CSS 3D foundation unless audit demonstrates a specific need for change. Avoid adding a WebGL stack until its performance and fallback costs are justified.
+3. Audit and enhance verified case-study content, interactive architecture detail, command palette and responsive/accessibility behavior in the requested order, with a focused commit and verified progress entry after each phase.
+4. Run lint/build and browser/mobile checks only after the environment’s browser/runtime tooling and backup gate are available; record actual measurements, never reuse numbers from older progress notes.
+
+### Needs owner/environment input
+
+- Restore GitHub network access and install/authenticate `gh` (or provide a working authenticated Git setup) so I can verify/push the current-checkout checkpoint and proceed on `feat/portfolio-premium-upgrade`. Remote access is required by the attached Phase 0 gate; without it the requested backup cannot be verified.
